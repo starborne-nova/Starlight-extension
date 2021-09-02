@@ -1,0 +1,39 @@
+{
+    "manifest_version": 3,
+    "name": "Jabroni Notify",
+    "version": "1.0",
+    "action": "",
+    "default_locale": "en",
+    "description": "Twitch notifications suck. Hopefully this doesn't",
+    "background": {
+        "service_worker": "background.js"
+    },
+    "externally_connectable": {
+        "matches": [
+            "*://jabroni-server.herokuapp.com/*"
+        ]
+    },
+    "browser_action": {
+        "default_icon": {                
+          "16": "images/icon16.png",     
+          "24": "images/icon24.png",     
+          "32": "images/icon32.png"      
+        },
+        "default_title": "Active Streams",  
+        "default_popup": "popup.html"    
+      },
+    "options_page": "options.html",
+    "options_ui": {
+        "chrome_style": true,
+        "page": "options.html"
+    },
+    "permissions": [
+        "tabs",
+        "alarms",
+        "scripting",
+        "storage"
+    ],
+    "storage": {
+        "managed_schema": "schema.json"
+    }
+}
