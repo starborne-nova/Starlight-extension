@@ -20,15 +20,16 @@ function pulse() {
     fetch(
         url,
         {
-            method: "post",
+            method: "POST",
             mode: "cors",
             headers:
             {
                 "Content-type": "application/json; charset=UTF-8"
             },
-            body: { "streamer": "Jabroni Mike" }
-        }
-    )
+            body: JSON.stringify({ streamer: "Jabroni Mike" })
+        })
+
+
         .then(response => {
             console.log(response)
 
@@ -57,9 +58,8 @@ function pulse() {
             {
                 "Content-type": "application/json; charset=UTF-8"
             },
-            body: { "streamer": "TEST" }
-        }
-    )
+            body: JSON.stringify({ streamer: "TEST" })
+        })
         .then(response => {
             console.log(response)
 
