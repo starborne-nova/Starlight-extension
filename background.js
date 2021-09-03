@@ -2,9 +2,6 @@ const url = "https://jabroni-server.herokuapp.com/pulse";
 
 var streamerID;
 
-chrome.action.setBadgeBackgroundColor({ color: "#0a1f27", function() { console.log("background color changed") }, });
-chrome.action.setBadgeText({ text: "123", function() { console.log("badge text changed") }, });
-
 chrome.alarms.create("twitchPulse", {
     delayInMinutes: 5,
     periodInMinutes: 5
