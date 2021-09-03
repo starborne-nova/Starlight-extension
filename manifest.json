@@ -8,16 +8,18 @@
     },
     "externally_connectable": {
         "matches": [
-            "*://jabroni-server.herokuapp.com/*"
+            "https://jabroni-server.herokuapp.com/pulse"
         ]
     },
+    "host_permissions": [
+        "https://jabroni-server.herokuapp.com/pulse"
+    ],
     "action": {
         "default_icon": {
             "16": "images/icon16.png",
             "24": "images/icon24.png",
             "32": "images/icon32.png"
         },
-        
         "default_popup": "popup.html"
     },
     "options_page": "options.html",
@@ -29,8 +31,5 @@
         "alarms",
         "scripting",
         "storage"
-    ],
-    "content_security_policy": {
-        "extension_pages": "default-src 'self'; connect-src https://* data: blob: filesystem:;"
-      }
+    ]
 }

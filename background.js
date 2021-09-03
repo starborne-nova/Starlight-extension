@@ -21,7 +21,7 @@ function pulse() {
         url,
         {
             method: "post",
-            mode: 'cors',
+            mode: "cors",
             headers:
             {
                 "Content-type": "application/json; charset=UTF-8"
