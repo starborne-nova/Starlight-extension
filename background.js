@@ -4,7 +4,7 @@ var streamerID;
 var badgeNumber = 0;
 
 chrome.action.setBadgeBackgroundColor({ color: "#0a1f27" }, function () { console.log("background color changed") });
-chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
+chrome.action.setBadgeText({ text: "0" }, function () { console.log("badge text changed") });
 
 chrome.alarms.create("twitchPulse", {
     delayInMinutes: 1,
@@ -75,6 +75,8 @@ function pulse() {
             .then(response => response.json())
             .then(data => {
 
+                console.log(data);
+
                 if (data === true) {
                     chrome.storage.sync.set({ testDev: true }, function () {
                         console.log("TEST is currently online");
@@ -101,7 +103,7 @@ function pulse() {
                     });
                 }
                 else {
-                    console.log("Unknown Response Recieved")
+                    console.log("Unknown Response Recieved");
                 }
 
             }

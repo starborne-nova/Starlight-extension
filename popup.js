@@ -8,15 +8,19 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
   for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
     if (key === jabroniLive && newValue === true) {
       document.getElementById("mikeStatus").className = "online";
+      document.getElementById("mikeStatus").innerText = "online";
     }
     if (key === jabroniLive && newValue === false) {
-      document.getElementById("jabroniMike").className = "offline";
+      document.getElementById("mikeStatus").className = "offline";
+      document.getElementById("mikeStatus").innerText = "offline";
     }
     if (key === testDev && newValue === true) {
       document.getElementById("testStatus").className = "online";
+      document.getElementById("testStatus").innerText = "online";
     }
     if (key === testDev && newValue === false) {
       document.getElementById("testStatus").className = "offline";
+      document.getElementById("testStatus").innerText = "offline";
     }
 
     console.log(
