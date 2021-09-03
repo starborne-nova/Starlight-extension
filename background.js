@@ -24,7 +24,7 @@ function pulse() {
             mode: "cors",
             headers:
             {
-                "Content-type": "application/json; charset=UTF-8"
+                "Content-type": "application/json"
             },
             body: JSON.stringify({ streamer: "Jabroni Mike" })
         })
