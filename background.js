@@ -29,16 +29,17 @@ function pulse() {
             body: JSON.stringify({ streamer: "Jabroni Mike" })
         })
 
-
         .then(response => {
-            console.log(response)
+            data = response.text();
 
-            if (response.body === true) {
+            console.log(data)
+
+            if (data === "true") {
                 chrome.storage.sync.set({ jabroniLive: true }, function () {
                     console.log("Mike is currently online");
                 });
             }
-            if (response.body === false) {
+            if (data === "false") {
                 chrome.storage.sync.set({ jabroniLive: false }, function () {
                     console.log("Mike is currently offline");
                 });
@@ -61,14 +62,14 @@ function pulse() {
             body: JSON.stringify({ streamer: "TEST" })
         })
         .then(response => {
-            console.log(response)
+            data = response.text();
 
-            if (response.body === true) {
+            if (data === "true") {
                 chrome.storage.sync.set({ testDev: true }, function () {
                     console.log("TEST is currently online");
                 });
             }
-            if (response.body === false) {
+            if (data === "false") {
                 chrome.storage.sync.set({ testDev: false }, function () {
                     console.log("TEST is currently offline");
                 });
