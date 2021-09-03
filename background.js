@@ -6,7 +6,7 @@ chrome.action.setBadgeBackgroundColor({ color: "#0a1f27" }, function () { consol
 chrome.action.setBadgeText({ text: "123" }, function () { console.log("badge text changed") });
 
 chrome.alarms.create("twitchPulse", {
-    delayInMinutes: 5,
+    delayInMinutes: 1,
     periodInMinutes: 5
 });
 
@@ -20,7 +20,7 @@ function pulse() {
     fetch(
         url,
         {
-            method: "get",
+            method: "post",
             mode: "cors",
             headers:
             {
