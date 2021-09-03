@@ -49,34 +49,34 @@ function pulse() {
 
         }
         )
-    fetch(
-        url,
-        {
-            method: "post",
-            mode: 'cors',
-            headers:
+        .then(fetch(
+            url,
             {
-                "Content-type": "application/json; charset=UTF-8"
-            },
-            body: JSON.stringify({ streamer: "TEST" })
-        })
-        .then(response => response.json())
-        .then(data => {
+                method: "post",
+                mode: 'cors',
+                headers:
+                {
+                    "Content-type": "application/json; charset=UTF-8"
+                },
+                body: JSON.stringify({ streamer: "TEST" })
+            })
+            .then(response => response.json())
+            .then(data => {
 
-            if (data === true) {
-                chrome.storage.sync.set({ testDev: true }, function () {
-                    console.log("TEST is currently online");
-                });
-            }
-            if (data === false) {
-                chrome.storage.sync.set({ testDev: false }, function () {
-                    console.log("TEST is currently offline");
-                });
-            }
-            else {
-                console.log("Unknown Response Recieved")
-            }
+                if (data === true) {
+                    chrome.storage.sync.set({ testDev: true }, function () {
+                        console.log("TEST is currently online");
+                    });
+                }
+                if (data === false) {
+                    chrome.storage.sync.set({ testDev: false }, function () {
+                        console.log("TEST is currently offline");
+                    });
+                }
+                else {
+                    console.log("Unknown Response Recieved")
+                }
 
-        }
-        )
+            }
+            ))
 }
