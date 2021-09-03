@@ -21,6 +21,7 @@ function pulse() {
         url,
         {
             method: "post",
+            mode: 'cors',
             headers:
             {
                 "Content-type": "application/json; charset=UTF-8"
@@ -51,6 +52,7 @@ function pulse() {
         url,
         {
             method: "post",
+            mode: 'cors',
             headers:
             {
                 "Content-type": "application/json; charset=UTF-8"
