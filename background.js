@@ -1,7 +1,17 @@
 const url = "https://jabroni-server.herokuapp.com/pulse";
+const streamerStatus = {
+    jabroniLive: false,
+    testDev: false
+};
 
-var streamerID;
-var badgeNumber = 0;
+const initStorageCache = getAllStorageSyncData()
+    .then(items => {
+        // Copy the data retrieved from storage into storageCache.
+        Object.assign(streamerStatus, items)
+    })
+    .then(() => {
+        populate();
+    });
 
 chrome.action.setBadgeBackgroundColor({ color: "#0a1f27" }, function () { console.log("background color changed") });
 chrome.action.setBadgeText({ text: "0" }, function () { console.log("badge text changed") });
@@ -18,25 +28,30 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
 });
 
 chrome.storage.onChanged.addListener(function (changes, namespace) {
-    if (changes.jabroniLive === true) {
-        badgeNumber++;
-        var set = toString(badgeNumber);
-        chrome.action.setBadgeText({ text: set }, function () { console.log("badge text changed") });
+    console.log(changes)
+    if (changes.jabroniLive === true && streamerStatus.testDev === false) {
+        chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
     };
-    if (changes.jabroniLive === false) {
-        badgeNumber--;
-        var set = toString(badgeNumber);
-        chrome.action.setBadgeText({ text: set }, function () { console.log("badge text changed") });
+    if (changes.jabroniLive === false && streamerStatus.testDev === false) {
+        chrome.action.setBadgeText({ text: "0" }, function () { console.log("badge text changed") });
     };
-    if (changes.testDev === true) {
-        badgeNumber++;
-        var set = toString(badgeNumber);
-        chrome.action.setBadgeText({ text: set }, function () { console.log("badge text changed") });
+    if (changes.jabroniLive === true && streamerStatus.testDev === true) {
+        chrome.action.setBadgeText({ text: "2" }, function () { console.log("badge text changed") });
     };
-    if (changes.testDev === false) {
-        badgeNumber--;
-        var set = toString(badgeNumber);
-        chrome.action.setBadgeText({ text: set }, function () { console.log("badge text changed") });
+    if (changes.jabroniLive === false && streamerStatus.testDev === true) {
+        chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
+    };
+    if (changes.testDev === true && streamerStatus.jabroniLive === false) {
+        chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
+    };
+    if (changes.testDev === false && streamerStatus.jabroniLive === false) {
+        chrome.action.setBadgeText({ text: "0" }, function () { console.log("badge text changed") });
+    };
+    if (changes.testDev === true && streamerStatus.jabroniLive === true) {
+        chrome.action.setBadgeText({ text: "2" }, function () { console.log("badge text changed") });
+    };
+    if (changes.testDev === false && streamerStatus.jabroniLive === true) {
+        chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
     };
     chrome.storage.sync.set({ badgeStatus: badgeNumber }, function () { console.log("badge number changed") });
 
@@ -98,4 +113,19 @@ function pulse() {
                 }
             }
             ))
+}
+
+function getAllStorageSyncData() {
+    // Immediately return a promise and start asynchronous work
+    return new Promise((resolve, reject) => {
+        // Asynchronously fetch all data from storage.sync.
+        chrome.storage.sync.get(null, (items) => {
+            // Pass any observed errors down the promise chain.
+            if (chrome.runtime.lastError) {
+                return reject(chrome.runtime.lastError);
+            }
+            // Pass the data retrieved from storage down the promise chain.
+            resolve(items);
+        });
+    });
 }

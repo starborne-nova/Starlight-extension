@@ -1,33 +1,56 @@
-var jabroniStatus;
-var testStatus;
+const streamerStatus = {
+  jabroniLive: false,
+  testDev: false
+};
+// Asynchronously retrieve data from storage.sync, then cache it.
+const initStorageCache = getAllStorageSyncData()
+  .then(items => {
+    // Copy the data retrieved from storage into storageCache.
+    Object.assign(streamerStatus, items)
+  })
+  .then(() => {
+    populate();
+  });
 
+function populate() {
 
-async function populate() {
-
-  var v;
-  var v1;
-  try {
-
-    v = await chrome.storage.sync.get("jabroniLive", (data) => { jabroniStatus = data.jabroniLive; return jabroniStatus })
-    v1 = await chrome.storage.sync.get("testDev", (data) => { testStatus = data.testDev; return testStatus; })
-    if (v === true) {
-      document.getElementById("mikeStatus").innerText = "ONLINE";
-      document.getElementById("mikeStatus").className = "online"
-
-    }
-    if (v1 === true) {
-      document.getElementById("testStatus").innerText = "ONLINE"
-      document.getElementById("testStatus").className = "online"
-
-    }
+  if (streamerStatus.jabroniLive === true) {
+    document.getElementById("mikeStatus").innerText = "ONLINE";
+    document.getElementById("mikeStatus").className = "online";
+    console.log("POPUP Mike Online")
   }
 
-  catch (e) {
-    console.log(e)
+  if (streamerStatus.jabroniLive === false) {
+    document.getElementById("mikeStatus").innerText = "OFFLINE";
+    document.getElementById("mikeStatus").className = "offline";
+    console.log("POPUP Mike Offline")
   }
-  return 1;
 
+  if (streamerStatus.testDev === true) {
+    document.getElementById("testStatus").innerText = "ONLINE";
+    document.getElementById("testStatus").className = "online";
+    console.log("POPUP TEST Online")
+  }
+
+  if (streamerStatus.testDev === false) {
+    document.getElementById("testStatus").innerText = "OFFLINE";
+    document.getElementById("testStatus").className = "offline";
+    console.log("POPUP TEST Offline")
+  }
 }
 
-var result = populate();
-console.log(result)
+function getAllStorageSyncData() {
+  // Immediately return a promise and start asynchronous work
+  return new Promise((resolve, reject) => {
+    // Asynchronously fetch all data from storage.sync.
+    chrome.storage.sync.get(null, (items) => {
+      // Pass any observed errors down the promise chain.
+      if (chrome.runtime.lastError) {
+        return reject(chrome.runtime.lastError);
+      }
+      // Pass the data retrieved from storage down the promise chain.
+      resolve(items);
+    });
+  });
+}
+
