@@ -20,18 +20,26 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
 chrome.storage.onChanged.addListener(function (changes, namespace) {
     if (changes.jabroniLive === true) {
         badgeNumber++;
+        var set = toString(badgeNumber);
+        chrome.action.setBadgeText({ text: set }, function () { console.log("badge text changed") });
     };
     if (changes.jabroniLive === false) {
         badgeNumber--;
+        var set = toString(badgeNumber);
+        chrome.action.setBadgeText({ text: set }, function () { console.log("badge text changed") });
     };
     if (changes.testDev === true) {
         badgeNumber++;
+        var set = toString(badgeNumber);
+        chrome.action.setBadgeText({ text: set }, function () { console.log("badge text changed") });
     };
     if (changes.testDev === false) {
         badgeNumber--;
+        var set = toString(badgeNumber);
+        chrome.action.setBadgeText({ text: set }, function () { console.log("badge text changed") });
     };
     chrome.storage.sync.set({ badgeStatus: badgeNumber }, function () { console.log("badge number changed") });
-    chrome.action.setBadgeText({ text: (toString(badgeNumber)) }, function () { console.log("badge text changed") });
+
 });
 
 function pulse() {
