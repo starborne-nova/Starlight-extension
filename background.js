@@ -17,6 +17,23 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
     }
 });
 
+chrome.storage.onChanged.addListener(function (changes, namespace) {
+    if (changes.jabroniLive === true) {
+        badgeNumber++;
+    };
+    if (changes.jabroniLive === false) {
+        badgeNumber--;
+    };
+    if (changes.testDev === true) {
+        badgeNumber++;
+    };
+    if (changes.testDev === false) {
+        badgeNumber--;
+    };
+    chrome.storage.sync.set({ badgeStatus: badgeNumber }, function () { console.log("badge number changed") });
+    chrome.action.setBadgeText({ text: (toString(badgeNumber)) }, function () { console.log("badge text changed") });
+});
+
 function pulse() {
     fetch(
         url,
@@ -37,27 +54,14 @@ function pulse() {
             if (data === true) {
                 chrome.storage.sync.set({ jabroniLive: true }, function () {
                     console.log("Mike is currently online");
-                    badgeNumber++;
-                    chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
-
                 });
             }
             if (data === false) {
                 chrome.storage.sync.set({ jabroniLive: false }, function () {
                     console.log("Mike is currently offline");
-                    if (chrome.storage.sync.get(["testDev"], function (result) { return result.testDev }) === false) {
-                        badgeNumber = 0;
-                        chrome.action.setBadgeText({ text: "0" }, function () { console.log("badge text changed") });
-                    }
-                    if (badgeNumber === 2) {
-                        badgeNumber = 1;
-                        chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
-                    }
                 });
             }
-
-        }
-        )
+        })
         .then(fetch(
             url,
             {
@@ -77,27 +81,12 @@ function pulse() {
                 if (data === true) {
                     chrome.storage.sync.set({ testDev: true }, function () {
                         console.log("TEST is currently online");
-                        badgeNumber++;
-                        if (badgeNumber === 1) {
-                            chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
-                        }
-                        if (badgeNumber === 2) {
-                            chrome.action.setBadgeText({ text: "2" }, function () { console.log("badge text changed") });
-                        }
                     });
                 }
                 if (data === false) {
                     chrome.storage.sync.set({ testDev: false }, function () {
                         console.log("TEST is currently offline");
-                        if (chrome.storage.sync.get(["jabroniLive"], function (result) { return result.testDev }) === false) {
-                            badgeNumber = 0;
-                            chrome.action.setBadgeText({ text: "0" }, function () { console.log("badge text changed") });
-                        }
-                        if (badgeNumber === 2) {
-                            badgeNumber = 1;
-                            chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
-                        }
-                    });
+                    })
                 }
             }
             ))
