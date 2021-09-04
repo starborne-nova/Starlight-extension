@@ -49,14 +49,11 @@ function pulse() {
                         badgeNumber = 0;
                         chrome.action.setBadgeText({ text: "0" }, function () { console.log("badge text changed") });
                     }
-                    if (chrome.storage.sync.get(["testDev"], function (result) { return result.testDev }) === true) {
+                    if (badgeNumber === 2) {
                         badgeNumber = 1;
                         chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
                     }
                 });
-            }
-            else {
-                console.log("Unknown Response Recieved")
             }
 
         }
@@ -81,10 +78,10 @@ function pulse() {
                     chrome.storage.sync.set({ testDev: true }, function () {
                         console.log("TEST is currently online");
                         badgeNumber++;
-                        if (badgeNumber === 0) {
+                        if (badgeNumber === 1) {
                             chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
                         }
-                        if (badgeNumber === 1) {
+                        if (badgeNumber === 2) {
                             chrome.action.setBadgeText({ text: "2" }, function () { console.log("badge text changed") });
                         }
                     });
@@ -96,16 +93,12 @@ function pulse() {
                             badgeNumber = 0;
                             chrome.action.setBadgeText({ text: "0" }, function () { console.log("badge text changed") });
                         }
-                        if (chrome.storage.sync.get(["jabroniLive"], function (result) { return result.testDev }) === true) {
+                        if (badgeNumber === 2) {
                             badgeNumber = 1;
                             chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
                         }
                     });
                 }
-                else {
-                    console.log("Unknown Response Recieved");
-                }
-
             }
             ))
 }

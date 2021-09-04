@@ -1,24 +1,28 @@
-const options = {}
+const options = {};
 
-chrome.storage.sync.get('options', (data) => {
-  Object.assign(options, data.options);
-});
+const jabroniStatus = { jabroniLive: false };
+const testStatus = { testDev: false};
 
 chrome.storage.onChanged.addListener(function (changes, namespace) {
+  console.log(changes);
   for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
-    if (key === jabroniLive && newValue === true) {
+    if (changes.key.newValue === true && changes.key === jabroniLive) {
+      jabroniStatus.jabroniLive = true;
       document.getElementById("mikeStatus").className = "online";
       document.getElementById("mikeStatus").innerText = "online";
     }
-    if (key === jabroniLive && newValue === false) {
+    if (changes.key.newValue === false && changes.key === jabroniLive) {
+      jabroniStatus.jabroniLive = false;
       document.getElementById("mikeStatus").className = "offline";
       document.getElementById("mikeStatus").innerText = "offline";
     }
-    if (key === testDev && newValue === true) {
+    if (changes.key.newValue === true && changes.key === testDev) {
+      testStatus.testDev = true;
       document.getElementById("testStatus").className = "online";
       document.getElementById("testStatus").innerText = "online";
     }
-    if (key === testDev && newValue === false) {
+    if (changes.key.newValue === false && changes.key === testDev) {
+      testStatus.testDev = false;
       document.getElementById("testStatus").className = "offline";
       document.getElementById("testStatus").innerText = "offline";
     }
@@ -28,4 +32,14 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
       `Old value was "${oldValue}", new value is "${newValue}".`
     );
   }
+});
+
+chrome.storage.sync.get("options", (data) => {
+  Object.assign(options, data.options);
+});
+chrome.storage.sync.get("jabroniLive", (data) => {
+  Object.assign(jabroniStatus, data.jabroniLive);
+});
+chrome.storage.sync.get("testDev", (data) => {
+  Object.assign(testStatus, data.testDev);
 });
