@@ -7,10 +7,8 @@ const streamerStatus = {
 const initStorageCache = getAllStorageSyncData()
     .then(items => {
         // Copy the data retrieved from storage into storageCache.
-        Object.assign(streamerStatus, items)
-    })
-    .then(() => {
-        populate();
+        Object.assign(streamerStatus, items);
+        setBadge();
     });
 
 chrome.action.setBadgeBackgroundColor({ color: "#0a1f27" }, function () { console.log("background color changed") });
@@ -29,31 +27,35 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
 
 chrome.storage.onChanged.addListener(function (changes, namespace) {
     console.log(changes)
-    if (changes.jabroniLive === true && streamerStatus.testDev === false) {
-        chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
-    };
-    if (changes.jabroniLive === false && streamerStatus.testDev === false) {
-        chrome.action.setBadgeText({ text: "0" }, function () { console.log("badge text changed") });
-    };
-    if (changes.jabroniLive === true && streamerStatus.testDev === true) {
-        chrome.action.setBadgeText({ text: "2" }, function () { console.log("badge text changed") });
-    };
-    if (changes.jabroniLive === false && streamerStatus.testDev === true) {
-        chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
-    };
-    if (changes.testDev === true && streamerStatus.jabroniLive === false) {
-        chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
-    };
-    if (changes.testDev === false && streamerStatus.jabroniLive === false) {
-        chrome.action.setBadgeText({ text: "0" }, function () { console.log("badge text changed") });
-    };
-    if (changes.testDev === true && streamerStatus.jabroniLive === true) {
-        chrome.action.setBadgeText({ text: "2" }, function () { console.log("badge text changed") });
-    };
-    if (changes.testDev === false && streamerStatus.jabroniLive === true) {
-        chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
-    };
-    chrome.storage.sync.set({ badgeStatus: badgeNumber }, function () { console.log("badge number changed") });
+
+    if (!changes.jabroniLive) {
+        if (changes.testDev.newValue === true && streamerStatus.jabroniLive === false) {
+            chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
+        };
+        if (changes.testDev.newValue === false && streamerStatus.jabroniLive === false) {
+            chrome.action.setBadgeText({ text: "0" }, function () { console.log("badge text changed") });
+        };
+        if (changes.testDev.newValue === true && streamerStatus.jabroniLive === true) {
+            chrome.action.setBadgeText({ text: "2" }, function () { console.log("badge text changed") });
+        };
+        if (changes.testDev.newValue === false && streamerStatus.jabroniLive === true) {
+            chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
+        };
+    }
+    if (!changes.testDev) {
+        if (changes.jabroniLive.newValue === true && streamerStatus.testDev === false) {
+            chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
+        };
+        if (changes.jabroniLive.newValue === false && streamerStatus.testDev === false) {
+            chrome.action.setBadgeText({ text: "0" }, function () { console.log("badge text changed") });
+        };
+        if (changes.jabroniLive.newValue === true && streamerStatus.testDev === true) {
+            chrome.action.setBadgeText({ text: "2" }, function () { console.log("badge text changed") });
+        };
+        if (changes.jabroniLive.newValue === false && streamerStatus.testDev === true) {
+            chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
+        };
+    }
 
 });
 
@@ -128,4 +130,31 @@ function getAllStorageSyncData() {
             resolve(items);
         });
     });
+}
+
+function setBadge() {
+    if (streamerStatus.jabroniLive === true && streamerStatus.testDev === false) {
+        chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
+    };
+    if (streamerStatus.jabroniLive === false && streamerStatus.testDev === false) {
+        chrome.action.setBadgeText({ text: "0" }, function () { console.log("badge text changed") });
+    };
+    if (streamerStatus.jabroniLive === true && streamerStatus.testDev === true) {
+        chrome.action.setBadgeText({ text: "2" }, function () { console.log("badge text changed") });
+    };
+    if (streamerStatus.jabroniLive === false && streamerStatus.testDev === true) {
+        chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
+    };
+    if (streamerStatus.testDev === true && streamerStatus.jabroniLive === false) {
+        chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
+    };
+    if (streamerStatus.testDev === false && streamerStatus.jabroniLive === false) {
+        chrome.action.setBadgeText({ text: "0" }, function () { console.log("badge text changed") });
+    };
+    if (streamerStatus.testDev === true && streamerStatus.jabroniLive === true) {
+        chrome.action.setBadgeText({ text: "2" }, function () { console.log("badge text changed") });
+    };
+    if (streamerStatus.testDev === false && streamerStatus.jabroniLive === true) {
+        chrome.action.setBadgeText({ text: "1" }, function () { console.log("badge text changed") });
+    };
 }
