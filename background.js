@@ -118,17 +118,17 @@ function pulse() {
             if (data.TEST === false) {
                 chrome.storage.sync.set({ testDev: false }, function () {
                     console.log("FROM BACKGROUND:TEST is currently offline");
-                })
+                });
             }
             if (data.vineRev === true) {
-                chrome.storage.sync.set({ testDev: true }, function () {
+                chrome.storage.sync.set({ vineRev: true }, function () {
                     console.log("FROM BACKGROUND:Rev is currently online");
                 });
             }
             if (data.vineRev === false) {
-                chrome.storage.sync.set({ testDev: false }, function () {
+                chrome.storage.sync.set({ vineRev: false }, function () {
                     console.log("FROM BACKGROUND:Rev is currently offline");
-                })
+                });
             }
         })
 

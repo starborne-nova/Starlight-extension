@@ -38,13 +38,13 @@ function populate() {
     document.getElementById("testStatus").className = "offline";
     console.log("POPUP TEST Offline")
   }
-  if (streamerStatus.testDev === true) {
+  if (streamerStatus.vineRev === true) {
     document.getElementById("revStatus").innerText = "ONLINE";
     document.getElementById("revStatus").className = "online";
     console.log("POPUP Rev Online")
   }
 
-  if (streamerStatus.testDev === false) {
+  if (streamerStatus.vineRev === false) {
     document.getElementById("revStatus").innerText = "OFFLINE";
     document.getElementById("revStatus").className = "offline";
     console.log("POPUP Rev Offline")
