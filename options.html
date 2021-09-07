@@ -11,53 +11,60 @@
     <div class="container">
         <div class="header">
             <h1>Options Page</h1>
+            <h3 id="status"></h3>
         </div>
 
         <div class="optionList">
             <div class="optionItem">
-                <h3 class="optionHeading">Sound Level</h3>
-                <div style="align-items: flex-end; padding-left: 50%;">
-                    <input type="range" label="Sound">
+                <h3 class="optionHeading">Sound Level (V3 extensions can't use sound because google hates us)</h3>
+                <div class="optionControl">
+                    <input type="range" label="Sound" style="margin-right: 20px;">
                     <button>Test</button>
                 </div>
             </div>
             <div class="optionItem">
                 <h3 class="optionHeading">Theme</h3>
-                <div style="align-items: flex-end; padding-left: 80%;"><select id="setTheme" name="theme">
+                <div class="optionControl" style="margin-right: 50px;">
+                    <select id="setTheme" name="theme">
+                        <option value="purple">Purple</option>
                         <option value="dark">Dark</option>
                         <option value="light">Light</option>
-                        <option value="purple">Purple</option>
                     </select>
                 </div>
             </div>
             <div class="optionItem">
                 <h3 class="optionHeading">jabroni_mike</h3>
-                <div style="align-items: flex-end; padding-left: 50%;">
-                    <input type="checkbox" label="notifs" id="mikeNotifs">
+                <div class="optionControl">
+                    <input type="checkbox" label="notifs" id="mikeNotifs" checked>
                     <label for="notifs">Recieve Notification?</label>
                     <br>
-                    <input type="checkbox" label="sound" id="mikeSound">
+                    <input type="checkbox" label="sound" id="mikeSound" checked>
                     <label for="sound">Play Sound</label>
                 </div>
             </div>
             <div class="optionItem">
                 <h3 class="optionHeading">TEST</h3>
-                <div style="align-items: flex-end; padding-left: 50%;">
-                    <input type="checkbox" label="notifs" id="testNotifs">
+                <div class="optionControl">
+                    <input type="checkbox" label="notifs" id="testNotifs" checked>
                     <label for="notifs">Recieve Notification?</label>
                     <br>
-                    <input type="checkbox" label="sound" id="testSound">
+                    <input type="checkbox" label="sound" id="testSound" checked>
                     <label for="sound">Play Sound</label>
                 </div>
             </div>
             <div class="optionItem">
-                <h3 class="optionHeading">Streamer 3</h3>
-                <div style="align-items: flex-end; padding-left: 50%;">
-                    <input type="checkbox" label="notifs" id="threeNotifs">
+                <h3 class="optionHeading">RevScarcrow</h3>
+                <div class="optionControl">
+                    <input type="checkbox" label="notifs" id="revNotifs" checked>
                     <label for="notifs">Recieve Notification?</label>
                     <br>
-                    <input type="checkbox" label="sound" id="threeSound">
+                    <input type="checkbox" label="sound" id="revSound" checked>
                     <label for="sound">Play Sound</label>
+                </div>
+            </div>
+            <div class="optionItem" style="border:0">
+                <div class="optionControl" style="margin-right:auto">
+                    <button id="save">Save Changes</button>
                 </div>
             </div>
 

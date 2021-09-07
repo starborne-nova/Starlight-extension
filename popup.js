@@ -1,6 +1,7 @@
 const streamerStatus = {
   jabroniLive: false,
-  testDev: false
+  testDev: false,
+  vineRev: false
 };
 // Asynchronously retrieve data from storage.sync, then cache it.
 const initStorageCache = getAllStorageSyncData()
@@ -37,13 +38,24 @@ function populate() {
     document.getElementById("testStatus").className = "offline";
     console.log("POPUP TEST Offline")
   }
+  if (streamerStatus.testDev === true) {
+    document.getElementById("revStatus").innerText = "ONLINE";
+    document.getElementById("revStatus").className = "online";
+    console.log("POPUP Rev Online")
+  }
+
+  if (streamerStatus.testDev === false) {
+    document.getElementById("revStatus").innerText = "OFFLINE";
+    document.getElementById("revStatus").className = "offline";
+    console.log("POPUP Rev Offline")
+  }
 }
 
 function getAllStorageSyncData() {
   // Immediately return a promise and start asynchronous work
   return new Promise((resolve, reject) => {
     // Asynchronously fetch all data from storage.sync.
-    chrome.storage.sync.get(null, (items) => {
+    chrome.storage.sync.get(["jabroniLive", "testDev", "vineRev"], (items) => {
       // Pass any observed errors down the promise chain.
       if (chrome.runtime.lastError) {
         return reject(chrome.runtime.lastError);
