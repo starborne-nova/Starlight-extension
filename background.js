@@ -4,6 +4,20 @@ const streamerStatus = {
     vineRev: false,
     testDev: false
 };
+const mikeNotif = {
+    type: "basic",
+    message: "Jabroni_Mike is Live!",
+    title: "JabroniNotify",
+    iconUrl: "./images/icon48.png",
+    eventTime: Date.now()
+};
+const revNotif = {
+    type: "basic",
+    message: "RevScarecrow is Live!",
+    title: "JabroniNotify",
+    iconUrl: "./images/icon48.png",
+    eventTime: Date.now()
+}
 
 const initStorageCache = getAllStorageSyncData()
     .then(items => {
@@ -32,6 +46,18 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
     if (changes.jabroniLive) {
         if (changes.jabroniLive.newValue === true && streamerStatus.vineRev === false) {
             chrome.action.setBadgeText({ text: "1" }, function () { console.log("FROM BACKGROUND:badge text changed") });
+            chrome.notifications.getPermissionLevel(function (level) {
+                if (level === "granted") {
+                    chrome.notifications.create("mikeLive", mikeNotif, function () {
+                        setTimeout(() => {
+                            chrome.notifications.clear("mikeLive", (cleared) => {
+                                console.log("Notification Cleared = " + cleared)
+                            })
+                        }, 5000)
+                    })
+                }
+
+            });
 
         };
         if (changes.jabroniLive.newValue === false && streamerStatus.vineRev === false) {
@@ -39,6 +65,18 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
         };
         if (changes.jabroniLive.newValue === true && streamerStatus.vineRev === true) {
             chrome.action.setBadgeText({ text: "2" }, function () { console.log("FROM BACKGROUND:badge text changed") });
+            chrome.notifications.getPermissionLevel(function (level) {
+                if (level === "granted") {
+                    chrome.notifications.create("mikeLive", mikeNotif, function () {
+                        setTimeout(() => {
+                            chrome.notifications.clear("mikeLive", (cleared) => {
+                                console.log("Notification Cleared = " + cleared)
+                            })
+                        }, 5000)
+                    })
+                }
+
+            });
 
         };
         if (changes.jabroniLive.newValue === false && streamerStatus.vineRev === true) {
@@ -64,6 +102,18 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
     if (changes.vineRev) {
         if (changes.vineRev.newValue === true && streamerStatus.jabroniLive === false) {
             chrome.action.setBadgeText({ text: "1" }, function () { console.log("FROM BACKGROUND:badge text changed") });
+            chrome.notifications.getPermissionLevel(function (level) {
+                if (level === "granted") {
+                    chrome.notifications.create("revLive", revNotif, function () {
+                        setTimeout(() => {
+                            chrome.notifications.clear("revLive", (cleared) => {
+                                console.log("Notification Cleared = " + cleared)
+                            })
+                        }, 5000)
+                    })
+                }
+
+            });
 
         };
         if (changes.vineRev.newValue === false && streamerStatus.jabroniLive === false) {
@@ -71,6 +121,18 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
         };
         if (changes.vineRev.newValue === true && streamerStatus.jabroniLive === true) {
             chrome.action.setBadgeText({ text: "2" }, function () { console.log("FROM BACKGROUND:badge text changed") });
+            chrome.notifications.getPermissionLevel(function (level) {
+                if (level === "granted") {
+                    chrome.notifications.create("revLive", revNotif, function () {
+                        setTimeout(() => {
+                            chrome.notifications.clear("revLive", (cleared) => {
+                                console.log("Notification Cleared = " + cleared)
+                            })
+                        }, 5000)
+                    })
+                }
+
+            });
 
         };
         if (changes.vineRev.newValue === false && streamerStatus.jabroniLive === true) {

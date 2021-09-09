@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
     "name": "Jabroni Notify",
-    "version": "1.0",
-    "description": "Twitch notifications suck. Hopefully this doesn't",
+    "version": "1.0.1",
+    "description": "Recieve twitch notifications from this extension more reliably than twitch push notifications",
     "background": {
         "service_worker": "background.js"
     },
@@ -19,6 +19,7 @@
     "host_permissions": [
         "https://jabroni-server.herokuapp.com/pulse"
     ],
+    "optional_permissions":["notifications"],
     "action": {
         "default_icon": {
             "16": "images/icon16.png",
@@ -32,9 +33,7 @@
         "page": "options.html"
     },
     "permissions": [
-        "tabs",
         "alarms",
-        "scripting",
         "storage"
     ]
 }
