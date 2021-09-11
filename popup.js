@@ -1,4 +1,5 @@
 const streamerStatus = {
+  theme: "",
   jabroniLive: false,
   testDev: false,
   vineRev: false,
@@ -15,6 +16,7 @@ const initStorageCache = getAllStorageSyncData()
   })
   .then(() => {
     populate();
+    setTheme();
   })
   .then(() => {
     if (!streamerStatus.TEST) {
@@ -70,13 +72,19 @@ function populate() {
   }
 }
 
-
+function setTheme() {
+  document.getElementById("popHeader").className = "header-" + streamerStatus.theme;
+  document.getElementById("jabroniMike").className = "streamItem-" + streamerStatus.theme;
+  document.getElementById("testDev").className = "streamItem-" + streamerStatus.theme;
+  document.getElementById("rev").className = "streamItem-" + streamerStatus.theme;
+  document.getElementById("options").className = "options-" + streamerStatus.theme;
+}
 
 function getAllStorageSyncData() {
   // Immediately return a promise and start asynchronous work
   return new Promise((resolve, reject) => {
     // Asynchronously fetch all data from storage.sync.
-    chrome.storage.sync.get(["jabroniLive", "testDev", "vineRev", "rev", "mike", "TEST"], (items) => {
+    chrome.storage.sync.get(["theme", "jabroniLive", "testDev", "vineRev", "rev", "mike", "TEST"], (items) => {
       // Pass any observed errors down the promise chain.
       if (chrome.runtime.lastError) {
         return reject(chrome.runtime.lastError);

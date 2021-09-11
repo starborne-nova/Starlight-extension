@@ -51,7 +51,7 @@ function saveOptions() {
 };
 
 function loadOptions() {
-    chrome.storage.sync.get(["theme", "mike", "mikeSound", "TEST", "TESTSound", "rev", "revSound"], (items) => {
+    chrome.storage.sync.get(["theme", "mike", "mikeSound", "TEST", "TESTSound", "rev", "revSound", "notifs"], (items) => {
         if (chrome.runtime.lastError) {
             return reject(chrome.runtime.lastError);
         }
@@ -64,6 +64,8 @@ function loadOptions() {
             document.getElementById("testSound").checked = items.TESTSound ? true : false;
             document.getElementById("revNotifs").checked = items.rev ? true : false;
             document.getElementById("revSound").checked = items.revSound ? true : false;
+
+            setTheme();
         }
 
     });
@@ -109,7 +111,7 @@ function getAllStorageSyncData() {
     // Immediately return a promise and start asynchronous work
     return new Promise((resolve, reject) => {
         // Asynchronously fetch all data from storage.sync.
-        chrome.storage.sync.get(["theme", "mike", "mikeSound", "TEST", "TESTSound", "rev", "revSound"], (items) => {
+        chrome.storage.sync.get(["theme", "mike", "mikeSound", "TEST", "TESTSound", "rev", "revSound", "notifs"], (items) => {
             // Pass any observed errors down the promise chain.
             if (chrome.runtime.lastError) {
                 return reject(chrome.runtime.lastError);
@@ -118,6 +120,18 @@ function getAllStorageSyncData() {
             resolve(items);
         });
     });
+}
+
+function setTheme(){
+    document.getElementById("optionHeader").className = "header-" + settings.theme;
+    document.getElementById("optionDiv").className = "optionList-" + settings.theme;
+    document.getElementById("desktopNotif").className = "optionItem-" + settings.theme;
+    document.getElementById("themeOption").className = "optionItem-" + settings.theme;
+    document.getElementById("setMike").className = "optionItem-" + settings.theme;
+    document.getElementById("setTest").className = "optionItem-" + settings.theme;
+    document.getElementById("setRev").className = "optionItem-" + settings.theme;
+    document.getElementById("saveChanges").className = "optionItem-" + settings.theme;
+
 }
 
 document.getElementById("testNotif").addEventListener("click", handleTestNotif);
