@@ -1,12 +1,9 @@
 const settings = {
     notifs: false,
     theme: "",
-    mike: "",
-    mikeSound: "",
-    TEST: "",
-    TESTSound: "",
+    mike: "",  
+    lime: "",   
     rev: "",
-    revSound: ""
 }
 
 const initStorageCache = getAllStorageSyncData()
@@ -25,21 +22,15 @@ var notifOptions = {
 
 function saveOptions() {
     var Otheme = document.getElementById("setTheme").value;
-    var OmikeN = document.getElementById("mikeNotifs").checked ? true : false;
-    var OmikeS = document.getElementById("mikeSound").checked ? true : false;
-    var OtestN = document.getElementById("testNotifs").checked ? true : false;
-    var OtestS = document.getElementById("testSound").checked ? true : false;
+    var OmikeN = document.getElementById("mikeNotifs").checked ? true : false;  
+    var OlimeN = document.getElementById("limeNotifs").checked ? true : false;  
     var OrevN = document.getElementById("revNotifs").checked ? true : false;
-    var OreveS = document.getElementById("revSound").checked ? true : false;
 
     chrome.storage.sync.set({
         theme: Otheme,
-        mike: OmikeN,
-        mikeSound: OmikeS,
-        TEST: OtestN,
-        TESTSound: OtestS,
+        mike: OmikeN,     
+        lime: OlimeN,       
         rev: OrevN,
-        revSound: OreveS
     }, function () {
         var status = document.getElementById('status');
         status.textContent = 'Options saved.';
@@ -51,7 +42,7 @@ function saveOptions() {
 };
 
 function loadOptions() {
-    chrome.storage.sync.get(["theme", "mike", "mikeSound", "TEST", "TESTSound", "rev", "revSound", "notifs"], (items) => {
+    chrome.storage.sync.get(["theme", "mike", "mikeSound", "lime", "limeSound", "rev", "revSound", "notifs"], (items) => {
         if (chrome.runtime.lastError) {
             return reject(chrome.runtime.lastError);
         }
@@ -59,11 +50,8 @@ function loadOptions() {
             document.getElementById("notifStatus").innerText = items.notifs ? "Active" : "Inactive";
             document.getElementById("setTheme").value = items.theme;
             document.getElementById("mikeNotifs").checked = items.mike ? true : false;
-            document.getElementById("mikeSound").checked = items.mikeSound ? true : false;
-            document.getElementById("testNotifs").checked = items.TEST ? true : false;
-            document.getElementById("testSound").checked = items.TESTSound ? true : false;
+            document.getElementById("limeNotifs").checked = items.lime ? true : false;
             document.getElementById("revNotifs").checked = items.rev ? true : false;
-            document.getElementById("revSound").checked = items.revSound ? true : false;
 
             setTheme();
         }
@@ -111,7 +99,7 @@ function getAllStorageSyncData() {
     // Immediately return a promise and start asynchronous work
     return new Promise((resolve, reject) => {
         // Asynchronously fetch all data from storage.sync.
-        chrome.storage.sync.get(["theme", "mike", "mikeSound", "TEST", "TESTSound", "rev", "revSound", "notifs"], (items) => {
+        chrome.storage.sync.get(["theme", "mike", "lime", "rev", "notifs"], (items) => {
             // Pass any observed errors down the promise chain.
             if (chrome.runtime.lastError) {
                 return reject(chrome.runtime.lastError);
@@ -128,7 +116,7 @@ function setTheme(){
     document.getElementById("desktopNotif").className = "optionItem-" + settings.theme;
     document.getElementById("themeOption").className = "optionItem-" + settings.theme;
     document.getElementById("setMike").className = "optionItem-" + settings.theme;
-    document.getElementById("setTest").className = "optionItem-" + settings.theme;
+    document.getElementById("setLimes").className = "optionItem-" + settings.theme;
     document.getElementById("setRev").className = "optionItem-" + settings.theme;
     document.getElementById("saveChanges").className = "optionItem-" + settings.theme;
 

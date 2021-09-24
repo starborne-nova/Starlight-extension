@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Jabroni Notify",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Recieve twitch notifications from this extension more reliably than twitch push notifications",
     "background": {
         "service_worker": "background.js"
@@ -19,7 +19,9 @@
     "host_permissions": [
         "https://jabroni-server.herokuapp.com/pulse"
     ],
-    "optional_permissions":["notifications"],
+    "optional_permissions": [
+        "notifications"
+    ],
     "action": {
         "default_icon": {
             "16": "images/icon16.png",
