@@ -1,11 +1,14 @@
 const streamerStatus = {
-  theme: "",
+  theme: "purple",
   jabroni: false,
-  limes: false,
-  vineRev: false,
+  jabroniGame: "",
   mike: true,
-  rev: true,
-  lime: true
+  limes: false,
+  limesGame: "",
+  lime: true,
+  vineRev: false,
+  revGame: "",
+  rev: true
 };
 // Asynchronously retrieve data from storage.sync, then cache it.
 const initStorageCache = getAllStorageSyncData()
@@ -37,8 +40,10 @@ const initStorageCache = getAllStorageSyncData()
 function populate() {
 
   if (streamerStatus.jabroni === true) {
-    document.getElementById("mikeStatus").innerText = "ONLINE";
+    document.getElementById("mikeStatus").innerText = ("ONLINE: " + (streamerStatus.jabroniGame.substring(0, 25)));
     document.getElementById("mikeStatus").className = "online";
+    document.getElementById("mikeIcon").className = "status-icon-on";
+    document.getElementById("mikeIcon").innerHTML = "<i class='fas fa-wifi'></i>";
     console.log("POPUP Mike Online")
   }
 
@@ -49,8 +54,10 @@ function populate() {
   }
 
   if (streamerStatus.limes === true) {
-    document.getElementById("limeStatus").innerText = "ONLINE";
+    document.getElementById("limeStatus").innerText = ("ONLINE: " + (streamerStatus.limesGame.substring(0, 25)));
     document.getElementById("limeStatus").className = "online";
+    document.getElementById("limesIcon").className = "status-icon-on";
+    document.getElementById("limesIcon").innerHTML = "<i class='fas fa-wifi'></i>";
     console.log("POPUP Limes Online")
   }
 
@@ -60,8 +67,10 @@ function populate() {
     console.log("POPUP Limes Offline")
   }
   if (streamerStatus.vineRev === true) {
-    document.getElementById("revStatus").innerText = "ONLINE";
+    document.getElementById("revStatus").innerText = ("ONLINE: " + (streamerStatus.revGame.substring(0, 25)));
     document.getElementById("revStatus").className = "online";
+    document.getElementById("revIcon").className = "status-icon-on";
+    document.getElementById("revIcon").innerHTML = "<i class='fas fa-wifi'></i>";
     console.log("POPUP Rev Online")
   }
 
@@ -84,7 +93,7 @@ function getAllStorageSyncData() {
   // Immediately return a promise and start asynchronous work
   return new Promise((resolve, reject) => {
     // Asynchronously fetch all data from storage.sync.
-    chrome.storage.sync.get(["theme", "jabroni", "limes", "vineRev", "rev", "mike", "lime"], (items) => {
+    chrome.storage.sync.get(["theme", "jabroni", "limes", "vineRev", "rev", "mike", "lime", "jabroniGame", "revGame", "limesGame"], (items) => {
       // Pass any observed errors down the promise chain.
       if (chrome.runtime.lastError) {
         return reject(chrome.runtime.lastError);

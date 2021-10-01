@@ -1,6 +1,10 @@
+body{
+    width: 400px;
+}
+
 .header-purple {
     text-align: center;
-    width: 300px;
+    
     background-color: rebeccapurple;
     color: white;
     border-top: 1px solid;
@@ -13,7 +17,7 @@
 
 .header-dark {
     text-align: center;
-    width: 300px;
+    
     background-color: #171717;
     color: #999da2;
     border-top: 1px solid;
@@ -26,7 +30,7 @@
 
 .header-light {
     text-align: center;
-    width: 300px;
+    
     background-color: #999da2;
     color: #171717;
     border-top: 1px solid;
@@ -114,6 +118,24 @@ body {
     
 }
 
+.status-icon-off{
+    min-width: 17px;
+    min-height: 17px;
+    text-align: end;
+    color:darkgray;
+    margin: 5px;
+    text-shadow: 2px 2px 1px #000;
+}
+
+.status-icon-on{
+    min-width: 17px;
+    min-height: 17px;
+    text-align: end;
+    color:green;
+    margin: 5px;
+    text-shadow: 2px 2px 1px #000;
+}
+
 .options-purple{
     border-top: 1px solid;
     border-left: 1px solid;
@@ -168,7 +190,7 @@ body {
 }
 
 .streamer{
-    padding-left: 10px;
+    padding-left: 5px;
     flex-grow: 1;
     margin: 5px;
     

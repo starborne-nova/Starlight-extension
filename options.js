@@ -1,9 +1,9 @@
 const settings = {
     notifs: false,
-    theme: "",
-    mike: "",  
-    lime: "",   
-    rev: "",
+    theme: "purple",
+    mike: true,  
+    lime: true,   
+    rev: true,
 }
 
 const initStorageCache = getAllStorageSyncData()
