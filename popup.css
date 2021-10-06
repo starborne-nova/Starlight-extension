@@ -5,6 +5,13 @@ body{
 .header-purple {
     text-align: center;
     
+    background:  linear-gradient(to right,rgb(65, 17, 94), transparent 40%,rgb(65, 17, 94)),
+    url("images/JabroniLogoFull.png");
+    background-color: rgb(65, 17, 94);
+    background-position: left;
+    background-repeat: no-repeat;
+    background-size: 400px;
+    background-position: 0% 65%;
     background-color: rebeccapurple;
     color: white;
     border-top: 1px solid;

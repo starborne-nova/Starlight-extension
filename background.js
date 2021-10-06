@@ -11,7 +11,7 @@ const mikeNotif = {
     type: "basic",
     message: "Jabroni_Mike is Live!",
     title: "JabroniNotify",
-    iconUrl: "./images/icon48.png",
+    iconUrl: "./images/mike.png",
     eventTime: Date.now()
 };
 const revNotif = {
