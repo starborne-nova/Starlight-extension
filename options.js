@@ -115,9 +115,9 @@ function setTheme(){
     document.getElementById("optionDiv").className = "optionList-" + settings.theme;
     document.getElementById("desktopNotif").className = "optionItem-" + settings.theme;
     document.getElementById("themeOption").className = "optionItem-" + settings.theme;
-    document.getElementById("setMike").className = "optionItem-" + settings.theme;
-    document.getElementById("setLimes").className = "optionItem-" + settings.theme;
-    document.getElementById("setRev").className = "optionItem-" + settings.theme;
+    document.getElementById("setMike").className = "streamer-" + settings.theme + "-mike";
+    document.getElementById("setLimes").className = "streamer-" + settings.theme + "-limes";
+    document.getElementById("setRev").className = "streamer-" + settings.theme + "-rev";
     document.getElementById("saveChanges").className = "optionItem-" + settings.theme;
 
 }

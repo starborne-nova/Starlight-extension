@@ -4,7 +4,6 @@ body{
 
 .header-purple {
     text-align: center;
-    
     background:  linear-gradient(to right,rgb(65, 17, 94), transparent 40%,rgb(65, 17, 94)),
     url("images/JabroniLogoFull.png");
     background-color: rgb(65, 17, 94);
@@ -12,7 +11,6 @@ body{
     background-repeat: no-repeat;
     background-size: 400px;
     background-position: 0% 65%;
-    background-color: rebeccapurple;
     color: white;
     border-top: 1px solid;
     border-left: 1px solid;
@@ -24,8 +22,13 @@ body{
 
 .header-dark {
     text-align: center;
-    
+    background:  linear-gradient(to right,#171717, transparent 40%,#171717),
+    url("images/JabroniLogoFull.png");
     background-color: #171717;
+    background-position: left;
+    background-repeat: no-repeat;
+    background-size: 400px;
+    background-position: 0% 65%;
     color: #999da2;
     border-top: 1px solid;
     border-left: 1px solid;
@@ -37,8 +40,13 @@ body{
 
 .header-light {
     text-align: center;
-    
+    background:  linear-gradient(to right,#999da2, transparent 40%,#999da2),
+    url("images/JabroniLogoFull.png");
     background-color: #999da2;
+    background-position: left;
+    background-repeat: no-repeat;
+    background-size: 400px;
+    background-position: 0% 65%;
     color: #171717;
     border-top: 1px solid;
     border-left: 1px solid;
@@ -87,7 +95,7 @@ body{
     padding: 0;
     margin: 0;
     display: flex;
-    background-color:white;
+    background-color:rgb(228, 228, 228);
     color:#171717;
 }
 
