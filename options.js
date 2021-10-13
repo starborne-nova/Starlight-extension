@@ -1,15 +1,29 @@
-const settings = {
-    notifs: false,
-    theme: "purple",
-    mike: true,  
-    lime: true,   
-    rev: true,
-}
+const localStorage = {
+    streamers: {
+        mike: false,
+        limes: true,
+        rev: true,
+        fred: true
+    },
+    activeGame: {
+        mikeGame: "",
+        limesGame: "",
+        revGame: "",
+        fredGame: ""
+    },
+    options: {
+        mikeNotif: true,
+        limesNotif: true,
+        revNotif: true,
+        fredNotif: true,
+        theme: "purple",
+    }
+};
 
 const initStorageCache = getAllStorageSyncData()
     .then(items => {
         // Copy the data retrieved from storage into storageCache.
-        Object.assign(settings, items);
+        Object.assign(localStorage, items);
     });
 
 var notifOptions = {
@@ -22,15 +36,19 @@ var notifOptions = {
 
 function saveOptions() {
     var Otheme = document.getElementById("setTheme").value;
-    var OmikeN = document.getElementById("mikeNotifs").checked ? true : false;  
-    var OlimeN = document.getElementById("limeNotifs").checked ? true : false;  
+    var OmikeN = document.getElementById("mikeNotifs").checked ? true : false;
+    var OlimeN = document.getElementById("limeNotifs").checked ? true : false;
     var OrevN = document.getElementById("revNotifs").checked ? true : false;
+    var OfredN = document.getElementById("fredNotifs").checked ? true : false;
 
     chrome.storage.sync.set({
-        theme: Otheme,
-        mike: OmikeN,     
-        lime: OlimeN,       
-        rev: OrevN,
+        options: {
+            mikeNotif: OmikeN,
+            limesNotif: OlimeN,
+            revNotif: OrevN,
+            fredNotif: OfredN,
+            theme: Otheme,
+        }
     }, function () {
         var status = document.getElementById('status');
         status.textContent = 'Options saved.';
@@ -42,16 +60,24 @@ function saveOptions() {
 };
 
 function loadOptions() {
-    chrome.storage.sync.get(["theme", "mike", "mikeSound", "lime", "limeSound", "rev", "revSound", "notifs"], (items) => {
+    chrome.storage.sync.get(null, (items) => {
         if (chrome.runtime.lastError) {
             return reject(chrome.runtime.lastError);
         }
         else {
-            document.getElementById("notifStatus").innerText = items.notifs ? "Active" : "Inactive";
-            document.getElementById("setTheme").value = items.theme;
-            document.getElementById("mikeNotifs").checked = items.mike ? true : false;
-            document.getElementById("limeNotifs").checked = items.lime ? true : false;
-            document.getElementById("revNotifs").checked = items.rev ? true : false;
+            chrome.notifications.getPermissionLevel(function (level) {
+                if(level=== "granted"){
+                    document.getElementById("notifStatus").innerText = "Permission: Granted";  
+                }
+                else{
+                    document.getElementById("notifStatus").innerText = "Permission: Not Granted";
+                }
+            });
+            document.getElementById("setTheme").value = items.options.theme;
+            document.getElementById("mikeNotifs").checked = items.options.mikeNotif ? true : false;
+            document.getElementById("limeNotifs").checked = items.options.limesNotif ? true : false;
+            document.getElementById("revNotifs").checked = items.options.revNotif ? true : false;
+            document.getElementById("fredNotifs").checked = items.options.fredNotif ? true : false;
 
             setTheme();
         }
@@ -81,25 +107,21 @@ function handleNotif() {
             permissions: ["notifications"],
         },
         function (granted) {
-            if (granted) {
-                chrome.storage.sync.set({ notifs: true }, function () {
-                    document.getElementById("notifStatus").innerText = "Active";
-                })
-            } else {
-                chrome.storage.sync.set({ notifs: false }, function () {
-                    document.getElementById("notifStatus").innerText = "Inactive";
-                })
+            if(granted === true){
+                document.getElementById("notifStatus").innerText = "Permission: Granted";
+            }
+            if(granted === false){
+                document.getElementById("notifStatus").innerText = "Permission: Not Granted";
             }
         }
     );
-
 }
 
 function getAllStorageSyncData() {
     // Immediately return a promise and start asynchronous work
     return new Promise((resolve, reject) => {
         // Asynchronously fetch all data from storage.sync.
-        chrome.storage.sync.get(["theme", "mike", "lime", "rev", "notifs"], (items) => {
+        chrome.storage.sync.get(null, (items) => {
             // Pass any observed errors down the promise chain.
             if (chrome.runtime.lastError) {
                 return reject(chrome.runtime.lastError);
@@ -110,17 +132,31 @@ function getAllStorageSyncData() {
     });
 }
 
-function setTheme(){
-    document.getElementById("optionHeader").className = "header-" + settings.theme;
-    document.getElementById("optionDiv").className = "optionList-" + settings.theme;
-    document.getElementById("desktopNotif").className = "optionItem-" + settings.theme;
-    document.getElementById("themeOption").className = "optionItem-" + settings.theme;
-    document.getElementById("setMike").className = "streamer-" + settings.theme + "-mike";
-    document.getElementById("setLimes").className = "streamer-" + settings.theme + "-limes";
-    document.getElementById("setRev").className = "streamer-" + settings.theme + "-rev";
-    document.getElementById("saveChanges").className = "optionItem-" + settings.theme;
+function setTheme() {
+    document.getElementById("optionHeader").className = "header-" + localStorage.options.theme;
+    document.getElementById("optionDiv").className = "optionList-" + localStorage.options.theme;
+    document.getElementById("desktopNotif").className = "optionItem-" + localStorage.options.theme;
+    document.getElementById("themeOption").className = "optionItem-" + localStorage.options.theme;
+    document.getElementById("setMike").className = "streamer-" + localStorage.options.theme + "-mike";
+    document.getElementById("setLimes").className = "streamer-" + localStorage.options.theme + "-limes";
+    document.getElementById("setRev").className = "streamer-" + localStorage.options.theme + "-rev";
+    document.getElementById("setFred").className = "streamer-" + localStorage.options.theme + "-fred";
+    document.getElementById("saveChanges").className = "optionItem-" + localStorage.options.theme;
 
 }
+
+function bigStorage() {
+    chrome.storage.sync.get(null, function (items) {
+        console.log(items);
+    })
+}
+
+function getBigStorage() {
+    chrome.storage.sync.get({ streamer: {} }, function (results) {
+        console.log(results);
+    })
+}
+
 
 document.getElementById("testNotif").addEventListener("click", handleTestNotif);
 
@@ -130,3 +166,9 @@ document.addEventListener('DOMContentLoaded', loadOptions);
 
 document.getElementById('save').addEventListener('click',
     saveOptions);
+
+document.getElementById('debug').addEventListener('click',
+    bigStorage);
+
+document.getElementById('pebis').addEventListener('click',
+    getBigStorage);

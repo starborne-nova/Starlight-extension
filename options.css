@@ -261,6 +261,79 @@ a:hover{
     
 }
 
+.streamer-purple-fred{
+    background: linear-gradient(to right,rgb(65, 17, 94), transparent 40%,rgb(65, 17, 94)),
+    url("images/gplay.png");
+    background-color: rgb(65, 17, 94);
+    background-position: left;
+    background-repeat: no-repeat;
+    background-size: 400px;
+    background-position: 50% 50%;
+    display: flex;
+    height: 100px;
+    flex-direction: row;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-top: 20px;
+    align-items: center;
+    border-collapse: separate;
+    overflow: hidden;
+    background-color: rgb(65, 17, 94);
+    border: 5px ridge rgb(95, 26, 134);
+    border-radius: 10px;
+    
+}
+
+.streamer-dark-fred{
+    background: linear-gradient(to right,rgb(66, 66, 66), transparent 40%,rgb(66, 66, 66)),
+    url("images/revLarge.png");
+    background-color: rgb(66, 66, 66);
+    background-position: left;
+    background-repeat: no-repeat;
+    background-size: 400px;
+    background-position: 50% 55%;
+    display: flex;
+    height: 100px;
+    flex-direction: row;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-top: 20px;
+    align-items: center;
+    border-collapse: separate;
+    overflow: hidden;
+    border: 5px ridge #999da2;
+    border-radius: 10px;
+    
+}
+
+.streamer-light-fred{
+    background: linear-gradient(to right,#999da2, transparent 40%,#999da2),
+    url("images/revLarge.png");
+    background-color: #999da2;
+    background-position: left;
+    background-repeat: no-repeat;
+    background-size: 400px;
+    background-position: 50% 55%;
+    display: flex;
+    height: 100px;
+    flex-direction: row;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-top: 20px;
+    align-items: center;
+    border-collapse: separate;
+    overflow: hidden;
+    border: 5px ridge #171717;
+    border-radius: 10px;
+    
+}
+
 .headLinks{
     display: flex;
     height: fit-content;
