@@ -1,9 +1,9 @@
 const localStorage = {
   streamers: {
     mike: false,
-    limes: true,
-    rev: true,
-    fred: true
+    limes: false,
+    rev: false,
+    fred: false
 },
 activeGame: {
     mikeGame: "",

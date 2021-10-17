@@ -1,9 +1,9 @@
 const localStorage = {
     streamers: {
         mike: false,
-        limes: true,
-        rev: true,
-        fred: true
+        limes: false,
+        rev: false,
+        fred: false
     },
     activeGame: {
         mikeGame: "",
@@ -26,13 +26,21 @@ const initStorageCache = getAllStorageSyncData()
         Object.assign(localStorage, items);
     });
 
-var notifOptions = {
+const notifOptions = {
     type: "basic",
     title: "JabroniNotify",
     message: "This is a test!",
     iconUrl: "./images/icon48.png",
     eventTime: Date.now()
 }
+
+const mikeNotif = {
+    type: "basic",
+    message: "Jabroni_Mike is Live!",
+    title: "JabroniNotify",
+    iconUrl: "./images/mike.png",
+    eventTime: Date.now()
+};
 
 function saveOptions() {
     var Otheme = document.getElementById("setTheme").value;
@@ -151,12 +159,19 @@ function bigStorage() {
     })
 }
 
-function getBigStorage() {
-    chrome.storage.sync.get({ streamer: {} }, function (results) {
-        console.log(results);
-    })
+function testNewNotif() {
+    sendNotification("mike", mikeNotif);
 }
 
+function sendNotification(streamer, notif) {
+    chrome.notifications.create(streamer, notif, function () {
+        setTimeout(() => {
+            chrome.notifications.clear(streamer, (cleared) => {
+                console.log("Notification Cleared = " + cleared)
+            })
+        }, 5000)
+    })
+}
 
 document.getElementById("testNotif").addEventListener("click", handleTestNotif);
 
@@ -166,9 +181,3 @@ document.addEventListener('DOMContentLoaded', loadOptions);
 
 document.getElementById('save').addEventListener('click',
     saveOptions);
-
-document.getElementById('debug').addEventListener('click',
-    bigStorage);
-
-document.getElementById('pebis').addEventListener('click',
-    getBigStorage);

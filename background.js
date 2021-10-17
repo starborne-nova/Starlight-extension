@@ -2,9 +2,9 @@ const url = "https://jabroni-server.herokuapp.com/pulse";
 const localStorage = {
     streamers: {
         mike: false,
-        limes: true,
-        rev: true,
-        fred: true
+        limes: false,
+        rev: false,
+        fred: false
     },
     activeGame: {
         mikeGame: "",
@@ -45,13 +45,14 @@ const fredNotif = {
     type: "basic",
     message: "Fred Knudsen is Live!",
     title: "JabroniNotify",
-    iconUrl: "./images/limes.png",
+    iconUrl: "./images/fred.png",
     eventTime: Date.now()
 }
 const outAuth = "coomcheugger";
 
-//const objFilter = ["jabroni", "jabroniGame", "vineRev", "revGame", "limes", "limesGame", "fredK", "fredGame"];
+//--------------------------------------------------------END OF INIT VARIABLES-----------------------------------------------------------------//
 
+//CREATE PULSE ALARM------//
 chrome.alarms.create("twitchPulse", {
     delayInMinutes: 1,
     periodInMinutes: 3
@@ -64,10 +65,12 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
     }
 });
 console.log("FROM BACKGROUND: Listener Created");
+
+//SET BADGE BACKGROUND(because white looks bad)----//
 chrome.action.setBadgeBackgroundColor({ color: "#0a1f27" }, function () { console.log("FROM BACKGROUND:background color changed") });
 
 
-
+//INIT AND SET LOCAL STORAGE-----//
 const initStorageCache = getAllStorageSyncData()
     .then(items => {
         // Copy the data retrieved from storage into storageCache.
@@ -78,14 +81,15 @@ const initStorageCache = getAllStorageSyncData()
         setBadge();
     });
 
+//FIRST RUN INITIALIZE CLOUD STORAGE----//
 chrome.runtime.onInstalled.addListener(function (details) {
     if (details.reason === "install") {
         chrome.storage.sync.set({
             streamers: {
                 mike: false,
-                limes: true,
-                rev: true,
-                fred: true
+                limes: false,
+                rev: false,
+                fred: false
             },
             activeGame: {
                 mikeGame: "",
@@ -108,31 +112,32 @@ chrome.runtime.onInstalled.addListener(function (details) {
 
 })
 
+//CREATE STORAGE CHANGE LISTENER TO DEPLOY NOTIFS WHEN NEEDED---//
 chrome.storage.onChanged.addListener(function (changes, namespace) {
     console.log(changes)
 
     if (changes.hasOwnProperty("streamers")) {
-        for (let [key, { oldValue, newValue }] of Object.entries(changes.streamers)) {
+        for (let [key, value] of Object.entries(changes.streamers.newValue)) {
             console.log(key);
-            if (newValue === true) {
+            if (value === true) {
                 chrome.notifications.getPermissionLevel(function (level) {
                     if (level === "granted") {
-                        if (changes.streamers.mike === true) {
+                        if (key === "mike") {
                             sendNotification("mike", mikeNotif);
                             localStorage.streamers.mike = true;
                             console.log("FROM BACKGROUND: Mike value is now TRUE");
                         }
-                        else if (changes.streamers.rev === true) {
+                        else if (key === "rev") {
                             sendNotification("rev", revNotif);
                             localStorage.streamers.rev = true;
                             console.log("FROM BACKGROUND: Rev value is now TRUE")
                         }
-                        else if (changes.streamers.limes === true) {
+                        else if (key === "limes") {
                             sendNotification("limes", limesNotif);
                             localStorage.streamers.limes = true;
                             console.log("FROM BACKGROUND: Limes value is now TRUE")
                         }
-                        else if (changes.streamers.fred === true) {
+                        else if (key === "fred") {
                             sendNotification("fred", fredNotif);
                             localStorage.streamers.fred = true;
                             console.log("FROM BACKGROUND: Fred value is now TRUE")
@@ -140,20 +145,20 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
                     }
                 })
             }
-            else if (newValue === false) {
-                if (changes.streamers.mike === false) {
+            else if (value === false) {
+                if (key === "mike") {
                     localStorage.streamers.mike = false;
                     console.log("FROM BACKGROUND: Mike value is now FALSE")
                 }
-                else if (changes.streamers.rev === false) {
+                else if (key === "rev") {
                     localStorage.streamers.rev = false;
                     console.log("FROM BACKGROUND: Rev value is now FALSE")
                 }
-                else if (changes.streamers.limes === false) {
+                else if (key === "limes") {
                     localStorage.streamers.limes = false;
                     console.log("FROM BACKGROUND: Limes value is now FALSE")
                 }
-                else if (changes.streamers.fred === false) {
+                else if (key === "fred") {
                     localStorage.streamers.fred = false;
                     console.log("FROM BACKGROUND: Fred value is now FALSE")
                 }
@@ -165,6 +170,7 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
 
 });
 
+//PING THE SERVER FOR INFO AND UPDATE LOCAL AND CLOUD STORAGE(google give me webhooks pls)----//
 function pulse() {
     fetch(
         url,
@@ -177,79 +183,20 @@ function pulse() {
                 "chrome": outAuth
             },
         })
-        // KEY IS A STRING THAT"S WHY IT"S FUCKING EVERYTHING UP
         .then(response => response.json())
         .then(data => {
             console.log(data)
             Object.assign(localStorage.streamers, data.streamers)
             Object.assign(localStorage.activeGame, data.activeGame)
-            chrome.storage.sync.set({streamers:localStorage.streamers},()=>{
+            chrome.storage.sync.set({ streamers: localStorage.streamers }, () => {
                 console.log("FROM PULSE: Streamers updated")
             })
-            chrome.storage.sync.set({activeGame:localStorage.activeGame},()=>{
+            chrome.storage.sync.set({ activeGame: localStorage.activeGame }, () => {
                 console.log("FROM PULSE: Active Game updated")
             })
-            // switch (true) {
-            //     case (key === "jabroni"):
-            //         localStorage.jabroni = value;
-            //         chrome.storage.sync.set({ jabroni: value }, function () {
-            //             console.log("FROM BACKGROUND: Mike " + value);
-            //             setBadge();
-            //         });
-            //         break;
-            //     case (key === "jabroniGame"):
-            //         localStorage.jabroniGame = value;
-            //         chrome.storage.sync.set({ jabroniGame: value }, function () {
-            //             console.log("FROM BACKGROUND: Mike" + value);
-            //         });
-            //         break;
-            //     case (key === "vineRev"):
-            //         localStorage.vineRev = value;
-            //         chrome.storage.sync.set({ vineRev: value }, function () {
-            //             console.log("FROM BACKGROUND: Rev" + value);
-            //             setBadge();
-            //         });
-            //         break;
-            //     case (key === "revGame"):
-            //         localStorage.revGame = value;
-            //         chrome.storage.sync.set({ revGame: value }, function () {
-            //             console.log("FROM BACKGROUND: Rev" + value);
-            //         });
-            //         break;
-            //     case (key === "limes"):
-            //         localStorage.limes = value;
-            //         chrome.storage.sync.set({ limes: value }, function () {
-            //             console.log("FROM BACKGROUND: Limes" + value);
-            //             setBadge();
-            //         });
-            //         break;
-            //     case (key === "limesGame"):
-            //         localStorage.limesGame = value;
-            //         chrome.storage.sync.set({ limesGame: value }, function () {
-            //             console.log("FROM BACKGROUND: Limes" + value);
-            //         });
-            //         break;
-            //     case (key === "fredK"):
-            //         localStorage.fredK = value;
-            //         chrome.storage.sync.set({ fredK: value }, function () {
-            //             console.log("FROM BACKGROUND: Fred " + value);
-            //             setBadge();
-            //         });
-            //         break;
-            //     case (key === "fredGame"):
-            //         localStorage.fredGame = value;
-            //         chrome.storage.sync.set({ fredGame: value }, function () {
-            //             console.log("FROM BACKGROUND: Fred " + value);
-            //         });
-            //         break;
-            //     default:
-            //         console.log("FROM BACKGROUND: Error")
-            // }
-
-
         })
         .then(() => {
-            chrome.storage.sync.get(null,(items)=>{
+            chrome.storage.sync.get(null, (items) => {
                 console.log(items)
             });
             setBadge()
@@ -257,6 +204,8 @@ function pulse() {
 
 }
 
+
+//FUNCTION TO INIT LOCAL STORAGE---//
 function getAllStorageSyncData() {
     // Immediately return a promise and start asynchronous work
     return new Promise((resolve, reject) => {
@@ -272,6 +221,7 @@ function getAllStorageSyncData() {
     });
 }
 
+//FUNCTION TO SET BADGE NUMBER; PARSES DATA AND COUNTS LIVE STREAMERS----//
 function setBadge() {
     var badgeCount = 0;
 
@@ -287,6 +237,8 @@ function setBadge() {
     chrome.action.setBadgeText({ text: badgeText }, function () { console.log("FROM BACKGROUND:badge text changed") });
 }
 
+
+//FUNCTION TO DEPLOY NOTIFS-----//
 function sendNotification(streamer, notif) {
     chrome.notifications.create(streamer, notif, function () {
         setTimeout(() => {
