@@ -122,22 +122,22 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
             if (value === true) {
                 chrome.notifications.getPermissionLevel(function (level) {
                     if (level === "granted") {
-                        if (key === "mike") {
+                        if (key === "mike" && changes.streamers.oldValue.mike === false) {
                             sendNotification("mike", mikeNotif);
                             localStorage.streamers.mike = true;
                             console.log("FROM BACKGROUND: Mike value is now TRUE");
                         }
-                        else if (key === "rev") {
+                        else if (key === "rev" && changes.streamers.oldValue.rev === false) {
                             sendNotification("rev", revNotif);
                             localStorage.streamers.rev = true;
                             console.log("FROM BACKGROUND: Rev value is now TRUE")
                         }
-                        else if (key === "limes") {
+                        else if (key === "limes" && changes.streamers.oldValue.limes === false) {
                             sendNotification("limes", limesNotif);
                             localStorage.streamers.limes = true;
                             console.log("FROM BACKGROUND: Limes value is now TRUE")
                         }
-                        else if (key === "fred") {
+                        else if (key === "fred" && changes.streamers.oldValuefred === false) {
                             sendNotification("fred", fredNotif);
                             localStorage.streamers.fred = true;
                             console.log("FROM BACKGROUND: Fred value is now TRUE")
@@ -186,12 +186,11 @@ function pulse() {
         .then(response => response.json())
         .then(data => {
             console.log(data)
-            Object.assign(localStorage.streamers, data.streamers)
             Object.assign(localStorage.activeGame, data.activeGame)
-            chrome.storage.sync.set({ streamers: localStorage.streamers }, () => {
+            chrome.storage.sync.set({ streamers: data.streamers }, () => {
                 console.log("FROM PULSE: Streamers updated")
             })
-            chrome.storage.sync.set({ activeGame: localStorage.activeGame }, () => {
+            chrome.storage.sync.set({ activeGame: data.activeGame }, () => {
                 console.log("FROM PULSE: Active Game updated")
             })
         })

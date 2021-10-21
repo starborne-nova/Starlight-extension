@@ -94,18 +94,42 @@ function loadOptions() {
 }
 
 function handleTestNotif() {
-    chrome.notifications.getPermissionLevel(function (level) {
-        if (level === "granted") {
-            chrome.notifications.create("testNote", notifOptions, function (id) {
-                setTimeout(() => {
-                    chrome.notifications.clear("testNote", (cleared) => {
-                        console.log("Notification Cleared = " + cleared)
-                    })
-                }, 5000)
-            })
+    chrome.notifications.getAll((notifications)=>{
+        
+        if(Object.keys(notifications).length != 0){
+            setTimeout(()=>{
+                chrome.notifications.getPermissionLevel(function (level) {
+                    if (level === "granted") {
+                        chrome.notifications.create("testNote", notifOptions, function (id) {
+                            setTimeout(() => {
+                                chrome.notifications.clear("testNote", (cleared) => {
+                                    console.log("Notification Cleared = " + cleared)
+                                })
+                            }, 5000)
+                        })
+                    }
+            
+                });
+            }, 5500)
         }
-
+        
+        else{
+    
+            chrome.notifications.getPermissionLevel(function (level) {
+                if (level === "granted") {
+                    chrome.notifications.create("testNote", notifOptions, function (id) {
+                        setTimeout(() => {
+                            chrome.notifications.clear("testNote", (cleared) => {
+                                console.log("Notification Cleared = " + cleared)
+                            })
+                        }, 5000)
+                    })
+                }
+        
+            });
+        }
     });
+    
 }
 
 function handleNotif() {
@@ -151,16 +175,6 @@ function setTheme() {
     document.getElementById("setFred").className = "streamer-" + localStorage.options.theme + "-fred";
     document.getElementById("saveChanges").className = "optionItem-" + localStorage.options.theme;
 
-}
-
-function bigStorage() {
-    chrome.storage.sync.get(null, function (items) {
-        console.log(items);
-    })
-}
-
-function testNewNotif() {
-    sendNotification("mike", mikeNotif);
 }
 
 function sendNotification(streamer, notif) {
