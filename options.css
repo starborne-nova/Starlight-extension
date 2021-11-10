@@ -1,3 +1,10 @@
+:root{
+    --background-color: rgb(65, 17, 94);
+    --border-color: rgb(95, 26, 134);
+    --gradient-color: #530953;
+    --gradient-color-2: black;
+}
+
 body{
     font-family: 'Poppins', sans-serif;
     background-color:black;
@@ -7,6 +14,29 @@ body{
     margin: 0;
     font-size: 100% !important;
 }
+
+
+body[data-theme="purple"]{
+    --background-color: rgb(65, 17, 94);
+    --border-color: rgb(95, 26, 134);
+    --gradient-color: #530953;
+    --gradient-color-2: black;
+}
+
+body[data-theme="dark"]{
+    --background-color: rgb(66, 66, 66);
+    --border-color: #999da2;
+    --gradient-color: #202124;
+    --gradient-color-2: black;
+}
+
+body[data-theme="light"]{
+    --background-color: #999da2;
+    --border-color: #171717;
+    --gradient-color: white;
+    --gradient-color-2: #999da2;
+}
+
 
 h1{
     font-size: 2rem;
@@ -43,295 +73,60 @@ a:hover{
     text-align: center;
 }
 
-.streamer-purple-mike{
-    background: linear-gradient(to right,rgb(65, 17, 94), transparent 40%,rgb(65, 17, 94)),
+.streamer{
+    display: flex;
+     height: 100px;
+     flex-direction: row;
+     padding-top: 20px;
+     padding-bottom: 20px;
+     margin-left: 25%;
+     margin-right: 25%;
+     margin-top: 20px;
+     align-items: center;
+     border-collapse: separate;
+     overflow: hidden;
+     border: 5px ridge var(--border-color);
+     border-radius: 10px;
+ }
+
+.streamer#setMike{
+    background: linear-gradient(to right, var(--background-color), transparent 40%, var(--background-color)),
     url("images/mikeLarge.png");
-    background-color: rgb(65, 17, 94);
+    background-color: var(--background-color);
     background-position: left;
     background-repeat: no-repeat;
     background-size: 400px;
     background-position: 50% 55%;
-    display: flex;
-    height: 100px;
-    flex-direction: row;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    margin-left: 25%;
-    margin-right: 25%;
-    margin-top: 20px;
-    align-items: center;
-    border-collapse: separate;
-    overflow: hidden;
-    border: 5px ridge rgb(95, 26, 134);
-    border-radius: 10px;
-    
 }
 
-.streamer-dark-mike{
-    background: linear-gradient(to right,rgb(66, 66, 66), transparent 40%,rgb(66, 66, 66)),
-    url("images/mikeLarge.png");
-    background-color: rgb(66, 66, 66);
-    background-position: left;
-    background-repeat: no-repeat;
-    background-size: 400px;
-    background-position: 50% 55%;
-    display: flex;
-    height: 100px;
-    flex-direction: row;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    margin-left: 25%;
-    margin-right: 25%;
-    margin-top: 20px;
-    align-items: center;
-    border-collapse: separate;
-    overflow: hidden;
-    border: 5px ridge #999da2;
-    border-radius: 10px;
-    
-}
-
-.streamer-light-mike{
-    background: linear-gradient(to right,#999da2, transparent 40%,#999da2),
-    url("images/mikeLarge.png");
-    background-color: #999da2;
-    background-position: left;
-    background-repeat: no-repeat;
-    background-size: 400px;
-    background-position: 50% 55%;
-    display: flex;
-    height: 100px;
-    flex-direction: row;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    margin-left: 25%;
-    margin-right: 25%;
-    margin-top: 20px;
-    align-items: center;
-    border-collapse: separate;
-    overflow: hidden;
-    border: 5px ridge #171717;
-    border-radius: 10px;
-    
-}
-
-.streamer-purple-rev{
-    background: linear-gradient(to right,rgb(65, 17, 94), transparent 40%,rgb(65, 17, 94)),
-    url("images/revLarge.png");
-    background-color: rgb(65, 17, 94);
-    background-position: left;
-    background-repeat: no-repeat;
-    background-size: 400px;
-    background-position: 50% 50%;
-    display: flex;
-    height: 100px;
-    flex-direction: row;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    margin-left: 25%;
-    margin-right: 25%;
-    margin-top: 20px;
-    align-items: center;
-    border-collapse: separate;
-    overflow: hidden;
-    background-color: rgb(65, 17, 94);
-    border: 5px ridge rgb(95, 26, 134);
-    border-radius: 10px;
-    
-}
-
-.streamer-dark-rev{
-    background: linear-gradient(to right,rgb(66, 66, 66), transparent 40%,rgb(66, 66, 66)),
-    url("images/revLarge.png");
-    background-color: rgb(66, 66, 66);
-    background-position: left;
-    background-repeat: no-repeat;
-    background-size: 400px;
-    background-position: 50% 55%;
-    display: flex;
-    height: 100px;
-    flex-direction: row;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    margin-left: 25%;
-    margin-right: 25%;
-    margin-top: 20px;
-    align-items: center;
-    border-collapse: separate;
-    overflow: hidden;
-    border: 5px ridge #999da2;
-    border-radius: 10px;
-    
-}
-
-.streamer-light-rev{
-    background: linear-gradient(to right,#999da2, transparent 40%,#999da2),
-    url("images/revLarge.png");
-    background-color: #999da2;
-    background-position: left;
-    background-repeat: no-repeat;
-    background-size: 400px;
-    background-position: 50% 55%;
-    display: flex;
-    height: 100px;
-    flex-direction: row;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    margin-left: 25%;
-    margin-right: 25%;
-    margin-top: 20px;
-    align-items: center;
-    border-collapse: separate;
-    overflow: hidden;
-    border: 5px ridge #171717;
-    border-radius: 10px;
-    
-}
-
-.streamer-purple-limes{
-    background: linear-gradient(to right,rgb(65, 17, 94), transparent 40%,rgb(65, 17, 94)),
+.streamer#setLimes{
+    background: linear-gradient(to right,var(--background-color), transparent 40%,var(--background-color)),
     url("images/limesLarge.png");
-    background-color: rgb(65, 17, 94);
+    background-color: var(--background-color);
     background-position: left;
     background-repeat: no-repeat;
     background-size: 400px;
     background-position: 50% 60%;
-    display: flex;
-    height: 100px;
-    flex-direction: row;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    margin-left: 25%;
-    margin-right: 25%;
-    margin-top: 20px;
-    align-items: center;
-    border-collapse: separate;
-    overflow: hidden;
-    background-color: rgb(65, 17, 94);
-    border: 5px ridge rgb(95, 26, 134);
-    border-radius: 10px;
-    
 }
 
-.streamer-dark-limes{
-    background: linear-gradient(to right,rgb(66, 66, 66), transparent 40%,rgb(66, 66, 66)),
-    url("images/limesLarge.png");
-    background-color: rgb(66, 66, 66);
-    background-position: left;
-    background-repeat: no-repeat;
-    background-size: 400px;
-    background-position: 50% 55%;
-    display: flex;
-    height: 100px;
-    flex-direction: row;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    margin-left: 25%;
-    margin-right: 25%;
-    margin-top: 20px;
-    align-items: center;
-    border-collapse: separate;
-    overflow: hidden;
-    border: 5px ridge #999da2;
-    border-radius: 10px;
-    
-}
-
-.streamer-light-limes{
-    background: linear-gradient(to right,#999da2, transparent 40%,#999da2),
-    url("images/limesLarge.png");
-    background-color: #999da2;
-    background-position: left;
-    background-repeat: no-repeat;
-    background-size: 400px;
-    background-position: 50% 55%;
-    display: flex;
-    height: 100px;
-    flex-direction: row;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    margin-left: 25%;
-    margin-right: 25%;
-    margin-top: 20px;
-    align-items: center;
-    border-collapse: separate;
-    overflow: hidden;
-    border: 5px ridge #171717;
-    border-radius: 10px;
-    
-}
-
-.streamer-purple-fred{
-    background: linear-gradient(to right,rgb(65, 17, 94), transparent 40%,rgb(65, 17, 94)),
-    url("images/fredLarge.png");
-    background-color: rgb(65, 17, 94);
+.streamer#setRev{
+    background: linear-gradient(to right,var(--background-color), transparent 40%,var(--background-color)),
+    url("images/revLarge.png");
+    background-color: var(--background-color);
     background-position: left;
     background-repeat: no-repeat;
     background-size: 400px;
     background-position: 50% 50%;
-    display: flex;
-    height: 100px;
-    flex-direction: row;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    margin-left: 25%;
-    margin-right: 25%;
-    margin-top: 20px;
-    align-items: center;
-    border-collapse: separate;
-    overflow: hidden;
-    background-color: rgb(65, 17, 94);
-    border: 5px ridge rgb(95, 26, 134);
-    border-radius: 10px;
-    
 }
 
-.streamer-dark-fred{
-    background: linear-gradient(to right,rgb(66, 66, 66), transparent 40%,rgb(66, 66, 66)),
+.streamer#setFred{
+    background: linear-gradient(to right,var(--background-color), transparent 40%,var(--background-color)),
     url("images/fredLarge.png");
-    background-color: rgb(66, 66, 66);
+    background-color: var(--background-color);
     background-position: left;
     background-repeat: no-repeat;
     background-size: 400px;
-    background-position: 50% 55%;
-    display: flex;
-    height: 100px;
-    flex-direction: row;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    margin-left: 25%;
-    margin-right: 25%;
-    margin-top: 20px;
-    align-items: center;
-    border-collapse: separate;
-    overflow: hidden;
-    border: 5px ridge #999da2;
-    border-radius: 10px;
-    
-}
-
-.streamer-light-fred{
-    background: linear-gradient(to right,#999da2, transparent 40%,#999da2),
-    url("images/fredLarge.png");
-    background-color: #999da2;
-    background-position: left;
-    background-repeat: no-repeat;
-    background-size: 400px;
-    background-position: 50% 55%;
-    display: flex;
-    height: 100px;
-    flex-direction: row;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    margin-left: 25%;
-    margin-right: 25%;
-    margin-top: 20px;
-    align-items: center;
-    border-collapse: separate;
-    overflow: hidden;
-    border: 5px ridge #171717;
-    border-radius: 10px;
-    
+    background-position: 50% 50%;
 }
 
 .headLinks{
@@ -345,34 +140,16 @@ a:hover{
     flex-direction: column;
 }
 
-.optionList-purple{
+.optionList{
     color: white;
     display: flex;
     flex-direction: column;
-    background-image: linear-gradient(to bottom, #530953,black);
+    background-image: linear-gradient(to bottom, var(--gradient-color),var(--gradient-color-2));
     background-repeat: no-repeat;
    
 }
 
-.optionList-dark{
-    color: #999da2;
-    display: flex;
-    flex-direction: column;
-    background-image: linear-gradient(to bottom, #202124,black);
-    background-repeat: no-repeat;
-   
-}
-
-.optionList-light{
-    color: #171717;
-    display: flex;
-    flex-direction: column;
-    background-image: linear-gradient(to bottom, white,#999da2);
-    background-repeat: no-repeat;
-   
-}
-
-.optionItem-purple{
+.optionItem{
     display: flex;
     height: 100px;
     flex-direction: row;
@@ -384,44 +161,8 @@ a:hover{
     align-items: center;
     border-collapse: separate;
     overflow: hidden;
-    background-color: rgb(65, 17, 94);
-    border: 5px ridge rgb(95, 26, 134);
-    border-radius: 10px;
-    
-}
-
-.optionItem-dark{
-    display: flex;
-    height: 100px;
-    flex-direction: row;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    margin-left: 25%;
-    margin-right: 25%;
-    margin-top: 20px;
-    align-items: center;
-    border-collapse: separate;
-    overflow: hidden;
-    background-color: rgb(66, 66, 66);
-    border: 5px ridge #999da2;
-    border-radius: 10px;
-    
-}
-
-.optionItem-light{
-    display: flex;
-    height: 100px;
-    flex-direction: row;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    margin-left: 25%;
-    margin-right: 25%;
-    margin-top: 20px;
-    align-items: center;
-    border-collapse: separate;
-    overflow: hidden;
-    background-color: #999da2;
-    border: 5px ridge #171717;
+    background-color: var(--background-color);
+    border: 5px ridge var(--border-color);
     border-radius: 10px;
     
 }
@@ -447,34 +188,14 @@ a:hover{
     font-weight: 300;
 }
 
-.header-purple{
+.header{
     display: flex;
     height: fit-content;
     color:white;
     background-image: url("images/gplay.png");
-    background-color:#4e226b;
+    background-color:var(--background-color);
     align-content: flex-start;
-    border-bottom: 5px ridge rgb(95, 26, 134);
-}
-
-.header-dark{
-    display: flex;
-    height: fit-content;
-    color:#999da2;
-    background-image: url("images/gplay.png");
-    background-color:#171717;
-    align-content: flex-start;
-    border-bottom: 5px ridge #202124(95, 26, 134);
-}
-
-.header-light{
-    display: flex;
-    height: fit-content;
-    color:#171717;
-    background-image: url("images/gplay.png");
-    background-color:white;
-    align-content: flex-start;
-    border-bottom: 5px ridge #171717;
+    border-bottom: 5px ridge var(--border-color);
 }
 
 .bn30 {

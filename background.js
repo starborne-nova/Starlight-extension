@@ -55,7 +55,7 @@ const outAuth = "coomcheugger";
 //CREATE PULSE ALARM------//
 chrome.alarms.create("twitchPulse", {
     delayInMinutes: 1,
-    periodInMinutes: 3
+    periodInMinutes: 2
 });
 console.log("FROM BACKGROUND: Alarm Created")
 chrome.alarms.onAlarm.addListener(function (alarm) {
@@ -122,25 +122,29 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
             if (value === true) {
                 chrome.notifications.getPermissionLevel(function (level) {
                     if (level === "granted") {
-                        if (key === "mike" && changes.streamers.oldValue.mike === false) {
+                        if (key === "mike" && changes.streamers.oldValue.mike === false && localStorage.options.mikeNotif === true) {
                             sendNotification("mike", mikeNotif);
                             localStorage.streamers.mike = true;
                             console.log("FROM BACKGROUND: Mike value is now TRUE");
+                            setBadge();
                         }
-                        else if (key === "rev" && changes.streamers.oldValue.rev === false) {
+                        else if (key === "rev" && changes.streamers.oldValue.rev === false && localStorage.options.revNotif === true) {
                             sendNotification("rev", revNotif);
                             localStorage.streamers.rev = true;
-                            console.log("FROM BACKGROUND: Rev value is now TRUE")
+                            console.log("FROM BACKGROUND: Rev value is now TRUE");
+                            setBadge();
                         }
-                        else if (key === "limes" && changes.streamers.oldValue.limes === false) {
+                        else if (key === "limes" && changes.streamers.oldValue.limes === false && localStorage.options.limesNotif === true) {
                             sendNotification("limes", limesNotif);
                             localStorage.streamers.limes = true;
-                            console.log("FROM BACKGROUND: Limes value is now TRUE")
+                            console.log("FROM BACKGROUND: Limes value is now TRUE");
+                            setBadge();
                         }
-                        else if (key === "fred" && changes.streamers.oldValuefred === false) {
+                        else if (key === "fred" && changes.streamers.oldValuefred === false && localStorage.options.fredNotif === true) {
                             sendNotification("fred", fredNotif);
                             localStorage.streamers.fred = true;
-                            console.log("FROM BACKGROUND: Fred value is now TRUE")
+                            console.log("FROM BACKGROUND: Fred value is now TRUE");
+                            setBadge();
                         }
                     }
                 })
@@ -164,9 +168,9 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
                 }
             }
         }
+        setBadge();
     }
 
-    setBadge();
 
 });
 

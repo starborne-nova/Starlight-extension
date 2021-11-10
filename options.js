@@ -74,30 +74,29 @@ function loadOptions() {
         }
         else {
             chrome.notifications.getPermissionLevel(function (level) {
-                if(level=== "granted"){
-                    document.getElementById("notifStatus").innerText = "Permission: Granted";  
+                if (level === "granted") {
+                    document.getElementById("notifStatus").innerText = "Permission: Granted";
                 }
-                else{
+                else {
                     document.getElementById("notifStatus").innerText = "Permission: Not Granted";
                 }
             });
+            document.body.setAttribute("data-theme", items.options.theme);
             document.getElementById("setTheme").value = items.options.theme;
             document.getElementById("mikeNotifs").checked = items.options.mikeNotif ? true : false;
             document.getElementById("limeNotifs").checked = items.options.limesNotif ? true : false;
             document.getElementById("revNotifs").checked = items.options.revNotif ? true : false;
             document.getElementById("fredNotifs").checked = items.options.fredNotif ? true : false;
-
-            setTheme();
         }
 
     });
 }
 
 function handleTestNotif() {
-    chrome.notifications.getAll((notifications)=>{
-        
-        if(Object.keys(notifications).length != 0){
-            setTimeout(()=>{
+    chrome.notifications.getAll((notifications) => {
+
+        if (Object.keys(notifications).length != 0) {
+            setTimeout(() => {
                 chrome.notifications.getPermissionLevel(function (level) {
                     if (level === "granted") {
                         chrome.notifications.create("testNote", notifOptions, function (id) {
@@ -108,13 +107,13 @@ function handleTestNotif() {
                             }, 5000)
                         })
                     }
-            
+
                 });
             }, 5500)
         }
-        
-        else{
-    
+
+        else {
+
             chrome.notifications.getPermissionLevel(function (level) {
                 if (level === "granted") {
                     chrome.notifications.create("testNote", notifOptions, function (id) {
@@ -125,11 +124,11 @@ function handleTestNotif() {
                         }, 5000)
                     })
                 }
-        
+
             });
         }
     });
-    
+
 }
 
 function handleNotif() {
@@ -139,10 +138,10 @@ function handleNotif() {
             permissions: ["notifications"],
         },
         function (granted) {
-            if(granted === true){
+            if (granted === true) {
                 document.getElementById("notifStatus").innerText = "Permission: Granted";
             }
-            if(granted === false){
+            if (granted === false) {
                 document.getElementById("notifStatus").innerText = "Permission: Not Granted";
             }
         }
@@ -162,19 +161,6 @@ function getAllStorageSyncData() {
             resolve(items);
         });
     });
-}
-
-function setTheme() {
-    document.getElementById("optionHeader").className = "header-" + localStorage.options.theme;
-    document.getElementById("optionDiv").className = "optionList-" + localStorage.options.theme;
-    document.getElementById("desktopNotif").className = "optionItem-" + localStorage.options.theme;
-    document.getElementById("themeOption").className = "optionItem-" + localStorage.options.theme;
-    document.getElementById("setMike").className = "streamer-" + localStorage.options.theme + "-mike";
-    document.getElementById("setLimes").className = "streamer-" + localStorage.options.theme + "-limes";
-    document.getElementById("setRev").className = "streamer-" + localStorage.options.theme + "-rev";
-    document.getElementById("setFred").className = "streamer-" + localStorage.options.theme + "-fred";
-    document.getElementById("saveChanges").className = "optionItem-" + localStorage.options.theme;
-
 }
 
 function sendNotification(streamer, notif) {

@@ -1,12 +1,55 @@
+:root{
+    --background-color: rgb(65, 17, 94);
+    --border-color: #1F1F1F;
+    --border-color-2: white;
+    --stream-item: slateblue;
+    --options: rebeccapurple;
+    --text-shadow: 2px 2px 1px #000;
+    --no-shadow: none;
+}
+
 body{
     width: 400px;
 }
 
-.header-purple {
+
+body[data-theme="purple"]{
+    --background-color: rgb(65, 17, 94);
+    --border-color: #1F1F1F;
+    --border-color-2: white;
+    --stream-item: slateblue;
+    --options: rebeccapurple;
+    --text-shadow: 2px 2px 1px #000;
+    --no-shadow: none;
+}
+
+body[data-theme="dark"]{
+    --background-color: #171717;
+    --border-color: #1F1F1F;
+    --border-color-2: #999da2;
+    --stream-item: #202124;
+    --options: #171717;
+    --text-shadow: 2px 2px 1px #000;
+    --no-shadow: none;
+}
+
+body[data-theme="light"]{
+    --background-color: #999da2;
+    --border-color: #1F1F1F;
+    --border-color-2: #171717;
+    --stream-item: rgb(228, 228, 228);
+    --options: #999da2;
+    --text-shadow: none;
+    --no-shadow: none;
+}
+
+
+
+.header {
     text-align: center;
-    background:  linear-gradient(to right,rgb(65, 17, 94), transparent 40%,rgb(65, 17, 94)),
+    background:  linear-gradient(to right,var(--background-color), transparent 40%,var(--background-color)),
     url("images/JabroniLogoFull.png");
-    background-color: rgb(65, 17, 94);
+    background-color: var(--background-color);
     background-position: left;
     background-repeat: no-repeat;
     background-size: 400px;
@@ -15,45 +58,9 @@ body{
     border-top: 1px solid;
     border-left: 1px solid;
     border-right: 1px solid;
-    border-color: white;
+    border-color: var(--border-color-2);
     display: table-header-group;
     text-shadow: 2px 2px 1px #000;
-}
-
-.header-dark {
-    text-align: center;
-    background:  linear-gradient(to right,#171717, transparent 40%,#171717),
-    url("images/JabroniLogoFull.png");
-    background-color: #171717;
-    background-position: left;
-    background-repeat: no-repeat;
-    background-size: 400px;
-    background-position: 0% 65%;
-    color: #999da2;
-    border-top: 1px solid;
-    border-left: 1px solid;
-    border-right: 1px solid;
-    border-color: #999da2;
-    display: table-header-group;
-    text-shadow: 2px 2px 1px #000;
-}
-
-.header-light {
-    text-align: center;
-    background:  linear-gradient(to right,#999da2, transparent 40%,#999da2),
-    url("images/JabroniLogoFull.png");
-    background-color: #999da2;
-    background-position: left;
-    background-repeat: no-repeat;
-    background-size: 400px;
-    background-position: 0% 65%;
-    color: #171717;
-    border-top: 1px solid;
-    border-left: 1px solid;
-    border-right: 1px solid;
-    border-color: #171717;
-    display: table-header-group;
-   
 }
 
 .container{
@@ -61,42 +68,45 @@ body{
     flex-direction: column;
 }
 
-.streamItem-purple{
+.streamItem{
     border-top: 1px solid;
     border-left: 1px solid;
     border-right: 1px solid;
-    border-color: white;
+    border-color: var(--border-color-2);
     padding: 0;
     margin: 0;
     display: flex;
-    background-color:slateblue;
-    color:white;
-    text-shadow: 2px 2px 1px #000;
+    background-color:var(--stream-item);
+    color:var(--border-color-2);
+    text-shadow: var(--text-shadow);
 }
 
-.streamItem-dark{
+.streamItem-online{
+    transition: background 0.5s;
     border-top: 1px solid;
     border-left: 1px solid;
     border-right: 1px solid;
-    border-color: #999da2;
+    border-color: var(--border-color-2);
+    background: rgb(72, 221, 72) !important;
     padding: 0;
     margin: 0;
     display: flex;
-    background-color:#202124;
-    color:#999da2;
-    text-shadow: 2px 2px 1px #000;
+    color:var(--border-color);
+    text-shadow: var(--no-shadow);
 }
 
-.streamItem-light{
+.streamItem-online:hover{
+    transition: background 0.5s;
     border-top: 1px solid;
     border-left: 1px solid;
     border-right: 1px solid;
-    border-color: #171717;
+    border-color: var(--border-color-2);
+    background: rgb(55, 170, 55) !important;
     padding: 0;
     margin: 0;
     display: flex;
-    background-color:rgb(228, 228, 228);
-    color:#171717;
+    color:var(--border-color);
+    text-shadow: var(--no-shadow);
 }
 
 a, a:link, a:visited, a:hover, a:active {
@@ -126,11 +136,10 @@ body {
 
 .online{
     text-align: end;
-    color:white;
+    color:#1F1F1F;
     padding-right: 10px;
     margin: 5px;
-    text-shadow: 2px 2px 1px #000;
-    
+    text-shadow: var(--no-shadow);
 }
 
 .status-icon-off{
@@ -139,61 +148,30 @@ body {
     text-align: end;
     color:darkgray;
     margin: 5px;
-    text-shadow: 2px 2px 1px #000;
+    text-shadow: var(--text-shadow);
 }
 
 .status-icon-on{
     min-width: 17px;
     min-height: 17px;
     text-align: end;
-    color:green;
+    color:var(--border-color);
     margin: 5px;
-    text-shadow: 2px 2px 1px #000;
+    text-shadow: var(--no-shadow);
 }
 
-.options-purple{
+.options{
     border-top: 1px solid;
     border-left: 1px solid;
     border-right: 1px solid;
     border-bottom: 1px solid;
-    border-color: white;
+    border-color: var(--border-color-2);
     padding: 0;
     margin: 0;
     display: flex;
-    background-color:rebeccapurple;
-    color:white;
-    text-shadow: 2px 2px 1px #000;
-    text-align: center;
-    display: table-header-group;
-}
-
-.options-dark{
-    border-top: 1px solid;
-    border-left: 1px solid;
-    border-right: 1px solid;
-    border-bottom: 1px solid;
-    border-color: #999da2;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    background-color:#171717;
-    color:#999da2;
-    text-shadow: 2px 2px 1px #000;
-    text-align: center;
-    display: table-header-group;
-}
-
-.options-light{
-    border-top: 1px solid;
-    border-left: 1px solid;
-    border-right: 1px solid;
-    border-bottom: 1px solid;
-    border-color: #171717;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    background-color:#999da2;
-    color:#171717;
+    background-color:var(--options);
+    color:var(--border-color-2);
+    text-shadow: var(--text-shadow);
     text-align: center;
     display: table-header-group;
 }
@@ -201,15 +179,12 @@ body {
 .optionLabel{
     align-self: center;  
     margin: 5px;
-    
 }
 
 .streamer{
     padding-left: 5px;
     flex-grow: 1;
-    margin: 5px;
-    
-    
+    margin: 5px;   
 }
 
 .status{
