@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
     "name": "Jabroni Notify",
-    "version": "1.0.8",
-    "description": "Recieve twitch notifications from this extension more reliably than twitch push notifications",
+    "version": "1.0.9",
+    "description": "Receive twitch notifications from this extension more reliably than twitch push notifications",
     "background": {
         "service_worker": "background.js"
     },

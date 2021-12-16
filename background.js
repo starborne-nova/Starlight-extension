@@ -4,19 +4,22 @@ const localStorage = {
         mike: false,
         limes: false,
         rev: false,
-        fred: false
+        fred: false,
+        vine: false
     },
     activeGame: {
         mikeGame: "",
         limesGame: "",
         revGame: "",
-        fredGame: ""
+        fredGame: "",
+        vineGame: ""
     },
     options: {
         mikeNotif: true,
         limesNotif: true,
         revNotif: true,
         fredNotif: true,
+        vineNotif: false,
         theme: "purple",
     }
 };
@@ -46,6 +49,13 @@ const fredNotif = {
     message: "Fred Knudsen is Live!",
     title: "JabroniNotify",
     iconUrl: "./images/fred.png",
+    eventTime: Date.now()
+}
+const vineNotif = {
+    type: "basic",
+    message: "Vinesauce is Live!",
+    title: "JabroniNotify",
+    iconUrl: "./images/vine.png",
     eventTime: Date.now()
 }
 const outAuth = "coomcheugger";
@@ -89,19 +99,22 @@ chrome.runtime.onInstalled.addListener(function (details) {
                 mike: false,
                 limes: false,
                 rev: false,
-                fred: false
+                fred: false,
+                vine: false
             },
             activeGame: {
                 mikeGame: "",
                 limesGame: "",
                 revGame: "",
-                fredGame: ""
+                fredGame: "",
+                vineGame: ""
             },
             options: {
                 mikeNotif: true,
                 limesNotif: true,
                 revNotif: true,
                 fredNotif: true,
+                vineNotif: true,
                 theme: "purple",
             }
         }
@@ -140,10 +153,16 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
                             console.log("FROM BACKGROUND: Limes value is now TRUE");
                             setBadge();
                         }
-                        else if (key === "fred" && changes.streamers.oldValuefred === false && localStorage.options.fredNotif === true) {
+                        else if (key === "fred" && changes.streamers.oldValue.fred === false && localStorage.options.fredNotif === true) {
                             sendNotification("fred", fredNotif);
                             localStorage.streamers.fred = true;
                             console.log("FROM BACKGROUND: Fred value is now TRUE");
+                            setBadge();
+                        }
+                        else if (key === "vine" && changes.streamers.oldValue.vine === false && localStorage.options.fredNotif === true) {
+                            sendNotification("vine", vineNotif);
+                            localStorage.streamers.vine = true;
+                            console.log("FROM BACKGROUND: Vine value is now TRUE");
                             setBadge();
                         }
                     }
@@ -165,6 +184,10 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
                 else if (key === "fred") {
                     localStorage.streamers.fred = false;
                     console.log("FROM BACKGROUND: Fred value is now FALSE")
+                }
+                else if (key === "vine") {
+                    localStorage.streamers.vine = false;
+                    console.log("FROM BACKGROUND: Vine value is now FALSE")
                 }
             }
         }

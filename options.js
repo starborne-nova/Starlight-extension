@@ -3,19 +3,22 @@ const localStorage = {
         mike: false,
         limes: false,
         rev: false,
-        fred: false
+        fred: false,
+        vine: false
     },
     activeGame: {
         mikeGame: "",
         limesGame: "",
         revGame: "",
-        fredGame: ""
+        fredGame: "",
+        vineGame: ""
     },
     options: {
         mikeNotif: true,
         limesNotif: true,
         revNotif: true,
         fredNotif: true,
+        vineNotif: false,
         theme: "purple",
     }
 };
@@ -55,6 +58,7 @@ function saveOptions() {
             limesNotif: OlimeN,
             revNotif: OrevN,
             fredNotif: OfredN,
+            vineNotif: OvineN,
             theme: Otheme,
         }
     }, function () {
@@ -87,6 +91,7 @@ function loadOptions() {
             document.getElementById("limeNotifs").checked = items.options.limesNotif ? true : false;
             document.getElementById("revNotifs").checked = items.options.revNotif ? true : false;
             document.getElementById("fredNotifs").checked = items.options.fredNotif ? true : false;
+            
         }
 
     });
