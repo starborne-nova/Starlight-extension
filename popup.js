@@ -52,11 +52,6 @@ const initStorageCache = getAllStorageSyncData()
     if (!localStorage.options.fredNotif) {
       document.getElementById("fred").remove()
     }
-  })
-  .then(() => {
-    if (!localStorage.options.vineNotif) {
-      document.getElementById("vine").remove()
-    }
   });
 
 function populate() {
@@ -119,21 +114,6 @@ function populate() {
     document.getElementById("fredStatus").innerText = "OFFLINE";
     document.getElementById("fredStatus").className = "offline";
     console.log("POPUP Fred Offline")
-  }
-
-  if (localStorage.streamers.vine === true) {
-    document.getElementById("vineStatus").innerText = ((localStorage.activeGame.vineGame.substring(0, 32)));
-    document.getElementById("vineStatus").className = "online";
-    document.getElementById("vine").className = "streamItem-online";
-    document.getElementById("vineIcon").className = "status-icon-on";
-    document.getElementById("vineIcon").innerHTML = "<i class='fas fa-wifi'></i>";
-    console.log("POPUP Vine Online")
-  }
-
-  if (localStorage.streamers.vine === false) {
-    document.getElementById("vineStatus").innerText = "OFFLINE";
-    document.getElementById("vineStatus").className = "offline";
-    console.log("POPUP Vine Offline")
   }
 }
 
