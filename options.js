@@ -1,27 +1,4 @@
-const localStorage = {
-    streamers: {
-        mike: false,
-        limes: false,
-        rev: false,
-        fred: false,
-        vine: false
-    },
-    activeGame: {
-        mikeGame: "",
-        limesGame: "",
-        revGame: "",
-        fredGame: "",
-        vineGame: ""
-    },
-    options: {
-        mikeNotif: true,
-        limesNotif: true,
-        revNotif: true,
-        fredNotif: true,
-        vineNotif: false,
-        theme: "purple",
-    }
-};
+const localStorage = {};
 
 const initStorageCache = getAllStorageSyncData()
     .then(items => {
@@ -51,6 +28,7 @@ function saveOptions() {
     var OlimeN = document.getElementById("limeNotifs").checked ? true : false;
     var OrevN = document.getElementById("revNotifs").checked ? true : false;
     var OfredN = document.getElementById("fredNotifs").checked ? true : false;
+    var OvineN = document.getElementById("vineNotifs").checked ? true : false;
 
     chrome.storage.sync.set({
         options: {
@@ -59,6 +37,7 @@ function saveOptions() {
             revNotif: OrevN,
             fredNotif: OfredN,
             vineNotif: OvineN,
+            joelNotif: true,
             theme: Otheme,
         }
     }, function () {
@@ -77,21 +56,13 @@ function loadOptions() {
             return reject(chrome.runtime.lastError);
         }
         else {
-            chrome.notifications.getPermissionLevel(function (level) {
-                if (level === "granted") {
-                    document.getElementById("notifStatus").innerText = "Permission: Granted";
-                }
-                else {
-                    document.getElementById("notifStatus").innerText = "Permission: Not Granted";
-                }
-            });
             document.body.setAttribute("data-theme", items.options.theme);
             document.getElementById("setTheme").value = items.options.theme;
             document.getElementById("mikeNotifs").checked = items.options.mikeNotif ? true : false;
             document.getElementById("limeNotifs").checked = items.options.limesNotif ? true : false;
             document.getElementById("revNotifs").checked = items.options.revNotif ? true : false;
             document.getElementById("fredNotifs").checked = items.options.fredNotif ? true : false;
-            
+            document.getElementById("vineNotifs").checked = items.options.vineNotif ? true : false;
         }
 
     });
@@ -102,55 +73,26 @@ function handleTestNotif() {
 
         if (Object.keys(notifications).length != 0) {
             setTimeout(() => {
-                chrome.notifications.getPermissionLevel(function (level) {
-                    if (level === "granted") {
-                        chrome.notifications.create("testNote", notifOptions, function (id) {
-                            setTimeout(() => {
-                                chrome.notifications.clear("testNote", (cleared) => {
-                                    console.log("Notification Cleared = " + cleared)
-                                })
-                            }, 5000)
+                chrome.notifications.create("testNote", notifOptions, function (id) {
+                    setTimeout(() => {
+                        chrome.notifications.clear("testNote", (cleared) => {
+                            console.log("Notification Cleared = " + cleared)
                         })
-                    }
-
-                });
+                    }, 5000)
+                })
             }, 5500)
         }
 
         else {
-
-            chrome.notifications.getPermissionLevel(function (level) {
-                if (level === "granted") {
-                    chrome.notifications.create("testNote", notifOptions, function (id) {
-                        setTimeout(() => {
-                            chrome.notifications.clear("testNote", (cleared) => {
-                                console.log("Notification Cleared = " + cleared)
-                            })
-                        }, 5000)
+            chrome.notifications.create("testNote", notifOptions, function (id) {
+                setTimeout(() => {
+                    chrome.notifications.clear("testNote", (cleared) => {
+                        console.log("Notification Cleared = " + cleared)
                     })
-                }
-
-            });
+                }, 5000)
+            })
         }
     });
-
-}
-
-function handleNotif() {
-
-    chrome.permissions.request(
-        {
-            permissions: ["notifications"],
-        },
-        function (granted) {
-            if (granted === true) {
-                document.getElementById("notifStatus").innerText = "Permission: Granted";
-            }
-            if (granted === false) {
-                document.getElementById("notifStatus").innerText = "Permission: Not Granted";
-            }
-        }
-    );
 }
 
 function getAllStorageSyncData() {
@@ -179,8 +121,6 @@ function sendNotification(streamer, notif) {
 }
 
 document.getElementById("testNotif").addEventListener("click", handleTestNotif);
-
-document.getElementById("notifRequest").addEventListener("click", handleNotif);
 
 document.addEventListener('DOMContentLoaded', loadOptions);
 

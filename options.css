@@ -16,6 +16,13 @@ body{
 }
 
 
+body[data-theme="star"]{
+    --background-color: rgb(15, 15, 15);
+    --border-color: rgb(70, 70, 70);
+    --gradient-color: #100036;
+    --gradient-color-2: black;
+}
+
 body[data-theme="purple"]{
     --background-color: rgb(65, 17, 94);
     --border-color: rgb(95, 26, 134);
@@ -58,6 +65,7 @@ a:hover{
     width: 150px;
     display:flex;
     margin: 10px 40px 10px 40px;
+    transform: rotate(90deg);
 }
 
 #mainHead{
@@ -122,6 +130,16 @@ a:hover{
 .streamer#setFred{
     background: linear-gradient(to right,var(--background-color), transparent 40%,var(--background-color)),
     url("images/fredLarge.png");
+    background-color: var(--background-color);
+    background-position: left;
+    background-repeat: no-repeat;
+    background-size: 400px;
+    background-position: 50% 50%;
+}
+
+.streamer#setVine{
+    background: linear-gradient(to right,var(--background-color), transparent 40%,var(--background-color)),
+    url("images/vineLarge.png");
     background-color: var(--background-color);
     background-position: left;
     background-repeat: no-repeat;

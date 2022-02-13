@@ -5,56 +5,74 @@ const localStorage = {
         limes: false,
         rev: false,
         fred: false,
-        vine: false
+        vine: false,
+        joel: false
     },
     activeGame: {
         mikeGame: "",
         limesGame: "",
         revGame: "",
         fredGame: "",
-        vineGame: ""
+        vineGame: "",
+        joelGame: ""
+    },
+    title: {
+        mikeTitle: "",
+        limesTitle: "",
+        revTitle: "",
+        fredTitle: "",
+        vineTitle: "",
+        joelTitle: ""
     },
     options: {
         mikeNotif: true,
         limesNotif: true,
         revNotif: true,
         fredNotif: true,
-        vineNotif: false,
+        vineNotif: true,
+        joelNotif: true,
         theme: "purple",
     }
 };
 const mikeNotif = {
     type: "basic",
     message: "Jabroni_Mike is Live!",
-    title: "JabroniNotify",
+    title: "Starlight",
     iconUrl: "./images/mike.png",
     eventTime: Date.now()
 };
 const revNotif = {
     type: "basic",
     message: "RevScarecrow is Live!",
-    title: "JabroniNotify",
+    title: "Starlight",
     iconUrl: "./images/rev.png",
     eventTime: Date.now()
 }
 const limesNotif = {
     type: "basic",
     message: "Limealicious is Live!",
-    title: "JabroniNotify",
+    title: "Starlight",
     iconUrl: "./images/limes.png",
     eventTime: Date.now()
 }
 const fredNotif = {
     type: "basic",
     message: "Fred Knudsen is Live!",
-    title: "JabroniNotify",
+    title: "Starlight",
     iconUrl: "./images/fred.png",
     eventTime: Date.now()
 }
 const vineNotif = {
     type: "basic",
     message: "Vinesauce is Live!",
-    title: "JabroniNotify",
+    title: "Starlight",
+    iconUrl: "./images/vine.png",
+    eventTime: Date.now()
+}
+const joelNotif = {
+    type: "basic",
+    message: "Joel is Live!",
+    title: "Starlight",
     iconUrl: "./images/vine.png",
     eventTime: Date.now()
 }
@@ -100,14 +118,24 @@ chrome.runtime.onInstalled.addListener(function (details) {
                 limes: false,
                 rev: false,
                 fred: false,
-                vine: false
+                vine: false,
+                joel: false
             },
             activeGame: {
                 mikeGame: "",
                 limesGame: "",
                 revGame: "",
                 fredGame: "",
-                vineGame: ""
+                vineGame: "",
+                joelGame: ""
+            },
+            title: {
+                mikeTitle: "",
+                limesTitle: "",
+                revTitle: "",
+                fredTitle: "",
+                vineTitle: "",
+                joelTitle: ""
             },
             options: {
                 mikeNotif: true,
@@ -115,13 +143,52 @@ chrome.runtime.onInstalled.addListener(function (details) {
                 revNotif: true,
                 fredNotif: true,
                 vineNotif: true,
+                joelNotif: true,
                 theme: "purple",
             }
         }
             , function () {
                 console.log("ONINSTALL: Initialized")
             });
-    };
+    }
+    else if (details.reason === "update") {
+        const newSettings = {
+            streamers: {
+                mike: false,
+                limes: false,
+                rev: false,
+                fred: false,
+                vine: false,
+                joel: false
+            },
+            activeGame: {
+                mikeGame: "",
+                limesGame: "",
+                revGame: "",
+                fredGame: "",
+                vineGame: "",
+                joelGame: ""
+            },
+            title: {
+                mikeTitle: "",
+                limesTitle: "",
+                revTitle: "",
+                fredTitle: "",
+                vineTitle: "",
+                joelTitle: ""
+            },
+            options: {
+                vineNotif: false,
+                joelNotif: false,
+            }
+        }
+
+        Object.assign(newSettings, localStorage)
+
+        chrome.storage.sync.set(newSettings, function () {
+            console.log("ONUPDATE: Initialized")
+        });
+    }
 
 })
 
@@ -133,68 +200,43 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
         for (let [key, value] of Object.entries(changes.streamers.newValue)) {
             console.log(key);
             if (value === true) {
-                chrome.notifications.getPermissionLevel(function (level) {
-                    if (level === "granted") {
-                        if (key === "mike" && changes.streamers.oldValue.mike === false && localStorage.options.mikeNotif === true) {
-                            sendNotification("mike", mikeNotif);
-                            localStorage.streamers.mike = true;
-                            console.log("FROM BACKGROUND: Mike value is now TRUE");
-                            setBadge();
-                        }
-                        else if (key === "rev" && changes.streamers.oldValue.rev === false && localStorage.options.revNotif === true) {
-                            sendNotification("rev", revNotif);
-                            localStorage.streamers.rev = true;
-                            console.log("FROM BACKGROUND: Rev value is now TRUE");
-                            setBadge();
-                        }
-                        else if (key === "limes" && changes.streamers.oldValue.limes === false && localStorage.options.limesNotif === true) {
-                            sendNotification("limes", limesNotif);
-                            localStorage.streamers.limes = true;
-                            console.log("FROM BACKGROUND: Limes value is now TRUE");
-                            setBadge();
-                        }
-                        else if (key === "fred" && changes.streamers.oldValue.fred === false && localStorage.options.fredNotif === true) {
-                            sendNotification("fred", fredNotif);
-                            localStorage.streamers.fred = true;
-                            console.log("FROM BACKGROUND: Fred value is now TRUE");
-                            setBadge();
-                        }
-                        else if (key === "vine" && changes.streamers.oldValue.vine === false && localStorage.options.fredNotif === true) {
-                            sendNotification("vine", vineNotif);
-                            localStorage.streamers.vine = true;
-                            console.log("FROM BACKGROUND: Vine value is now TRUE");
-                            setBadge();
-                        }
-                    }
-                })
+                if (key === "mike" && changes.streamers.oldValue.mike === false && localStorage.options.mikeNotif === true) {
+                    sendNotification("mike", mikeNotif);
+                    console.log("FROM BACKGROUND: Mike value is now TRUE");
+                    setBadge();
+                }
+                else if (key === "rev" && changes.streamers.oldValue.rev === false && localStorage.options.revNotif === true) {
+                    sendNotification("rev", revNotif);
+                    console.log("FROM BACKGROUND: Rev value is now TRUE");
+                    setBadge();
+                }
+                else if (key === "limes" && changes.streamers.oldValue.limes === false && localStorage.options.limesNotif === true) {
+                    sendNotification("limes", limesNotif);
+                    console.log("FROM BACKGROUND: Limes value is now TRUE");
+                    setBadge();
+                }
+                else if (key === "fred" && changes.streamers.oldValue.fred === false && localStorage.options.fredNotif === true) {
+                    sendNotification("fred", fredNotif);
+                    console.log("FROM BACKGROUND: Fred value is now TRUE");
+                    setBadge();
+                }
+                else if (key === "vine" && changes.streamers.oldValue.vine === false && localStorage.options.vineNotif === true) {
+                    sendNotification("vine", vineNotif);
+                    console.log("FROM BACKGROUND: Vine value is now TRUE");
+                    setBadge();
+                }
+                else if (key === "joel" && changes.streamers.oldValue.joel === false && localStorage.options.joelNotif === true) {
+                    sendNotification("joel", joelNotif);
+                    console.log("FROM BACKGROUND: Joel value is now TRUE");
+                    setBadge();
+                }
             }
             else if (value === false) {
-                if (key === "mike") {
-                    localStorage.streamers.mike = false;
-                    console.log("FROM BACKGROUND: Mike value is now FALSE")
-                }
-                else if (key === "rev") {
-                    localStorage.streamers.rev = false;
-                    console.log("FROM BACKGROUND: Rev value is now FALSE")
-                }
-                else if (key === "limes") {
-                    localStorage.streamers.limes = false;
-                    console.log("FROM BACKGROUND: Limes value is now FALSE")
-                }
-                else if (key === "fred") {
-                    localStorage.streamers.fred = false;
-                    console.log("FROM BACKGROUND: Fred value is now FALSE")
-                }
-                else if (key === "vine") {
-                    localStorage.streamers.vine = false;
-                    console.log("FROM BACKGROUND: Vine value is now FALSE")
-                }
+                console.log("FROM BACKGROUND: " + key + " value is now FALSE")
             }
         }
         setBadge();
     }
-
-
 });
 
 //PING THE SERVER FOR INFO AND UPDATE LOCAL AND CLOUD STORAGE(google give me webhooks pls)----//
@@ -212,19 +254,13 @@ function pulse() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
-            Object.assign(localStorage.activeGame, data.activeGame)
-            chrome.storage.sync.set({ streamers: data.streamers }, () => {
-                console.log("FROM PULSE: Streamers updated")
-            })
-            chrome.storage.sync.set({ activeGame: data.activeGame }, () => {
-                console.log("FROM PULSE: Active Game updated")
+            console.log(data[0])
+            Object.assign(localStorage, data[0])
+            chrome.storage.sync.set(localStorage, () => {
+                console.log("FROM PULSE: Data updated")
             })
         })
         .then(() => {
-            chrome.storage.sync.get(null, (items) => {
-                console.log(items)
-            });
             setBadge()
         });
 

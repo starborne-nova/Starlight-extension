@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "Jabroni Notify",
-    "version": "1.1.0",
-    "description": "Receive twitch notifications from this extension more reliably than twitch push notifications",
+    "name": "Starlight",
+    "version": "1.0.0",
+    "description": "Receive twitch notifications from this extension more reliably than twitch push notifications, forked from Jabroni Notify",
     "background": {
         "service_worker": "background.js"
     },
@@ -19,9 +19,6 @@
     "host_permissions": [
         "https://jabroni-server.herokuapp.com/pulse"
     ],
-    "optional_permissions": [
-        "notifications"
-    ],
     "action": {
         "default_icon": {
             "16": "images/icon16.png",
@@ -36,6 +33,7 @@
     },
     "permissions": [
         "alarms",
-        "storage"
+        "storage",
+        "notifications"
     ]
 }
