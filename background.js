@@ -1,28 +1,40 @@
 const url = "https://jabroni-server.herokuapp.com/pulse";
 const localStorage = {
-    streamers: {
-        mike: false,
-        limes: false,
-        rev: false,
-        fred: false,
-        vine: false,
-        joel: false
+    Vinesauce: {
+        id: "25725272",
+        status: false,
+        game: " ",
+        ticker: " "
     },
-    activeGame: {
-        mikeGame: "",
-        limesGame: "",
-        revGame: "",
-        fredGame: "",
-        vineGame: "",
-        joelGame: ""
+    FredrikKnudsen: {
+        id: "27324958",
+        status: false,
+        game: " ",
+        ticker: " "
     },
-    title: {
-        mikeTitle: "",
-        limesTitle: "",
-        revTitle: "",
-        fredTitle: "",
-        vineTitle: "",
-        joelTitle: ""
+    Vargskelethor: {
+        id: "28219022",
+        status: false,
+        game: " ",
+        ticker: " "
+    },
+    RevScarecrow: {
+        id: "28254552",
+        status: false,
+        game: " ",
+        ticker: " "
+    },
+    Limealicious: {
+        id: "28337972",
+        status: false,
+        game: " ",
+        ticker: " "
+    },
+    Jabroni_Mike: {
+        id: "79698024",
+        status: false,
+        game: " ",
+        ticker: " "
     },
     options: {
         mikeNotif: true,
@@ -31,52 +43,11 @@ const localStorage = {
         fredNotif: true,
         vineNotif: true,
         joelNotif: true,
-        theme: "purple",
+        theme: "star",
     }
 };
-const mikeNotif = {
-    type: "basic",
-    message: "Jabroni_Mike is Live!",
-    title: "Starlight",
-    iconUrl: "./images/mike.png",
-    eventTime: Date.now()
-};
-const revNotif = {
-    type: "basic",
-    message: "RevScarecrow is Live!",
-    title: "Starlight",
-    iconUrl: "./images/rev.png",
-    eventTime: Date.now()
-}
-const limesNotif = {
-    type: "basic",
-    message: "Limealicious is Live!",
-    title: "Starlight",
-    iconUrl: "./images/limes.png",
-    eventTime: Date.now()
-}
-const fredNotif = {
-    type: "basic",
-    message: "Fred Knudsen is Live!",
-    title: "Starlight",
-    iconUrl: "./images/fred.png",
-    eventTime: Date.now()
-}
-const vineNotif = {
-    type: "basic",
-    message: "Vinesauce is Live!",
-    title: "Starlight",
-    iconUrl: "./images/vine.png",
-    eventTime: Date.now()
-}
-const joelNotif = {
-    type: "basic",
-    message: "Joel is Live!",
-    title: "Starlight",
-    iconUrl: "./images/vine.png",
-    eventTime: Date.now()
-}
-const outAuth = "coomcheugger";
+
+const outAuth = "stealthystars";
 
 //--------------------------------------------------------END OF INIT VARIABLES-----------------------------------------------------------------//
 
@@ -113,29 +84,41 @@ const initStorageCache = getAllStorageSyncData()
 chrome.runtime.onInstalled.addListener(function (details) {
     if (details.reason === "install") {
         chrome.storage.sync.set({
-            streamers: {
-                mike: false,
-                limes: false,
-                rev: false,
-                fred: false,
-                vine: false,
-                joel: false
+            Vinesauce: {
+                id: "25725272",
+                status: false,
+                game: " ",
+                ticker: " "
             },
-            activeGame: {
-                mikeGame: "",
-                limesGame: "",
-                revGame: "",
-                fredGame: "",
-                vineGame: "",
-                joelGame: ""
+            FredrikKnudsen: {
+                id: "27324958",
+                status: false,
+                game: " ",
+                ticker: " "
             },
-            title: {
-                mikeTitle: "",
-                limesTitle: "",
-                revTitle: "",
-                fredTitle: "",
-                vineTitle: "",
-                joelTitle: ""
+            Vargskelethor: {
+                id: "28219022",
+                status: false,
+                game: " ",
+                ticker: " "
+            },
+            RevScarecrow: {
+                id: "28254552",
+                status: false,
+                game: " ",
+                ticker: " "
+            },
+            Limealicious: {
+                id: "28337972",
+                status: false,
+                game: " ",
+                ticker: " "
+            },
+            Jabroni_Mike: {
+                id: "79698024",
+                status: false,
+                game: " ",
+                ticker: " "
             },
             options: {
                 mikeNotif: true,
@@ -153,39 +136,56 @@ chrome.runtime.onInstalled.addListener(function (details) {
     }
     else if (details.reason === "update") {
         const newSettings = {
-            streamers: {
-                mike: false,
-                limes: false,
-                rev: false,
-                fred: false,
-                vine: false,
-                joel: false
+            Vinesauce: {
+                id: "25725272",
+                status: false,
+                game: " ",
+                ticker: " "
             },
-            activeGame: {
-                mikeGame: "",
-                limesGame: "",
-                revGame: "",
-                fredGame: "",
-                vineGame: "",
-                joelGame: ""
+            FredrikKnudsen: {
+                id: "27324958",
+                status: false,
+                game: " ",
+                ticker: " "
             },
-            title: {
-                mikeTitle: "",
-                limesTitle: "",
-                revTitle: "",
-                fredTitle: "",
-                vineTitle: "",
-                joelTitle: ""
+            Vargskelethor: {
+                id: "28219022",
+                status: false,
+                game: " ",
+                ticker: " "
+            },
+            RevScarecrow: {
+                id: "28254552",
+                status: false,
+                game: " ",
+                ticker: " "
+            },
+            Limealicious: {
+                id: "28337972",
+                status: false,
+                game: " ",
+                ticker: " "
+            },
+            Jabroni_Mike: {
+                id: "79698024",
+                status: false,
+                game: " ",
+                ticker: " "
             },
             options: {
-                vineNotif: false,
-                joelNotif: false,
+                mikeNotif: true,
+                limesNotif: true,
+                revNotif: true,
+                fredNotif: true,
+                vineNotif: true,
+                joelNotif: true,
+                theme: "purple",
             }
         }
 
-        Object.assign(newSettings, localStorage)
+        Object.assign(localStorage, newSettings)
 
-        chrome.storage.sync.set(newSettings, function () {
+        chrome.storage.sync.set(localStorage, function () {
             console.log("ONUPDATE: Initialized")
         });
     }
@@ -196,43 +196,17 @@ chrome.runtime.onInstalled.addListener(function (details) {
 chrome.storage.onChanged.addListener(function (changes, namespace) {
     console.log(changes)
 
-    if (changes.hasOwnProperty("streamers")) {
-        for (let [key, value] of Object.entries(changes.streamers.newValue)) {
+    if (changes.hasOwnProperty("status")) {
+        for (let [key, value] of Object.entries(changes)) {
             console.log(key);
-            if (value === true) {
-                if (key === "mike" && changes.streamers.oldValue.mike === false && localStorage.options.mikeNotif === true) {
-                    sendNotification("mike", mikeNotif);
-                    console.log("FROM BACKGROUND: Mike value is now TRUE");
-                    setBadge();
-                }
-                else if (key === "rev" && changes.streamers.oldValue.rev === false && localStorage.options.revNotif === true) {
-                    sendNotification("rev", revNotif);
-                    console.log("FROM BACKGROUND: Rev value is now TRUE");
-                    setBadge();
-                }
-                else if (key === "limes" && changes.streamers.oldValue.limes === false && localStorage.options.limesNotif === true) {
-                    sendNotification("limes", limesNotif);
-                    console.log("FROM BACKGROUND: Limes value is now TRUE");
-                    setBadge();
-                }
-                else if (key === "fred" && changes.streamers.oldValue.fred === false && localStorage.options.fredNotif === true) {
-                    sendNotification("fred", fredNotif);
-                    console.log("FROM BACKGROUND: Fred value is now TRUE");
-                    setBadge();
-                }
-                else if (key === "vine" && changes.streamers.oldValue.vine === false && localStorage.options.vineNotif === true) {
-                    sendNotification("vine", vineNotif);
-                    console.log("FROM BACKGROUND: Vine value is now TRUE");
-                    setBadge();
-                }
-                else if (key === "joel" && changes.streamers.oldValue.joel === false && localStorage.options.joelNotif === true) {
-                    sendNotification("joel", joelNotif);
-                    console.log("FROM BACKGROUND: Joel value is now TRUE");
-                    setBadge();
-                }
+            if (value === true && changes.key.oldvalue.status === false && localStorage.options.mikeNotif === true) {
+                sendNotification(key);
+                console.log("FROM BACKGROUND: " + key + "is now TRUE")
+                setBadge();
+
             }
             else if (value === false) {
-                console.log("FROM BACKGROUND: " + key + " value is now FALSE")
+                console.log("FROM BACKGROUND: " + key + "is now FALSE")
             }
         }
         setBadge();
@@ -287,10 +261,13 @@ function getAllStorageSyncData() {
 function setBadge() {
     var badgeCount = 0;
 
-    Object.entries(localStorage.streamers).forEach(function ([key, value]) {
-        if (value === true) {
+    Object.entries(localStorage).forEach(function ([key, value]) {
+        if (value.status === true) {
             console.log("SETBADGE:" + key + " is live.")
             badgeCount++;
+        }
+        else if(value.status === undefined){
+            console.log("SETBADGE: OPTIONS BLOCK " + key)
         }
     })
     var badgeText = badgeCount.toString()
@@ -301,7 +278,15 @@ function setBadge() {
 
 
 //FUNCTION TO DEPLOY NOTIFS-----//
-function sendNotification(streamer, notif) {
+function sendNotification(streamer) {
+    const notif = {
+        type: "basic",
+        message: (streamer + " is Live!"),
+        title: "Starlight",
+        iconUrl: ("./images/" + streamer + ".png"),
+        eventTime: Date.now()
+    };
+
     chrome.notifications.create(streamer, notif, function () {
         setTimeout(() => {
             chrome.notifications.clear(streamer, (cleared) => {
