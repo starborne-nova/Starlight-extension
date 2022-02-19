@@ -11,6 +11,7 @@ const initStorageCache = getAllStorageSyncData()
     .then(items => {
         // Copy the data retrieved from storage into storageCache.
         Object.assign(localStorage, items);
+        console.log(localStorage);
     });
 
 const notifOptions = {
@@ -30,35 +31,22 @@ const mikeNotif = {
 };
 
 function saveOptions() {
-    var Otheme = document.getElementById("setTheme").value;
-    var OmikeN = document.getElementById("mikeNotifs").checked ? true : false;
-    var OmikeT = document.getElementById("mikeTicker").checked ? true : false;
-    var OlimeN = document.getElementById("limeNotifs").checked ? true : false;
-    var OlimeT = document.getElementById("limeTicker").checked ? true : false;
-    var OrevN = document.getElementById("revNotifs").checked ? true : false;
-    var OrevT = document.getElementById("revTicker").checked ? true : false;
-    var OfredN = document.getElementById("fredNotifs").checked ? true : false;
-    var OfredT = document.getElementById("fredTicker").checked ? true : false;
-    var OvineN = document.getElementById("vineNotifs").checked ? true : false;
-    var OvineT = document.getElementById("vineTicker").checked ? true : false;
+    
+    localStorage.options.theme = document.getElementById("setTheme").value;
+    localStorage.options.Jabroni_MikeNotif = document.getElementById("mikeNotifs").checked ? true : false;
+    localStorage.options.Jabroni_MikeTick = document.getElementById("mikeTicker").checked ? true : false;
+    localStorage.options.LimealiciousNotif = document.getElementById("limeNotifs").checked ? true : false;
+    localStorage.options.LimealiciousTick = document.getElementById("limeTicker").checked ? true : false;
+    localStorage.options.RevScarecrowNotif = document.getElementById("revNotifs").checked ? true : false;
+    localStorage.options.RevScarecrowTick = document.getElementById("revTicker").checked ? true : false;
+    localStorage.options.FredrikKnudsenNotif = document.getElementById("fredNotifs").checked ? true : false;
+    localStorage.options.FredrikKnudsenTick = document.getElementById("fredTicker").checked ? true : false;
+    localStorage.options.VinesauceNotif = document.getElementById("vineNotifs").checked ? true : false;
+    localStorage.options.VinesauceTick = document.getElementById("vineTicker").checked ? true : false;
+    localStorage.options.VargskelethorNotif = document.getElementById("joelNotifs").checked ? true : false;
+    localStorage.options.VargskelethorTick = document.getElementById("joelTicker").checked ? true : false;
 
-    chrome.storage.sync.set({
-        options: {
-            mikeNotif: OmikeN,
-            mikeTicker: OmikeT,
-            limesNotif: OlimeN,
-            limesTicker: OlimeT,
-            revNotif: OrevN,
-            revTicker: OrevT,
-            fredNotif: OfredN,
-            fredTicker: OfredT,
-            vineNotif: OvineN,
-            vineTicker: OvineT,
-            joelNotif: true,
-            joelTicker: true,
-            theme: Otheme,
-        }
-    }, function () {
+    chrome.storage.sync.set(localStorage, function () {
         var status = document.getElementById('status');
         status.textContent = 'Options saved.';
         setTimeout(function () {
@@ -76,16 +64,18 @@ function loadOptions() {
         else {
             document.body.setAttribute("data-theme", items.options.theme);
             document.getElementById("setTheme").value = items.options.theme;
-            document.getElementById("mikeNotifs").checked = items.options.mikeNotif ? true : false;
-            document.getElementById("mikeTicker").checked = items.options.mikeTicker ? true : false;
-            document.getElementById("limeNotifs").checked = items.options.limesNotif ? true : false;
-            document.getElementById("limeTicker").checked = items.options.limesTicker ? true : false;
-            document.getElementById("revNotifs").checked = items.options.revNotif ? true : false;
-            document.getElementById("revTicker").checked = items.options.revTicker ? true : false;
-            document.getElementById("fredNotifs").checked = items.options.fredNotif ? true : false;
-            document.getElementById("fredTicker").checked = items.options.fredTicker ? true : false;
-            document.getElementById("vineNotifs").checked = items.options.vineNotif ? true : false;
-            document.getElementById("vineTicker").checked = items.options.vineTicker ? true : false;
+            document.getElementById("mikeNotifs").checked = items.options.Jabroni_MikeNotif ? true : false;
+            document.getElementById("mikeTicker").checked = items.options.Jabroni_MikeTick ? true : false;
+            document.getElementById("limeNotifs").checked = items.options.LimealiciousNotif ? true : false;
+            document.getElementById("limeTicker").checked = items.options.LimealiciousTick ? true : false;
+            document.getElementById("revNotifs").checked = items.options.RevScarecrowNotif ? true : false;
+            document.getElementById("revTicker").checked = items.options.RevScarecrowTick ? true : false;
+            document.getElementById("fredNotifs").checked = items.options.FredrikKnudsenNotif ? true : false;
+            document.getElementById("fredTicker").checked = items.options.FredrikKnudsenTick ? true : false;
+            document.getElementById("vineNotifs").checked = items.options.VinesauceNotif ? true : false;
+            document.getElementById("vineTicker").checked = items.options.VinesauceTick ? true : false;
+            document.getElementById("joelNotifs").checked = items.options.VargskelethorNotif ? true : false;
+            document.getElementById("joelTicker").checked = items.options.VargskelethorTick ? true : false;
         }
 
     });
@@ -111,6 +101,9 @@ function loadOnline() {
             }
             if(items.RevScarecrow.status === true){
                 document.getElementById("revOnline").innerText="LIVE"
+            }
+            if(items.Vargskelethor.status === true){
+                document.getElementById("joelOnline").innerText="LIVE"
             }
         }
     })

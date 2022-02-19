@@ -11,32 +11,32 @@ const initStorageCache = getAllStorageSyncData()
     document.body.setAttribute("data-theme", localStorage.options.theme);
   })
   .then(() => {
-    if (!localStorage.options.limesNotif) {
+    if (!localStorage.options.LimealiciousNotif) {
       document.getElementById("limes").remove()
     }
   })
   .then(() => {
-    if (!localStorage.options.revNotif) {
+    if (!localStorage.options.RevScarecrowNotif) {
       document.getElementById("rev").remove()
     }
   })
   .then(() => {
-    if (!localStorage.options.mikeNotif) {
+    if (!localStorage.options.Jabroni_MikeNotif) {
       document.getElementById("jabroniMike").remove()
     }
   })
   .then(() => {
-    if (!localStorage.options.fredNotif) {
+    if (!localStorage.options.FredrikKnudsenNotif) {
       document.getElementById("fred").remove()
     }
   })
   .then(() => {
-    if (!localStorage.options.vineNotif) {
+    if (!localStorage.options.VinesauceNotif) {
       document.getElementById("vine").remove()
     }
   })
   .then(() => {
-    if (!localStorage.options.vineNotif) {
+    if (!localStorage.options.VargskelethorNotif) {
       document.getElementById("joel").remove()
     }
   });

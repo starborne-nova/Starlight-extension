@@ -1,3 +1,5 @@
+// Is there a less fucking stupid way to do this with Object.defineProperty?
+
 const url = "https://jabroni-server.herokuapp.com/pulse";
 const localStorage = {
     Vinesauce: {
@@ -5,56 +7,56 @@ const localStorage = {
         status: false,
         game: " ",
         ticker: " ",
-        update: " "
+        update: " ",
     },
     FredrikKnudsen: {
         id: "27324958",
         status: false,
         game: " ",
         ticker: " ",
-        update: " "
+        update: " ",
     },
     Vargskelethor: {
         id: "28219022",
         status: false,
         game: " ",
         ticker: " ",
-        update: " "
+        update: " ",
     },
     RevScarecrow: {
         id: "28254552",
         status: false,
         game: " ",
         ticker: " ",
-        update: " "
+        update: " ",
     },
     Limealicious: {
         id: "28337972",
         status: false,
         game: " ",
         ticker: " ",
-        update: " "
+        update: " ",
     },
     Jabroni_Mike: {
         id: "79698024",
         status: false,
         game: " ",
         ticker: " ",
-        update: " "
+        update: " ",
     },
     options: {
-        mikeNotif: true,
-        mikeTicker: true,
-        limesNotif: true,
-        limesTicker: true,
-        revNotif: true,
-        revTicker: true,
-        fredNotif: true,
-        fredTicker: true,
-        vineNotif: true,
-        vineTicker: true,
-        joelNotif: true,
-        joelTicker: true,
+        Jabroni_MikeNotif: true,
+        Jabroni_MikeTick: true,
+        LimealiciousNotif: true,
+        LimealiciousTick: true,
+        RevScarecrowNotif: true,
+        RevScarecrowTick: true,
+        FredrikKnudsenNotif: true,
+        FredrikKnudsenTick: true,
+        VinesauceNotif: true,
+        VinesauceTick: true,
+        VargskelethorNotif: true,
+        VargskelethorTick: true,
         theme: "star",
     }
 };
@@ -101,56 +103,56 @@ chrome.runtime.onInstalled.addListener(function (details) {
                 status: false,
                 game: " ",
                 ticker: " ",
-                update: " "
+                update: " ",
             },
             FredrikKnudsen: {
                 id: "27324958",
                 status: false,
                 game: " ",
                 ticker: " ",
-                update: " "
+                update: " ",
             },
             Vargskelethor: {
                 id: "28219022",
                 status: false,
                 game: " ",
                 ticker: " ",
-                update: " "
+                update: " ",
             },
             RevScarecrow: {
                 id: "28254552",
                 status: false,
                 game: " ",
                 ticker: " ",
-                update: " "
+                update: " ",
             },
             Limealicious: {
                 id: "28337972",
                 status: false,
                 game: " ",
                 ticker: " ",
-                update: " "
+                update: " ",
             },
             Jabroni_Mike: {
                 id: "79698024",
                 status: false,
                 game: " ",
                 ticker: " ",
-                update: " "
+                update: " ",
             },
             options: {
-                mikeNotif: true,
-                mikeTicker: true,
-                limesNotif: true,
-                limesTicker: true,
-                revNotif: true,
-                revTicker: true,
-                fredNotif: true,
-                fredTicker: true,
-                vineNotif: true,
-                vineTicker: true,
-                joelNotif: true,
-                joelTicker: true,
+                Jabroni_MikeNotif: true,
+                Jabroni_MikeTick: true,
+                LimealiciousNotif: true,
+                LimealiciousTick: true,
+                RevScarecrowNotif: true,
+                RevScarecrowTick: true,
+                FredrikKnudsenNotif: true,
+                FredrikKnudsenTick: true,
+                VinesauceNotif: true,
+                VinesauceTick: true,
+                VargskelethorNotif: true,
+                VargskelethorTick: true,
                 theme: "star",
             }
         }
@@ -165,56 +167,56 @@ chrome.runtime.onInstalled.addListener(function (details) {
                 status: false,
                 game: " ",
                 ticker: " ",
-                update: " "
+                update: " ",
             },
             FredrikKnudsen: {
                 id: "27324958",
                 status: false,
                 game: " ",
                 ticker: " ",
-                update: " "
+                update: " ",
             },
             Vargskelethor: {
                 id: "28219022",
                 status: false,
                 game: " ",
                 ticker: " ",
-                update: " "
+                update: " ",
             },
             RevScarecrow: {
                 id: "28254552",
                 status: false,
                 game: " ",
                 ticker: " ",
-                update: " "
+                update: " ",
             },
             Limealicious: {
                 id: "28337972",
                 status: false,
                 game: " ",
                 ticker: " ",
-                update: " "
+                update: " ",
             },
             Jabroni_Mike: {
                 id: "79698024",
                 status: false,
                 game: " ",
                 ticker: " ",
-                update: " "
+                update: " ",
             },
             options: {
-                mikeNotif: true,
-                mikeTicker: true,
-                limesNotif: true,
-                limesTicker: true,
-                revNotif: true,
-                revTicker: true,
-                fredNotif: true,
-                fredTicker: true,
-                vineNotif: true,
-                vineTicker: true,
-                joelNotif: true,
-                joelTicker: true,
+                Jabroni_MikeNotif: true,
+                Jabroni_MikeTick: true,
+                LimealiciousNotif: true,
+                LimealiciousTick: true,
+                RevScarecrowNotif: true,
+                RevScarecrowTick: true,
+                FredrikKnudsenNotif: true,
+                FredrikKnudsenTick: true,
+                VinesauceNotif: true,
+                VinesauceTick: true,
+                VargskelethorNotif: true,
+                VargskelethorTick: true,
                 theme: "star",
             }
         }
@@ -235,10 +237,15 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
    Object.keys(changes).forEach(prop =>{
        console.log(prop);
        if(changes[prop].newValue.status === true && changes[prop].oldValue.status === false){
-           sendNotification(prop);
+        if(localStorage.options[prop + "Notif"] === true){
+            sendNotification(prop);
+        }
        }
        if(changes[prop].newValue.ticker != undefined && changes[prop].newValue.ticker != changes[prop].oldValue.ticker){
-           sendTickerUpdate(prop);
+            if(localStorage.options[prop + "Tick"] === true){
+                sendTickerUpdate(prop);
+            }   
+        
        }
    })
 
@@ -267,6 +274,7 @@ function pulse() {
             Object.assign(localStorage, data[0])
             chrome.storage.sync.set(localStorage, () => {
                 console.log("FROM PULSE: Data updated")
+                console.log(localStorage);
             })
         })
         .then(() => {
