@@ -1,5 +1,12 @@
 const localStorage = {};
 
+
+//ADD IN TICKER OPTIONS
+//Dim font color
+//border + shadow on boxes
+//gradient on boxes?
+
+
 const initStorageCache = getAllStorageSyncData()
     .then(items => {
         // Copy the data retrieved from storage into storageCache.
@@ -8,7 +15,7 @@ const initStorageCache = getAllStorageSyncData()
 
 const notifOptions = {
     type: "basic",
-    title: "JabroniNotify",
+    title: "Starlight",
     message: "This is a test!",
     iconUrl: "./images/icon48.png",
     eventTime: Date.now()
@@ -17,7 +24,7 @@ const notifOptions = {
 const mikeNotif = {
     type: "basic",
     message: "Jabroni_Mike is Live!",
-    title: "JabroniNotify",
+    title: "Starlight",
     iconUrl: "./images/mike.png",
     eventTime: Date.now()
 };
@@ -25,19 +32,30 @@ const mikeNotif = {
 function saveOptions() {
     var Otheme = document.getElementById("setTheme").value;
     var OmikeN = document.getElementById("mikeNotifs").checked ? true : false;
+    var OmikeT = document.getElementById("mikeTicker").checked ? true : false;
     var OlimeN = document.getElementById("limeNotifs").checked ? true : false;
+    var OlimeT = document.getElementById("limeTicker").checked ? true : false;
     var OrevN = document.getElementById("revNotifs").checked ? true : false;
+    var OrevT = document.getElementById("revTicker").checked ? true : false;
     var OfredN = document.getElementById("fredNotifs").checked ? true : false;
+    var OfredT = document.getElementById("fredTicker").checked ? true : false;
     var OvineN = document.getElementById("vineNotifs").checked ? true : false;
+    var OvineT = document.getElementById("vineTicker").checked ? true : false;
 
     chrome.storage.sync.set({
         options: {
             mikeNotif: OmikeN,
+            mikeTicker: OmikeT,
             limesNotif: OlimeN,
+            limesTicker: OlimeT,
             revNotif: OrevN,
+            revTicker: OrevT,
             fredNotif: OfredN,
+            fredTicker: OfredT,
             vineNotif: OvineN,
+            vineTicker: OvineT,
             joelNotif: true,
+            joelTicker: true,
             theme: Otheme,
         }
     }, function () {
@@ -46,7 +64,7 @@ function saveOptions() {
         setTimeout(function () {
             status.textContent = '';
         }, 750);
-        getAllStorageSyncData();
+        loadOptions();
     });
 };
 
@@ -59,13 +77,43 @@ function loadOptions() {
             document.body.setAttribute("data-theme", items.options.theme);
             document.getElementById("setTheme").value = items.options.theme;
             document.getElementById("mikeNotifs").checked = items.options.mikeNotif ? true : false;
+            document.getElementById("mikeTicker").checked = items.options.mikeTicker ? true : false;
             document.getElementById("limeNotifs").checked = items.options.limesNotif ? true : false;
+            document.getElementById("limeTicker").checked = items.options.limesTicker ? true : false;
             document.getElementById("revNotifs").checked = items.options.revNotif ? true : false;
+            document.getElementById("revTicker").checked = items.options.revTicker ? true : false;
             document.getElementById("fredNotifs").checked = items.options.fredNotif ? true : false;
+            document.getElementById("fredTicker").checked = items.options.fredTicker ? true : false;
             document.getElementById("vineNotifs").checked = items.options.vineNotif ? true : false;
+            document.getElementById("vineTicker").checked = items.options.vineTicker ? true : false;
         }
 
     });
+}
+
+function loadOnline() {
+    chrome.storage.sync.get(null, (items) => {
+        if (chrome.runtime.lastError) {
+            return reject(chrome.runtime.lastError);
+        }
+        else {
+            if(items.Jabroni_Mike.status === true){
+                document.getElementById("mikeOnline").innerText="LIVE"
+            }
+            if(items.Limealicious.status === true){
+                document.getElementById("limeOnline").innerText="LIVE"
+            }
+            if(items.FredrikKnudsen.status === true){
+                document.getElementById("fredOnline").innerText="LIVE"
+            }
+            if(items.Vinesauce.status === true){
+                document.getElementById("vineOnline").innerText="LIVE"
+            }
+            if(items.RevScarecrow.status === true){
+                document.getElementById("revOnline").innerText="LIVE"
+            }
+        }
+    })
 }
 
 function handleTestNotif() {
@@ -123,6 +171,8 @@ function sendNotification(streamer, notif) {
 document.getElementById("testNotif").addEventListener("click", handleTestNotif);
 
 document.addEventListener('DOMContentLoaded', loadOptions);
+
+document.addEventListener('DOMContentLoaded', loadOnline, { once: true });
 
 document.getElementById('save').addEventListener('click',
     saveOptions);

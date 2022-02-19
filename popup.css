@@ -81,6 +81,7 @@ li{
     border-top: 1px solid;
     border-left: 1px solid;
     border-right: 1px solid;
+    border-bottom: 1px solid;
     border-color: var(--border-color-2);
     display: table-header-group;
     text-shadow: 2px 2px 1px #000;
@@ -161,24 +162,6 @@ body {
     text-align: end;
     color:#1F1F1F;
     padding-right: 10px;
-    margin: 5px;
-    text-shadow: var(--no-shadow);
-}
-
-.status-icon-off{
-    min-width: 17px;
-    min-height: 17px;
-    text-align: end;
-    color:darkgray;
-    margin: 5px;
-    text-shadow: var(--text-shadow);
-}
-
-.status-icon-on{
-    min-width: 17px;
-    min-height: 17px;
-    text-align: end;
-    color:var(--border-color);
     margin: 5px;
     text-shadow: var(--no-shadow);
 }

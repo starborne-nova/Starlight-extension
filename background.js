@@ -4,45 +4,57 @@ const localStorage = {
         id: "25725272",
         status: false,
         game: " ",
-        ticker: " "
+        ticker: " ",
+        update: " "
     },
     FredrikKnudsen: {
         id: "27324958",
         status: false,
         game: " ",
-        ticker: " "
+        ticker: " ",
+        update: " "
     },
     Vargskelethor: {
         id: "28219022",
         status: false,
         game: " ",
-        ticker: " "
+        ticker: " ",
+        update: " "
     },
     RevScarecrow: {
         id: "28254552",
         status: false,
         game: " ",
-        ticker: " "
+        ticker: " ",
+        update: " "
     },
     Limealicious: {
         id: "28337972",
         status: false,
         game: " ",
-        ticker: " "
+        ticker: " ",
+        update: " "
     },
     Jabroni_Mike: {
         id: "79698024",
         status: false,
         game: " ",
-        ticker: " "
+        ticker: " ",
+        update: " "
     },
     options: {
         mikeNotif: true,
+        mikeTicker: true,
         limesNotif: true,
+        limesTicker: true,
         revNotif: true,
+        revTicker: true,
         fredNotif: true,
+        fredTicker: true,
         vineNotif: true,
+        vineTicker: true,
         joelNotif: true,
+        joelTicker: true,
         theme: "star",
     }
 };
@@ -88,46 +100,58 @@ chrome.runtime.onInstalled.addListener(function (details) {
                 id: "25725272",
                 status: false,
                 game: " ",
-                ticker: " "
+                ticker: " ",
+                update: " "
             },
             FredrikKnudsen: {
                 id: "27324958",
                 status: false,
                 game: " ",
-                ticker: " "
+                ticker: " ",
+                update: " "
             },
             Vargskelethor: {
                 id: "28219022",
                 status: false,
                 game: " ",
-                ticker: " "
+                ticker: " ",
+                update: " "
             },
             RevScarecrow: {
                 id: "28254552",
                 status: false,
                 game: " ",
-                ticker: " "
+                ticker: " ",
+                update: " "
             },
             Limealicious: {
                 id: "28337972",
                 status: false,
                 game: " ",
-                ticker: " "
+                ticker: " ",
+                update: " "
             },
             Jabroni_Mike: {
                 id: "79698024",
                 status: false,
                 game: " ",
-                ticker: " "
+                ticker: " ",
+                update: " "
             },
             options: {
                 mikeNotif: true,
+                mikeTicker: true,
                 limesNotif: true,
+                limesTicker: true,
                 revNotif: true,
+                revTicker: true,
                 fredNotif: true,
+                fredTicker: true,
                 vineNotif: true,
+                vineTicker: true,
                 joelNotif: true,
-                theme: "purple",
+                joelTicker: true,
+                theme: "star",
             }
         }
             , function () {
@@ -140,46 +164,58 @@ chrome.runtime.onInstalled.addListener(function (details) {
                 id: "25725272",
                 status: false,
                 game: " ",
-                ticker: " "
+                ticker: " ",
+                update: " "
             },
             FredrikKnudsen: {
                 id: "27324958",
                 status: false,
                 game: " ",
-                ticker: " "
+                ticker: " ",
+                update: " "
             },
             Vargskelethor: {
                 id: "28219022",
                 status: false,
                 game: " ",
-                ticker: " "
+                ticker: " ",
+                update: " "
             },
             RevScarecrow: {
                 id: "28254552",
                 status: false,
                 game: " ",
-                ticker: " "
+                ticker: " ",
+                update: " "
             },
             Limealicious: {
                 id: "28337972",
                 status: false,
                 game: " ",
-                ticker: " "
+                ticker: " ",
+                update: " "
             },
             Jabroni_Mike: {
                 id: "79698024",
                 status: false,
                 game: " ",
-                ticker: " "
+                ticker: " ",
+                update: " "
             },
             options: {
                 mikeNotif: true,
+                mikeTicker: true,
                 limesNotif: true,
+                limesTicker: true,
                 revNotif: true,
+                revTicker: true,
                 fredNotif: true,
+                fredTicker: true,
                 vineNotif: true,
+                vineTicker: true,
                 joelNotif: true,
-                theme: "purple",
+                joelTicker: true,
+                theme: "star",
             }
         }
 
@@ -196,21 +232,20 @@ chrome.runtime.onInstalled.addListener(function (details) {
 chrome.storage.onChanged.addListener(function (changes, namespace) {
     console.log(changes)
 
-    if (changes.hasOwnProperty("status")) {
-        for (let [key, value] of Object.entries(changes)) {
-            console.log(key);
-            if (value === true && changes.key.oldvalue.status === false && localStorage.options.mikeNotif === true) {
-                sendNotification(key);
-                console.log("FROM BACKGROUND: " + key + "is now TRUE")
-                setBadge();
+   Object.keys(changes).forEach(prop =>{
+       console.log(prop);
+       if(changes[prop].newValue.status === true && changes[prop].oldValue.status === false){
+           sendNotification(prop);
+       }
+       if(changes[prop].newValue.ticker != undefined && changes[prop].newValue.ticker != changes[prop].oldValue.ticker){
+           sendTickerUpdate(prop);
+       }
+   })
 
-            }
-            else if (value === false) {
-                console.log("FROM BACKGROUND: " + key + "is now FALSE")
-            }
-        }
-        setBadge();
-    }
+
+    setBadge();
+
+
 });
 
 //PING THE SERVER FOR INFO AND UPDATE LOCAL AND CLOUD STORAGE(google give me webhooks pls)----//
@@ -266,7 +301,7 @@ function setBadge() {
             console.log("SETBADGE:" + key + " is live.")
             badgeCount++;
         }
-        else if(value.status === undefined){
+        else if (value.status === undefined) {
             console.log("SETBADGE: OPTIONS BLOCK " + key)
         }
     })
@@ -282,6 +317,24 @@ function sendNotification(streamer) {
     const notif = {
         type: "basic",
         message: (streamer + " is Live!"),
+        title: "Starlight",
+        iconUrl: ("./images/" + streamer + ".png"),
+        eventTime: Date.now()
+    };
+
+    chrome.notifications.create(streamer, notif, function () {
+        setTimeout(() => {
+            chrome.notifications.clear(streamer, (cleared) => {
+                console.log("Notification Cleared = " + cleared)
+            })
+        }, 5000)
+    })
+}
+
+function sendTickerUpdate(streamer) {
+    const notif = {
+        type: "basic",
+        message: (streamer + " has updated their ticker!"),
         title: "Starlight",
         iconUrl: ("./images/" + streamer + ".png"),
         eventTime: Date.now()
