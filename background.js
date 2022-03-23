@@ -1,65 +1,16 @@
 // Is there a less fucking stupid way to do this with Object.defineProperty?
+//TODO LIST:
+//Package all CSS JS and Fonts in extension
+//See if you can make modules on extensions or if it's just fucking stupid
+//Make a storage audit function
+//Convert rest of Options JS to jquery
+//Find a not stupid way to get profile pictures from twitch/server?
+
+
+
 
 const url = "https://jabroni-server.herokuapp.com/pulse";
-const localStorage = {
-    Vinesauce: {
-        id: "25725272",
-        status: false,
-        game: " ",
-        ticker: " ",
-        update: " ",
-    },
-    FredrikKnudsen: {
-        id: "27324958",
-        status: false,
-        game: " ",
-        ticker: " ",
-        update: " ",
-    },
-    Vargskelethor: {
-        id: "28219022",
-        status: false,
-        game: " ",
-        ticker: " ",
-        update: " ",
-    },
-    RevScarecrow: {
-        id: "28254552",
-        status: false,
-        game: " ",
-        ticker: " ",
-        update: " ",
-    },
-    Limealicious: {
-        id: "28337972",
-        status: false,
-        game: " ",
-        ticker: " ",
-        update: " ",
-    },
-    Jabroni_Mike: {
-        id: "79698024",
-        status: false,
-        game: " ",
-        ticker: " ",
-        update: " ",
-    },
-    options: {
-        Jabroni_MikeNotif: true,
-        Jabroni_MikeTick: true,
-        LimealiciousNotif: true,
-        LimealiciousTick: true,
-        RevScarecrowNotif: true,
-        RevScarecrowTick: true,
-        FredrikKnudsenNotif: true,
-        FredrikKnudsenTick: true,
-        VinesauceNotif: true,
-        VinesauceTick: true,
-        VargskelethorNotif: true,
-        VargskelethorTick: true,
-        theme: "star",
-    }
-};
+const localStorage = {};
 
 const outAuth = "stealthystars";
 
@@ -97,135 +48,26 @@ const initStorageCache = getAllStorageSyncData()
 //FIRST RUN INITIALIZE CLOUD STORAGE----//
 chrome.runtime.onInstalled.addListener(function (details) {
     if (details.reason === "install") {
-        chrome.storage.sync.set({
-            Vinesauce: {
-                id: "25725272",
-                status: false,
-                game: " ",
-                ticker: " ",
-                update: " ",
-            },
-            FredrikKnudsen: {
-                id: "27324958",
-                status: false,
-                game: " ",
-                ticker: " ",
-                update: " ",
-            },
-            Vargskelethor: {
-                id: "28219022",
-                status: false,
-                game: " ",
-                ticker: " ",
-                update: " ",
-            },
-            RevScarecrow: {
-                id: "28254552",
-                status: false,
-                game: " ",
-                ticker: " ",
-                update: " ",
-            },
-            Limealicious: {
-                id: "28337972",
-                status: false,
-                game: " ",
-                ticker: " ",
-                update: " ",
-            },
-            Jabroni_Mike: {
-                id: "79698024",
-                status: false,
-                game: " ",
-                ticker: " ",
-                update: " ",
-            },
-            options: {
-                Jabroni_MikeNotif: true,
-                Jabroni_MikeTick: true,
-                LimealiciousNotif: true,
-                LimealiciousTick: true,
-                RevScarecrowNotif: true,
-                RevScarecrowTick: true,
-                FredrikKnudsenNotif: true,
-                FredrikKnudsenTick: true,
-                VinesauceNotif: true,
-                VinesauceTick: true,
-                VargskelethorNotif: true,
-                VargskelethorTick: true,
-                theme: "star",
-            }
-        }
-            , function () {
-                console.log("ONINSTALL: Initialized")
-            });
+        installStorage();
     }
     else if (details.reason === "update") {
-        const newSettings = {
-            Vinesauce: {
-                id: "25725272",
-                status: false,
-                game: " ",
-                ticker: " ",
-                update: " ",
-            },
-            FredrikKnudsen: {
-                id: "27324958",
-                status: false,
-                game: " ",
-                ticker: " ",
-                update: " ",
-            },
-            Vargskelethor: {
-                id: "28219022",
-                status: false,
-                game: " ",
-                ticker: " ",
-                update: " ",
-            },
-            RevScarecrow: {
-                id: "28254552",
-                status: false,
-                game: " ",
-                ticker: " ",
-                update: " ",
-            },
-            Limealicious: {
-                id: "28337972",
-                status: false,
-                game: " ",
-                ticker: " ",
-                update: " ",
-            },
-            Jabroni_Mike: {
-                id: "79698024",
-                status: false,
-                game: " ",
-                ticker: " ",
-                update: " ",
-            },
-            options: {
-                Jabroni_MikeNotif: true,
-                Jabroni_MikeTick: true,
-                LimealiciousNotif: true,
-                LimealiciousTick: true,
-                RevScarecrowNotif: true,
-                RevScarecrowTick: true,
-                FredrikKnudsenNotif: true,
-                FredrikKnudsenTick: true,
-                VinesauceNotif: true,
-                VinesauceTick: true,
-                VargskelethorNotif: true,
-                VargskelethorTick: true,
-                theme: "star",
-            }
-        }
+        const manifest = chrome.runtime.getManifest();
+        const updateNotif = {
+            type: "basic",
+            message: ("Updated to version " + manifest.version),
+            contextMessage: "Added some data validation",
+            title: "Starlight",
+            iconUrl: "./images/icon48.png",
+            eventTime: Date.now()
+        };
 
-        Object.assign(localStorage, newSettings)
-
-        chrome.storage.sync.set(localStorage, function () {
-            console.log("ONUPDATE: Initialized")
-        });
+        chrome.notifications.create("update", updateNotif, function () {
+            setTimeout(() => {
+                chrome.notifications.clear("update", (cleared) => {
+                    console.log("Notification Cleared = " + cleared)
+                })
+            }, 7500)
+        })
     }
 
 })
@@ -234,26 +76,63 @@ chrome.runtime.onInstalled.addListener(function (details) {
 chrome.storage.onChanged.addListener(function (changes, namespace) {
     console.log(changes)
 
-   Object.keys(changes).forEach(prop =>{
-       console.log(prop);
-       if(changes[prop].newValue.status === true && changes[prop].oldValue.status === false){
-        if(localStorage.options[prop + "Notif"] === true){
-            sendNotification(prop);
+    Object.keys(changes).forEach(prop => {
+        console.log(prop);
+        if (changes[prop].newValue.status === true && changes[prop].oldValue.status === false && changes[prop].oldValue.status != undefined) {
+            if (localStorage.options[prop + "Notif"] === true) {
+                sendNotification(prop);
+            }
         }
-       }
-       if(changes[prop].newValue.ticker != undefined && changes[prop].newValue.ticker != changes[prop].oldValue.ticker){
-            if(localStorage.options[prop + "Tick"] === true){
+        if (changes[prop].newValue.ticker != undefined && changes[prop].newValue.ticker != changes[prop].oldValue.ticker && changes[prop].oldValue.ticker != undefined) {
+            if (localStorage.options[prop + "Tick"] === true) {
                 sendTickerUpdate(prop);
-            }   
-        
-       }
-   })
+            }
 
-
+        }
+    })
     setBadge();
-
-
 });
+
+function installStorage() {
+    fetch(
+        url,
+        {
+            method: "POST",
+            mode: "cors",
+            headers:
+            {
+                "Content-type": "application/json",
+                "chrome": outAuth
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            Object.assign(localStorage, data[0])
+            chrome.storage.sync.set(localStorage, () => {
+                console.log("INSTALL PULSE: Data updated")
+            })
+        })
+        .then(() => {
+            const storage = {
+                options: {
+                    theme: "star"
+                }
+            }
+            Object.keys(localStorage).forEach(prop => {
+                storage.options[prop + "Notif"] = true;
+                storage.options[prop + "Tick"] = true;
+            })
+            Object.assign(localStorage, storage)
+        })
+        .then(() => {
+            chrome.storage.sync.set(localStorage, () => {
+                console.log("INSTALL OPTIONS BLOCK INITIALIZED")
+            })
+        })
+        .catch(e => { console.log(e) })
+
+}
+
 
 //PING THE SERVER FOR INFO AND UPDATE LOCAL AND CLOUD STORAGE(google give me webhooks pls)----//
 function pulse() {
@@ -279,7 +158,11 @@ function pulse() {
         })
         .then(() => {
             setBadge()
-        });
+        })
+
+        .catch((e) => {
+            console.log(e)
+        })
 
 }
 
@@ -325,6 +208,7 @@ function sendNotification(streamer) {
     const notif = {
         type: "basic",
         message: (streamer + " is Live!"),
+        contextMessage: localStorage[streamer].game,
         title: "Starlight",
         iconUrl: ("./images/" + streamer + ".png"),
         eventTime: Date.now()
@@ -343,6 +227,7 @@ function sendTickerUpdate(streamer) {
     const notif = {
         type: "basic",
         message: (streamer + " has updated their ticker!"),
+        contextMessage: localStorage[streamer].ticker,
         title: "Starlight",
         iconUrl: ("./images/" + streamer + ".png"),
         eventTime: Date.now()
