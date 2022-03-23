@@ -51,11 +51,13 @@ chrome.runtime.onInstalled.addListener(function (details) {
         installStorage();
     }
     else if (details.reason === "update") {
+        storageReset();
+
         const manifest = chrome.runtime.getManifest();
         const updateNotif = {
             type: "basic",
             message: ("Updated to version " + manifest.version),
-            contextMessage: "Added some data validation",
+            contextMessage: "Massive rewrite to background code. Your settings have been reset. Please go to options to make any changes.",
             title: "Starlight",
             iconUrl: "./images/icon48.png",
             eventTime: Date.now()
@@ -183,6 +185,13 @@ function getAllStorageSyncData() {
     });
 }
 
+function storageReset() {
+    
+    chrome.storage.sync.clear(()=>{
+        installStorage();
+    })
+    
+}
 //FUNCTION TO SET BADGE NUMBER; PARSES DATA AND COUNTS LIVE STREAMERS----//
 function setBadge() {
     var badgeCount = 0;
@@ -219,7 +228,7 @@ function sendNotification(streamer) {
             chrome.notifications.clear(streamer, (cleared) => {
                 console.log("Notification Cleared = " + cleared)
             })
-        }, 5000)
+        }, 6000)
     })
 }
 
@@ -238,6 +247,6 @@ function sendTickerUpdate(streamer) {
             chrome.notifications.clear(streamer, (cleared) => {
                 console.log("Notification Cleared = " + cleared)
             })
-        }, 5000)
+        }, 6000)
     })
 }
