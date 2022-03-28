@@ -134,8 +134,8 @@ function populateOptions() {
         }
         else {
             Object.keys(items).forEach(item => {
-                if (item != "options" && item != "PlasmaWalrus")
-                    $("#insertOptions").append("<div class='col'><div class='card mb-3 mx-auto border-0 bg-transparent' style='max-width: 900px;'><div class='row g-0 card-bg p-2' style='border-radius: 15px;'><div class='col-md-2 d-flex align-items-center'><img src='images/" + item + "Large.png' class='card-img border border-4 mx-auto'></div><div class='col-md-7'><div class='card-body'><figure class='text my-auto'><h5 class='card-title my-2'>" + item + "</h5><p class='card-text my-2' id='" + item + "Online'>Offline</p><p class='card-text my-2'><a href='https://www.twitch.tv/" + item.toLowerCase() + "' target='_blank'> <small >Visit Twitch Channel</small></a></p></figure></div></div><div class='col-md-3 d-flex flex-column'><div class='form-check form-switch  mt-auto mb-2 ms-4 me-auto'><input class='form-check-input' type='checkbox' role='switch' id='" + item + "Notifs' checked><label class='form-check-label' for='" + item + "Notifs'>Notifications</label></div><div class='form-check form-switch mt-2 mb-auto ms-4 me-auto'><label class='form-check-label' for='" + item + "Ticker'>Ticker Updates</label><input class='form-check-input' type='checkbox' role='switch' id='" + item + "Ticker' checked></div></div></div></div></div>")
+                if (item != "options")
+                    $("#insertOptions").append("<div class='col'><div class='card mb-3 mx-auto border-0 bg-transparent' style='max-width: 900px;'><div class='row g-0 card-bg p-2' style='border-radius: 15px;'><div class='col-md-2 d-flex align-items-center'><img src=" + items[item].profile + " class='card-img border border-4 mx-auto'></div><div class='col-md-7'><div class='card-body'><figure class='text my-auto'><h5 class='card-title my-2'>" + item + "</h5><p class='card-text my-2' id='" + item + "Online'>Offline</p><p class='card-text my-2'><a href='https://www.twitch.tv/" + item.toLowerCase() + "' target='_blank'> <small >Visit Twitch Channel</small></a></p></figure></div></div><div class='col-md-3 d-flex flex-column'><div class='form-check form-switch  mt-auto mb-2 ms-4 me-auto'><input class='form-check-input' type='checkbox' role='switch' id='" + item + "Notifs' checked><label class='form-check-label' for='" + item + "Notifs'>Notifications</label></div><div class='form-check form-switch mt-2 mb-auto ms-4 me-auto'><label class='form-check-label' for='" + item + "Ticker'>Ticker Updates</label><input class='form-check-input' type='checkbox' role='switch' id='" + item + "Ticker' checked></div></div></div></div></div>")
             })
         }
     })
@@ -147,6 +147,51 @@ function storageReset() {
         installStorage();
     })
     
+}
+
+function storageAudit() {
+    fetch(
+        url,
+        {
+            method: "POST",
+            mode: "cors",
+            headers:
+            {
+                "Content-type": "application/json",
+                "chrome": outAuth
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("AUDIT: Begin streamer audit")
+            Object.assign(localStorage, data[0])
+            Object.keys(localStorage).forEach(prop =>{
+                if(!data[0].hasOwnProperty(prop) && prop != "options"){
+                    chrome.storage.sync.remove(prop)
+                    chrome.storage.sync.remove([(prop + "Notif"), (prop + "Tick")])
+                    console.log("AUDIT: " + prop + " has been removed")
+                }
+            })
+            console.log("AUDIT: Streamer audit complete")
+        })
+        .then(() => {
+            console.log("AUDIT: Begin options audit")
+            Object.keys(localStorage).forEach(prop => {
+                if(prop != "options" && localStorage.options[prop + "Notif"] === undefined){
+                    localStorage.options[prop + "Notif"] = true;
+                    localStorage.options[prop + "Tick"] = true;
+                    console.log("AUDIT: Options for " + prop + " added")
+                }
+            })
+            console.log("AUDIT: Options audit complete")
+        })
+        .then(() => {
+            chrome.storage.sync.set(localStorage, () => {
+                console.log("AUDIT: Operation complete")
+            })
+        })
+        .catch(e => { console.log(e) })
+
 }
 
 function installStorage() {
@@ -176,8 +221,10 @@ function installStorage() {
                 }
             }
             Object.keys(fresh).forEach(prop => {
-                storage.options[prop + "Notif"] = true;
-                storage.options[prop + "Tick"] = true;
+                if(prop != "options"){
+                    storage.options[prop + "Notif"] = true;
+                    storage.options[prop + "Tick"] = true;
+                }
             })
             Object.assign(fresh, storage)
         })
@@ -193,6 +240,8 @@ function installStorage() {
 document.getElementById("testNotif").addEventListener("click", handleTestNotif);
 
 document.getElementById("resetStorage").addEventListener("click", storageReset);
+
+document.getElementById("auditStorage").addEventListener("click", storageAudit);
 
 document.addEventListener('DOMContentLoaded', populateOptions);
 

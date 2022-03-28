@@ -1,13 +1,8 @@
-// Is there a less fucking stupid way to do this with Object.defineProperty?
 //TODO LIST:
+// Is there a less fucking stupid way to do this with Object.defineProperty?
 //Package all CSS JS and Fonts in extension
 //See if you can make modules on extensions or if it's just fucking stupid
-//Make a storage audit function
 //Convert rest of Options JS to jquery
-//Find a not stupid way to get profile pictures from twitch/server?
-
-
-
 
 const url = "https://jabroni-server.herokuapp.com/pulse";
 const localStorage = {};
@@ -51,13 +46,13 @@ chrome.runtime.onInstalled.addListener(function (details) {
         installStorage();
     }
     else if (details.reason === "update") {
-        storageReset();
+        auditStorage();
 
         const manifest = chrome.runtime.getManifest();
         const updateNotif = {
             type: "basic",
             message: ("Updated to version " + manifest.version),
-            contextMessage: "Massive rewrite to background code. Your settings have been reset. Please go to options to make any changes.",
+            contextMessage: "Added data management tools, twitch profiles are now dynamically fetched",
             title: "Starlight",
             iconUrl: "./images/icon48.png",
             eventTime: Date.now()
@@ -95,6 +90,50 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
     setBadge();
 });
 
+function auditStorage() {
+    fetch(
+        url,
+        {
+            method: "POST",
+            mode: "cors",
+            headers:
+            {
+                "Content-type": "application/json",
+                "chrome": outAuth
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("AUDIT: Begin streamer audit")
+            Object.assign(localStorage, data[0])
+            Object.keys(localStorage).forEach(prop =>{
+                if(!data[0].hasOwnProperty(prop) && prop != "options"){
+                    chrome.storage.sync.remove(prop)
+                    chrome.storage.sync.remove([(prop + "Notif"), (prop + "Tick")])
+                    console.log("AUDIT: " + prop + " has been removed")
+                }
+            })
+            console.log("AUDIT: Streamer audit complete")
+        })
+        .then(() => {
+            console.log("AUDIT: Begin options audit")
+            Object.keys(localStorage).forEach(prop => {
+                if(prop != "options" && localStorage.options[prop + "Notif"] === undefined){
+                    localStorage.options[prop + "Notif"] = true;
+                    localStorage.options[prop + "Tick"] = true;
+                    console.log("AUDIT: Options for " + prop + " added")
+                }
+            })
+            console.log("AUDIT: Options audit complete")
+        })
+        .then(() => {
+            chrome.storage.sync.set(localStorage, () => {
+                console.log("AUDIT: Operation complete")
+            })
+        })
+        .catch(e => { console.log(e) })
+}
+
 function installStorage() {
     fetch(
         url,
@@ -121,8 +160,10 @@ function installStorage() {
                 }
             }
             Object.keys(localStorage).forEach(prop => {
-                storage.options[prop + "Notif"] = true;
-                storage.options[prop + "Tick"] = true;
+                if(prop != "options"){
+                    storage.options[prop + "Notif"] = true;
+                    storage.options[prop + "Tick"] = true;
+                }
             })
             Object.assign(localStorage, storage)
         })
