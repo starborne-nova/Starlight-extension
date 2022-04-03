@@ -70,7 +70,7 @@ li{
 }
 
 h3{
-    font-size: 1.17em;
+    font-size: 1em;
 }
 
 h4{
@@ -97,7 +97,7 @@ h4{
 }
 
 .header-text {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
 }
 
 .container{
@@ -219,10 +219,35 @@ body {
     transition: all 0.05s linear;
 }
 
+.active{   
+        z-index: 3 !important;
+        color: #fff !important;
+        background-color: #0d6efd !important;
+        border-color: #0d6efd !important;
+}
+
+.page-item.active .page-link {
+    z-index: 3 !important;
+    color: #fff !important;
+    background-color: #0d6efd !important;
+    border-color: #0d6efd !important;
+}
+
+.page-link:hover {
+    z-index: 2 !important;
+    color: #0a58ca !important;
+    background-color: #e9ecef !important;
+    border-color: #dee2e6 !important;
+}
+
 .hide {
     height: 0 !important;
     margin: 0 !important;
   }
+
+.noShadow{
+    text-shadow: none !important;
+}
 
 .status{
     padding-right: 10px;

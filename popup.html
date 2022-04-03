@@ -2,60 +2,36 @@
 <html lang="en">
 
 <head>
-    <link href="/fa/css/fontawesome.css" rel="stylesheet">
-    <link href="/fa/css/brands.css" rel="stylesheet">
-    <link href="/fa/css/solid.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="bootstrap-5.1.3-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="bootstrap-table/bootstrap-table.min.css">
-    <link rel="stylesheet" href="popup.css">
-    <script src="jquery.js"></script>
-    <script src="jquery.marquee.min.js"></script>
-    <script src="jquery.easing.min.js"></script>
-    <script src="bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js"></script>
-    <script src="bootstrap-table/bootstrap-table.min.js"></script>
-    <script defer src="popup.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="bootstrap-5.1.3-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="popup.css">
+  <script src="jquery.js"></script>
+  <script src="bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js"></script>
+  <script defer src="popup.js"></script>
 </head>
 
 <body>
-    <div class="container p-0 popup-container">
-        <div class="header" id="popHeader">
-            <h2 class="header-text">Starlight</h2>
-        </div>
-        
-        <div class="container">
-            <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link active" id="page1-tab" data-bs-toggle="tab" data-bs-target="#page1" type="button" role="tab" aria-controls="page1" aria-selected="true">Page 1</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="page2-tab" data-bs-toggle="tab" data-bs-target="#page2" type="button" role="tab" aria-controls="page2" aria-selected="false">Page 2</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="page3-tab" data-bs-toggle="tab" data-bs-target="#page3" type="button" role="tab" aria-controls="page3" aria-selected="false">Page 3</button>
-                </li>
-              </ul>
-        </div>
-        
-            
-            <div class="tab-content" id="myTabContent">
-              <div class="tab-pane fade active show" id="page1" role="tabpanel" aria-labelledby="page1">
-
-              </div>
-              <div class="tab-pane fade" id="page2" role="tabpanel" aria-labelledby="page2">
-                
-              </div>
-              <div class="tab-pane fade" id="page3" role="tabpanel" aria-labelledby="page3">
-                
-              </div>
-            </div>
+  <div class="container p-0 popup-container">
+    <div class="header py-2" id="popHeader">
+      <h2 class="header-text">Starlight</h2>
+      <nav aria-label="Popup Nav" id="popupNav">
+        <ul class="pagination justify-content-center noShadow" id="popupControl">
           
-        <div class="options" id="options">
-            <h3 class="optionLabel header-text"> <a href="/options.html" target="_blank"> Options</a> </h3>
-        </div>
+        </ul>
+      </nav>
     </div>
+    <div id="page1" class="page">
+    </div>
+    <div id="page2" class="page">
+    </div>
+    <div id="page3" class="page">
+    </div>
+    <div class="options" id="options">
+      <h3 class="optionLabel header-text"> <a href="/options.html" target="_blank"> Options</a> </h3>
+    </div>
+  </div>
 </body>
 
 </html>

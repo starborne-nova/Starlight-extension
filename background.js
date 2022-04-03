@@ -16,21 +16,18 @@ chrome.alarms.create("twitchPulse", {
     delayInMinutes: 1,
     periodInMinutes: 2
 });
+chrome.alarms.create("storageStartup", {
+    delayInMinutes: 1
+});
 console.log("FROM BACKGROUND: Alarm Created")
 chrome.alarms.onAlarm.addListener(function (alarm) {
     if (alarm.name === "twitchPulse") {
         console.log("FROM BACKGROUND: Alarm twitchpulse has triggered")
         pulse();
     }
-});
-console.log("FROM BACKGROUND: Listener Created");
-
-//SET BADGE BACKGROUND(because white looks bad)----//
-chrome.action.setBadgeBackgroundColor({ color: "#0a1f27" }, function () { console.log("FROM BACKGROUND:background color changed") });
-
-
-//INIT AND SET LOCAL STORAGE-----//
-const initStorageCache = getAllStorageSyncData()
+    if(alarm.name === "storageStartup"){
+        //INIT AND SET LOCAL STORAGE-----//
+        getAllStorageSyncData()
     .then(items => {
         // Copy the data retrieved from storage into storageCache.
         Object.assign(localStorage, items);
@@ -39,6 +36,12 @@ const initStorageCache = getAllStorageSyncData()
     .then(() => {
         setBadge();
     });
+    }
+});
+console.log("FROM BACKGROUND: Listener Created");
+
+//SET BADGE BACKGROUND(because white looks bad)----//
+chrome.action.setBadgeBackgroundColor({ color: "#0a1f27" }, function () { console.log("FROM BACKGROUND:background color changed") });
 
 //FIRST RUN INITIALIZE CLOUD STORAGE----//
 chrome.runtime.onInstalled.addListener(function (details) {
@@ -52,7 +55,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
         const updateNotif = {
             type: "basic",
             message: ("Updated to version " + manifest.version),
-            contextMessage: "Added data management tools, twitch profiles are now dynamically fetched",
+            contextMessage: "Check options page for changelog!",
             title: "Starlight",
             iconUrl: "./images/icon48.png",
             eventTime: Date.now()
@@ -75,20 +78,23 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
 
     Object.keys(changes).forEach(prop => {
         console.log(prop);
-        if (changes[prop].newValue.status === true && changes[prop].oldValue.status === false && changes[prop].oldValue.status != undefined) {
-            if (localStorage.options[prop + "Notif"] === true) {
-                sendNotification(prop);
+        if(changes[prop].hasOwnProperty("newValue") && changes[prop].hasOwnProperty("oldValue")){
+            if (changes[prop].newValue.status === true && changes[prop].oldValue.status === false && changes[prop].oldValue.status != undefined) {
+                if (localStorage.options[prop + "Notif"] === true) {
+                    sendNotification(prop);
+                    setBadge()        
+                }
+            }
+            if (changes[prop].newValue.ticker != undefined && changes[prop].newValue.ticker != changes[prop].oldValue.ticker && changes[prop].oldValue.ticker != undefined) {
+                if (localStorage.options[prop + "Tick"] === true) {
+                    sendTickerUpdate(prop);
+                    setBadge()              
+                }
+    
             }
         }
-        if (changes[prop].newValue.ticker != undefined && changes[prop].newValue.ticker != changes[prop].oldValue.ticker && changes[prop].oldValue.ticker != undefined) {
-            if (localStorage.options[prop + "Tick"] === true) {
-                sendTickerUpdate(prop);
-            }
-
-        }
-    })
-    setBadge();
-});
+    });
+})
 
 function auditStorage() {
     fetch(
@@ -110,6 +116,9 @@ function auditStorage() {
                 if(!data[0].hasOwnProperty(prop) && prop != "options"){
                     chrome.storage.sync.remove(prop)
                     chrome.storage.sync.remove([(prop + "Notif"), (prop + "Tick")])
+                    delete localStorage[prop]
+                    delete localStorage.options[prop + "Notif"]
+                    delete localStorage.options[prop + "Tick"]
                     console.log("AUDIT: " + prop + " has been removed")
                 }
             })
@@ -238,12 +247,14 @@ function setBadge() {
     var badgeCount = 0;
 
     Object.entries(localStorage).forEach(function ([key, value]) {
-        if (value.status === true) {
-            console.log("SETBADGE:" + key + " is live.")
-            badgeCount++;
-        }
-        else if (value.status === undefined) {
-            console.log("SETBADGE: OPTIONS BLOCK " + key)
+        if(localStorage.options[key + "Notif"] === true){
+            if (value.status === true) {
+                console.log("SETBADGE:" + key + " is live.")
+                badgeCount++;
+            }
+            else if (value.status === undefined) {
+                console.log("SETBADGE: OPTIONS BLOCK " + key)
+            }
         }
     })
     var badgeText = badgeCount.toString()

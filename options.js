@@ -40,6 +40,7 @@ function saveOptions() {
             status.textContent = '';
         }, 750);
         loadOptions();
+        setBadge();
     });
 };
 
@@ -169,6 +170,9 @@ function storageAudit() {
                 if(!data[0].hasOwnProperty(prop) && prop != "options"){
                     chrome.storage.sync.remove(prop)
                     chrome.storage.sync.remove([(prop + "Notif"), (prop + "Tick")])
+                    delete localStorage[prop]
+                    delete localStorage.options[prop + "Notif"]
+                    delete localStorage.options[prop + "Tick"]
                     console.log("AUDIT: " + prop + " has been removed")
                 }
             })
@@ -235,6 +239,26 @@ function installStorage() {
         })
         .catch(e => { console.log(e) })
 
+}
+
+function setBadge() {
+    var badgeCount = 0;
+
+    Object.entries(localStorage).forEach(function ([key, value]) {
+        if(localStorage.options[key + "Notif"] === true){
+            if (value.status === true) {
+                console.log("SETBADGE:" + key + " is live.")
+                badgeCount++;
+            }
+            else if (value.status === undefined) {
+                console.log("SETBADGE: OPTIONS BLOCK " + key)
+            }
+        }
+    })
+    var badgeText = badgeCount.toString()
+    console.log("FROM SETBADGE: " + badgeText);
+
+    chrome.action.setBadgeText({ text: badgeText }, function () { console.log("FROM BACKGROUND:badge text changed") });
 }
 
 document.getElementById("testNotif").addEventListener("click", handleTestNotif);
