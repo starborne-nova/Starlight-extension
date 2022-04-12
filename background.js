@@ -14,7 +14,7 @@ const outAuth = "stealthystars";
 //CREATE PULSE ALARM------//
 chrome.alarms.create("twitchPulse", {
     delayInMinutes: 1,
-    periodInMinutes: 2
+    periodInMinutes: 3
 });
 chrome.alarms.create("storageStartup", {
     delayInMinutes: 1
@@ -133,12 +133,27 @@ function auditStorage() {
                     console.log("AUDIT: Options for " + prop + " added")
                 }
             })
+            if(localStorage.code === undefined){
+                const codeBlock = {
+                    code:{
+                        generated: "",
+                        userID: "",
+                        req: [],
+                        enabled: false
+                    }
+                }
+                Object.assign(localStorage, codeBlock);
+                console.log("AUDIT: No code block found, insertion complete")
+            }
             console.log("AUDIT: Options audit complete")
         })
         .then(() => {
             chrome.storage.sync.set(localStorage, () => {
                 console.log("AUDIT: Operation complete")
             })
+        })
+        .then(()=>{
+            setBadge();
         })
         .catch(e => { console.log(e) })
 }
@@ -166,6 +181,12 @@ function installStorage() {
             const storage = {
                 options: {
                     theme: "star"
+                },
+                code:{
+                    generated: "",
+                    userID: "",
+                    req: {},
+                    enabled: false
                 }
             }
             Object.keys(localStorage).forEach(prop => {
@@ -180,6 +201,9 @@ function installStorage() {
             chrome.storage.sync.set(localStorage, () => {
                 console.log("INSTALL OPTIONS BLOCK INITIALIZED")
             })
+        })
+        .then(()=>{
+            setBadge()
         })
         .catch(e => { console.log(e) })
 
@@ -206,10 +230,8 @@ function pulse() {
             chrome.storage.sync.set(localStorage, () => {
                 console.log("FROM PULSE: Data updated")
                 console.log(localStorage);
+                setBadge()
             })
-        })
-        .then(() => {
-            setBadge()
         })
 
         .catch((e) => {

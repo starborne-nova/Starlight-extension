@@ -135,9 +135,9 @@ function populateOptions() {
         }
         else {
             Object.keys(items).forEach(item => {
-                if (item != "options")
+                if (item != "options" && item != "code"){
                     $("#insertOptions").append("<div class='col'><div class='card mb-3 mx-auto border-0 bg-transparent' style='max-width: 900px;'><div class='row g-0 card-bg p-2' style='border-radius: 15px;'><div class='col-md-2 d-flex align-items-center'><img src=" + items[item].profile + " class='card-img border border-4 mx-auto'></div><div class='col-md-7'><div class='card-body'><figure class='text my-auto'><h5 class='card-title my-2'>" + item + "</h5><p class='card-text my-2' id='" + item + "Online'>Offline</p><p class='card-text my-2'><a href='https://www.twitch.tv/" + item.toLowerCase() + "' target='_blank'> <small >Visit Twitch Channel</small></a></p></figure></div></div><div class='col-md-3 d-flex flex-column'><div class='form-check form-switch  mt-auto mb-2 ms-4 me-auto'><input class='form-check-input' type='checkbox' role='switch' id='" + item + "Notifs' checked><label class='form-check-label' for='" + item + "Notifs'>Notifications</label></div><div class='form-check form-switch mt-2 mb-auto ms-4 me-auto'><label class='form-check-label' for='" + item + "Ticker'>Ticker Updates</label><input class='form-check-input' type='checkbox' role='switch' id='" + item + "Ticker' checked></div></div></div></div></div>")
-            })
+            }})
         }
     })
 }
@@ -187,6 +187,18 @@ function storageAudit() {
                     console.log("AUDIT: Options for " + prop + " added")
                 }
             })
+            if(localStorage.code === undefined){
+                const codeBlock = {
+                    code:{
+                        generated: "",
+                        userID: "",
+                        req: {},
+                        enabled: false
+                    }
+                }
+                Object.assign(localStorage, codeBlock);
+                console.log("AUDIT: No code block found, insertion complete")
+            }
             console.log("AUDIT: Options audit complete")
         })
         .then(() => {
@@ -222,6 +234,12 @@ function installStorage() {
             const storage = {
                 options: {
                     theme: "star"
+                },
+                code:{
+                    generated: "",
+                    userID: "",
+                    req: {},
+                    enabled: false
                 }
             }
             Object.keys(fresh).forEach(prop => {
@@ -260,6 +278,56 @@ function setBadge() {
 
     chrome.action.setBadgeText({ text: badgeText }, function () { console.log("FROM BACKGROUND:badge text changed") });
 }
+
+function parseCode(code) {
+    const unparsed = code;
+    localStorage.code.generated = unparsed;
+    const codePayload = {}
+    unparsed.split("%").forEach(id =>{
+        let insert = {
+            [id]: "enabled"
+        }
+        Object.assign(codePayload, insert)
+    });
+    console.log(codePayload);
+
+    fetch(
+        "https://jabroni-server.herokuapp.com/starpulse/init",
+        {
+            method: "POST",
+            body: JSON.stringify(codePayload),
+            mode: "cors",
+            headers:
+            {
+                "Content-type": "application/json",
+                "chrome": outAuth
+            },
+        })
+        .then(response => response.json())
+        .then(data =>{
+            const reqObject = {}
+            const incData = data.converted;
+            incData.forEach(name => {
+                let insert = {
+                    [name]: "enabled"
+                }
+                Object.assign(reqObject, insert)
+            })
+            Object.assign(localStorage.code.req, reqObject)
+            localStorage.code.enabled = true
+            console.log("OPTIONS: Request code saved. Enabling StarPulse")
+        })
+        .then(()=>{
+            saveOptions()
+        })
+
+}
+
+$("#codeSend").on("click", function(e){
+    const codeInput = $("#codeInput").val();
+    parseCode(codeInput);
+    console.log(localStorage);
+});
 
 document.getElementById("testNotif").addEventListener("click", handleTestNotif);
 
