@@ -2,7 +2,6 @@ const localStorage = {};
 const outAuth = "stealthystars";
 const url = "https://jabroni-server.herokuapp.com/pulse";
 
-//Dim font color
 //border + shadow on boxes
 //gradient on boxes?
 
@@ -42,7 +41,7 @@ function saveOptions() {
         loadOptions();
         setBadge();
     });
-};
+}
 
 function loadOptions() {
     chrome.storage.sync.get(null, (items) => {
@@ -147,7 +146,6 @@ function storageReset() {
     chrome.storage.sync.clear(()=>{
         installStorage();
     })
-    
 }
 
 function storageAudit() {
@@ -261,22 +259,23 @@ function installStorage() {
 
 function setBadge() {
     var badgeCount = 0;
+    chrome.storage.sync.get(null, (items) => {
+        Object.entries(items).forEach(function ([key, value]) {
+            if (items.options[key + "Notif"] === true) {
+                if (value.status === true) {
+                    console.log("SETBADGE:" + key + " is live.")
+                    badgeCount++;
+                }
+                else if (value.status === undefined) {
+                    console.log("SETBADGE: OPTIONS BLOCK " + key)
+                }
+            }
+        })
+        var badgeText = badgeCount.toString()
+        console.log("FROM SETBADGE: " + badgeText);
 
-    Object.entries(localStorage).forEach(function ([key, value]) {
-        if(localStorage.options[key + "Notif"] === true){
-            if (value.status === true) {
-                console.log("SETBADGE:" + key + " is live.")
-                badgeCount++;
-            }
-            else if (value.status === undefined) {
-                console.log("SETBADGE: OPTIONS BLOCK " + key)
-            }
-        }
+        chrome.action.setBadgeText({ text: badgeText }, function () { console.log("FROM BACKGROUND:badge text changed") });
     })
-    var badgeText = badgeCount.toString()
-    console.log("FROM SETBADGE: " + badgeText);
-
-    chrome.action.setBadgeText({ text: badgeText }, function () { console.log("FROM BACKGROUND:badge text changed") });
 }
 
 function parseCode(code) {

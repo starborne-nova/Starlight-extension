@@ -3,11 +3,13 @@
 # dependencies
 /storePictures
 /node_modules
+/.vscode
 /.pnp
 .pnp.js
 
 # testing
 /coverage
+.eslintrc.json
 
 # production
 /build
@@ -21,6 +23,8 @@
 .env.production.local
 reference.js
 scratchpad.js
+package.json
+package-lock.json
 
 npm-debug.log*
 yarn-debug.log*

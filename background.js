@@ -1,12 +1,21 @@
+/* eslint-disable no-undef */
 //TODO LIST:
 // Is there a less fucking stupid way to do this with Object.defineProperty?
 //Package all CSS JS and Fonts in extension
 //See if you can make modules on extensions or if it's just fucking stupid
-//Convert rest of Options JS to jquery
 
 const url = "https://jabroni-server.herokuapp.com/pulse";
 const localStorage = {};
+const initBadge = setBadge();
+const initStorage = getAllStorageSyncData()
+    .then(items => {
 
+        Object.assign(localStorage, items);
+        console.log("Storage Loaded")
+    })
+    .then(() => {
+        setBadge();
+    });
 const outAuth = "stealthystars";
 
 //--------------------------------------------------------END OF INIT VARIABLES-----------------------------------------------------------------//
@@ -16,26 +25,11 @@ chrome.alarms.create("twitchPulse", {
     delayInMinutes: 1,
     periodInMinutes: 3
 });
-chrome.alarms.create("storageStartup", {
-    delayInMinutes: 1
-});
 console.log("FROM BACKGROUND: Alarm Created")
 chrome.alarms.onAlarm.addListener(function (alarm) {
     if (alarm.name === "twitchPulse") {
         console.log("FROM BACKGROUND: Alarm twitchpulse has triggered")
         pulse();
-    }
-    if(alarm.name === "storageStartup"){
-        //INIT AND SET LOCAL STORAGE-----//
-        getAllStorageSyncData()
-    .then(items => {
-        // Copy the data retrieved from storage into storageCache.
-        Object.assign(localStorage, items);
-
-    })
-    .then(() => {
-        setBadge();
-    });
     }
 });
 console.log("FROM BACKGROUND: Listener Created");
@@ -69,51 +63,54 @@ chrome.runtime.onInstalled.addListener(function (details) {
             }, 7500)
         })
     }
-
 })
 
 //CREATE STORAGE CHANGE LISTENER TO DEPLOY NOTIFS WHEN NEEDED---//
-chrome.storage.onChanged.addListener(function (changes, namespace) {
+chrome.storage.onChanged.addListener(function (changes) {
     console.log(changes)
 
     Object.keys(changes).forEach(prop => {
         console.log(prop);
-        if(changes[prop].hasOwnProperty("newValue") && changes[prop].hasOwnProperty("oldValue")){
+        if (changes[prop].hasOwnProperty("newValue") && changes[prop].hasOwnProperty("oldValue")) {
             if (changes[prop].newValue.status === true && changes[prop].oldValue.status === false && changes[prop].oldValue.status != undefined) {
                 if (localStorage.options[prop + "Notif"] === true) {
                     sendNotification(prop);
-                    setBadge()        
-                }
-            }
+                    setBadge()
+                }}
             if (changes[prop].newValue.ticker != undefined && changes[prop].newValue.ticker != changes[prop].oldValue.ticker && changes[prop].oldValue.ticker != undefined) {
                 if (localStorage.options[prop + "Tick"] === true) {
                     sendTickerUpdate(prop);
-                    setBadge()              
-                }
-    
-            }
+                    setBadge()
+                }}
         }
     });
 })
 
 function auditStorage() {
-    fetch(
-        url,
-        {
-            method: "POST",
-            mode: "cors",
-            headers:
-            {
-                "Content-type": "application/json",
-                "chrome": outAuth
-            },
+    getAllStorageSyncData()
+        .then(items => {
+            // Copy the data retrieved from storage into storageCache.
+            Object.assign(localStorage, items);
+        })
+        .then(() => {
+            return fetch(
+                url,
+                {
+                    method: "POST",
+                    mode: "cors",
+                    headers:
+                    {
+                        "Content-type": "application/json",
+                        "chrome": outAuth
+                    },
+                })
         })
         .then(response => response.json())
         .then(data => {
             console.log("AUDIT: Begin streamer audit")
             Object.assign(localStorage, data[0])
-            Object.keys(localStorage).forEach(prop =>{
-                if(!data[0].hasOwnProperty(prop) && prop != "options"){
+            Object.keys(localStorage).forEach(prop => {
+                if (!data[0].hasOwnProperty(prop) && prop != "options") {
                     chrome.storage.sync.remove(prop)
                     chrome.storage.sync.remove([(prop + "Notif"), (prop + "Tick")])
                     delete localStorage[prop]
@@ -127,15 +124,15 @@ function auditStorage() {
         .then(() => {
             console.log("AUDIT: Begin options audit")
             Object.keys(localStorage).forEach(prop => {
-                if(prop != "options" && localStorage.options[prop + "Notif"] === undefined){
+                if (prop != "options" && localStorage.options[prop + "Notif"] === undefined) {
                     localStorage.options[prop + "Notif"] = true;
                     localStorage.options[prop + "Tick"] = true;
                     console.log("AUDIT: Options for " + prop + " added")
                 }
             })
-            if(localStorage.code === undefined){
+            if (localStorage.code === undefined) {
                 const codeBlock = {
-                    code:{
+                    code: {
                         generated: "",
                         userID: "",
                         req: [],
@@ -152,7 +149,7 @@ function auditStorage() {
                 console.log("AUDIT: Operation complete")
             })
         })
-        .then(()=>{
+        .then(() => {
             setBadge();
         })
         .catch(e => { console.log(e) })
@@ -182,7 +179,7 @@ function installStorage() {
                 options: {
                     theme: "star"
                 },
-                code:{
+                code: {
                     generated: "",
                     userID: "",
                     req: {},
@@ -190,7 +187,7 @@ function installStorage() {
                 }
             }
             Object.keys(localStorage).forEach(prop => {
-                if(prop != "options"){
+                if (prop != "options") {
                     storage.options[prop + "Notif"] = true;
                     storage.options[prop + "Tick"] = true;
                 }
@@ -202,7 +199,7 @@ function installStorage() {
                 console.log("INSTALL OPTIONS BLOCK INITIALIZED")
             })
         })
-        .then(()=>{
+        .then(() => {
             setBadge()
         })
         .catch(e => { console.log(e) })
@@ -243,46 +240,42 @@ function pulse() {
 
 //FUNCTION TO INIT LOCAL STORAGE---//
 function getAllStorageSyncData() {
-    // Immediately return a promise and start asynchronous work
+
     return new Promise((resolve, reject) => {
-        // Asynchronously fetch all data from storage.sync.
         chrome.storage.sync.get(null, (items) => {
-            // Pass any observed errors down the promise chain.
             if (chrome.runtime.lastError) {
                 return reject(chrome.runtime.lastError);
             }
-            // Pass the data retrieved from storage down the promise chain.
             resolve(items);
         });
     });
 }
 
 function storageReset() {
-    
-    chrome.storage.sync.clear(()=>{
+    chrome.storage.sync.clear(() => {
         installStorage();
     })
-    
 }
 //FUNCTION TO SET BADGE NUMBER; PARSES DATA AND COUNTS LIVE STREAMERS----//
 function setBadge() {
     var badgeCount = 0;
+    chrome.storage.sync.get(null, (items) => {
+        Object.entries(items).forEach(function ([key, value]) {
+            if (items.options[key + "Notif"] === true) {
+                if (value.status === true) {
+                    console.log("SETBADGE:" + key + " is live.")
+                    badgeCount++;
+                }
+                else if (value.status === undefined) {
+                    console.log("SETBADGE: OPTIONS BLOCK " + key)
+                }
+            }
+        })
+        var badgeText = badgeCount.toString()
+        console.log("FROM SETBADGE: " + badgeText);
 
-    Object.entries(localStorage).forEach(function ([key, value]) {
-        if(localStorage.options[key + "Notif"] === true){
-            if (value.status === true) {
-                console.log("SETBADGE:" + key + " is live.")
-                badgeCount++;
-            }
-            else if (value.status === undefined) {
-                console.log("SETBADGE: OPTIONS BLOCK " + key)
-            }
-        }
+        chrome.action.setBadgeText({ text: badgeText }, function () { console.log("FROM BACKGROUND:badge text changed") });
     })
-    var badgeText = badgeCount.toString()
-    console.log("FROM SETBADGE: " + badgeText);
-
-    chrome.action.setBadgeText({ text: badgeText }, function () { console.log("FROM BACKGROUND:badge text changed") });
 }
 
 

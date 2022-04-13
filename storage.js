@@ -44,11 +44,9 @@ function populateStorage() {
                         location.reload();
                     })
                 }
-
                 if (item === "options") {
                     $("#" + item + "Sub").after("<div class='btn-group position-absolute top-0 end-0 p-3' role='group'><button id='" + item + "ResetFire' type='button' class='btn btn-warning' data-bs-toggle='modal' data-bs-target='#optionsTool'>Open Options Tool</button></div>")
                 }
-
                 else {
                     $("#" + item + "Sub").after("<div class='btn-group position-absolute top-0 end-0 p-3' role='group'><button id='" + item + "Delete' type='button' class='btn btn-danger dropdown-toggle' data-bs-toggle='dropdown' aria-expanded='false'>Delete</button><ul class='dropdown-menu bg-dark' aria-labelledby='btnGroupDrop1'><li><a class='dropdown-item text-light' id='" + item + "DeleteFire' href='#'>Are you sure?</a></li></ul></div>")
                     $("#" + item + "DeleteFire").on("click", (e) => {
@@ -64,22 +62,17 @@ function populateStorage() {
 }
 
 function getAllStorageSyncData() {
-    // Immediately return a promise and start asynchronous work
     return new Promise((resolve, reject) => {
-        // Asynchronously fetch all data from storage.sync.
         chrome.storage.sync.get(null, (items) => {
-            // Pass any observed errors down the promise chain.
             if (chrome.runtime.lastError) {
                 return reject(chrome.runtime.lastError);
             }
-            // Pass the data retrieved from storage down the promise chain.
             resolve(items);
         });
     });
 }
 
-async function optionsSubmit() {
-    
+async function optionsSubmit() {    
             $("input[id*='Tool']").each((i, e)=>{
                 const elemValue = e.value
                 console.log(e.value.toString())
@@ -88,13 +81,9 @@ async function optionsSubmit() {
                 }
             })          
                 console.log(localStorage)
-                chrome.storage.sync.set(localStorage);     
-        
+                chrome.storage.sync.set(localStorage);            
     }
     
-
-
-
 $("#optionsToolSubmit").on("click", e=>{
     optionsSubmit();
 })
@@ -105,12 +94,10 @@ document.getElementById("resetStorage").addEventListener("click", storageReset);
 
 document.getElementById("auditStorage").addEventListener("click", storageAudit);
 
-function storageReset() {
-    
+function storageReset() {   
     chrome.storage.sync.clear(()=>{
         installStorage();
-    })
-    
+    })   
 }
 
 function storageAudit() {
@@ -231,20 +218,20 @@ function installStorage() {
 
 function setBadge() {
     var badgeCount = 0;
-
-    Object.entries(localStorage).forEach(function ([key, value]) {
-        if(localStorage.options[key + "Notif"] === true){
-            if (value.status === true) {
-                console.log("SETBADGE:" + key + " is live.")
-                badgeCount++;
+    chrome.storage.sync.get(null, (items) => {
+        Object.entries(items).forEach(function ([key, value]) {
+            if (items.options[key + "Notif"] === true) {
+                if (value.status === true) {
+                    console.log("SETBADGE:" + key + " is live.")
+                    badgeCount++;
+                }
+                else if (value.status === undefined) {
+                    console.log("SETBADGE: OPTIONS BLOCK " + key)
+                }
             }
-            else if (value.status === undefined) {
-                console.log("SETBADGE: OPTIONS BLOCK " + key)
-            }
-        }
+        })
+        var badgeText = badgeCount.toString()
+        console.log("FROM SETBADGE: " + badgeText);
+        chrome.action.setBadgeText({ text: badgeText }, function () { console.log("FROM BACKGROUND:badge text changed") });
     })
-    var badgeText = badgeCount.toString()
-    console.log("FROM SETBADGE: " + badgeText);
-
-    chrome.action.setBadgeText({ text: badgeText }, function () { console.log("FROM BACKGROUND:badge text changed") });
 }
