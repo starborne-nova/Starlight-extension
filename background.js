@@ -4,6 +4,7 @@
 //Package all CSS JS and Fonts in extension
 //See if you can make modules on extensions or if it's just fucking stupid
 
+const outAuth = "stealthystars";
 const url = "https://jabroni-server.herokuapp.com/pulse";
 const localStorage = {};
 const initBadge = setBadge();
@@ -16,13 +17,12 @@ const initStorage = getAllStorageSyncData()
     .then(() => {
         setBadge();
     });
-const outAuth = "stealthystars";
+const initPulse = pulse();
 
 //--------------------------------------------------------END OF INIT VARIABLES-----------------------------------------------------------------//
 
 //CREATE PULSE ALARM------//
 chrome.alarms.create("twitchPulse", {
-    delayInMinutes: 1,
     periodInMinutes: 3
 });
 console.log("FROM BACKGROUND: Alarm Created")
@@ -110,7 +110,7 @@ function auditStorage() {
             console.log("AUDIT: Begin streamer audit")
             Object.assign(localStorage, data[0])
             Object.keys(localStorage).forEach(prop => {
-                if (!data[0].hasOwnProperty(prop) && prop != "options") {
+                if (!data[0].hasOwnProperty(prop) && prop != "options" && prop != "code") {
                     chrome.storage.sync.remove(prop)
                     chrome.storage.sync.remove([(prop + "Notif"), (prop + "Tick")])
                     delete localStorage[prop]
@@ -124,7 +124,7 @@ function auditStorage() {
         .then(() => {
             console.log("AUDIT: Begin options audit")
             Object.keys(localStorage).forEach(prop => {
-                if (prop != "options" && localStorage.options[prop + "Notif"] === undefined) {
+                if (prop != "options" && prop!= "code" && localStorage.options[prop + "Notif"] === undefined) {
                     localStorage.options[prop + "Notif"] = true;
                     localStorage.options[prop + "Tick"] = true;
                     console.log("AUDIT: Options for " + prop + " added")
@@ -182,7 +182,7 @@ function installStorage() {
                 code: {
                     generated: "",
                     userID: "",
-                    req: {},
+                    req: [],
                     enabled: false
                 }
             }
