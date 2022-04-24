@@ -12,29 +12,40 @@
     <link rel="stylesheet" href="options.css">
     <title>Options Page</title>
 </head>
+<nav class="navbar navbar-light bg-dark mb-5">
+    <div class="container-fluid justify-content-start">
+        <img src="images/cometTest.png" id="logo">
+        <span class="navbar-brand my-2 ms-1 h1 text-light">Starlight Options</span>
+        <a class="nav-link active d-flex my-0 me-3 p-0" aria-current="page"
+            href="https://chrome.google.com/webstore/detail/starlight/mjpipkhmdoghaollbfhfhhjblegomlaj" target="_blank">
+            <span class="material-icons">
+                open_in_browser
+            </span>
+        </a>
+        <a class="nav-link active d-flex my-0 me-3 p-0" aria-current="page" href="mailto:starbornedevops@gmail.com">
+            <span class="material-icons">
+                bug_report
+            </span>
+        </a>
+        <a class="nav-link active d-flex my-0 me-3 p-0" aria-current="page"
+            href="https://github.com/starborne-nova/TwitchLight-Extension" target="_blank">
+            <span class="material-icons">
+                code
+            </span>
+        </a>
+        <a href='https://ko-fi.com/W7W1BZADU' target='_blank'
+            class="nav-link active d-flex justify-content-center m-0 p-0 ms-auto me-5">
+            <p class="m-0 me-2">Donate</p>
+            <span class="material-icons">
+                emoji_food_beverage
+            </span>
+        </a>
+
+    </div>
+</nav>
 
 <body data-theme="purple">
     <div class="container-fluid">
-        <div class="container-fluid">
-            <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-secondary">
-                <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-                    <img src="images/cometTest.png" id="logo">
-                    <span class="fs-4 text-white">Starlight Options</span>
-                </a>
-
-                <ul class="nav nav-pills my-auto flex-column">
-
-                    <li class="nav-item"><a
-                            href="https://chrome.google.com/webstore/detail/starlight/mjpipkhmdoghaollbfhfhhjblegomlaj"
-                            class="nav-link" target="_blank">Extension Store Page</a></li>
-                    <li class="nav-item"><a href="https://ko-fi.com/starbornenova" class="nav-link"
-                            target="_blank">Feeling Generous?</a></li>
-
-                </ul>
-            </header>
-        </div>
-
-
         <div class="container-fluid optionList" id="optionDiv">
 
             <div class="row row-cols-1 row-cols-md-1 g-4">
@@ -46,12 +57,11 @@
                                 <h5 class="text-center">Recent News</h5>
                                 <ul class="m-2">
                                     <li>
-                                        A Storage Tool has been added for debugging. Everyday users probably will not
-                                        find a use for it but if you are curious you can investigate it
-                                    </li>
-                                    <li>
-                                        This is most likely the last update before the server is ready to generate
-                                        custom follow lists.
+                                        Custom follow lists have entered the experimental stage. If you want to set up
+                                        your own list, follow the link to generate a request code that will set up the
+                                        list for you. For now, everyone has 5 credits to add streamers not already
+                                        registered on the server's end. Credits will be increased if the server performs
+                                        well with an increased amount of users
                                     </li>
                                     <li>
                                         Thank you for using Starlight! The next stage of the project is approaching and
@@ -65,13 +75,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card mb-3 mx-auto border-0 bg-transparent" style="max-width: 900px;" hidden>
+                    <div class="card mb-3 mx-auto border-0 bg-transparent" style="max-width: 900px;">
                         <div class="row g-0 card-bg p-2" style="border-radius: 15px;">
-                            <div class="col-12 mt-3 mb-4 d-flex align-items-center">
-                                <a href="https://jabroni-server.herokuapp.com/starlight" target="_blank"
-                                    class="text-center">
-                                    <h5 class="mx-auto my-auto">If this is your first time using Starlight, things might
-                                        look a little empty. Click here to complete the initial setup.</h5>
+                            <div class="col-12 mt-3 mb-4">
+                                <a href="https://jabroni-server.herokuapp.com/starlight" target="_blank">
+                                    <h5 class="text-center">Click here to start the custom list process</h5>
                                 </a>
                             </div>
                             <div class="col-md-4 mb-3 d-flex align-items-center">
@@ -84,18 +92,18 @@
                             </div>
                             <div class="col-md-5 mb-3 d-flex align-items-center">
 
-                                <input type="text" id="codeInput" name="codeInput">
-                                <button id="codeSend" class="btn btn-outline-primary mx-3">Submit</button>
+                                <input type="text" id="codeInput" name="codeInput" class="ms-auto">
+                                <button id="codeSend" class="btn btn-outline-success ms-4 me-4">Save</button>
 
                             </div>
                         </div>
                     </div>
                     <div class="card mb-3 mx-auto border-0 bg-transparent" style="max-width: 900px;">
                         <div class="row g-0 card-bg p-2" style="height:100px; border-radius: 15px;">
-                            <div class="col-md-2 d-flex align-items-center">
-                                <h5 class="mx-auto my-auto">Color Theme</h5>
+                            <div class="col-md-4 d-flex align-items-center">
+                                <h5 class="ms-4 me-auto my-auto">Color Theme</h5>
                             </div>
-                            <div class="col-md-7">
+                            <div class="col-md-5">
                                 <div class="card-body">
 
                                 </div>

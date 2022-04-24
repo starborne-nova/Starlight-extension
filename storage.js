@@ -35,7 +35,7 @@ function populateStorage() {
                         const reset = {
                             code: {
                                 userID: "",
-                                req: [],
+                                req: {},
                                 generated: "",
                                 enabled: false
                             }

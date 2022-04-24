@@ -6,8 +6,8 @@
 
 const outAuth = "stealthystars";
 const url = "https://jabroni-server.herokuapp.com/pulse";
+const starUrl = "https://jabroni-server.herokuapp.com/starpulse";
 const localStorage = {};
-const initBadge = setBadge();
 const initStorage = getAllStorageSyncData()
     .then(items => {
 
@@ -16,20 +16,29 @@ const initStorage = getAllStorageSyncData()
     })
     .then(() => {
         setBadge();
+        localStorage.code.enabled?starPulse():pulse();
     });
-const initPulse = pulse();
 
 //--------------------------------------------------------END OF INIT VARIABLES-----------------------------------------------------------------//
 
 //CREATE PULSE ALARM------//
 chrome.alarms.create("twitchPulse", {
+    delayInMinutes: 1,
     periodInMinutes: 3
 });
 console.log("FROM BACKGROUND: Alarm Created")
 chrome.alarms.onAlarm.addListener(function (alarm) {
     if (alarm.name === "twitchPulse") {
-        console.log("FROM BACKGROUND: Alarm twitchpulse has triggered")
-        pulse();
+        chrome.storage.sync.get(null, (items)=>{
+            if(items.code.enabled === false){
+                console.log("FROM BACKGROUND: Alarm twitchpulse has triggered")
+                pulse();
+            }
+            else if(items.code.enabled === true){
+                console.log("FROM BACKGROUND: STARPULSE TRIGGERED")
+                starPulse();
+            }
+        })
     }
 });
 console.log("FROM BACKGROUND: Listener Created");
@@ -124,7 +133,7 @@ function auditStorage() {
         .then(() => {
             console.log("AUDIT: Begin options audit")
             Object.keys(localStorage).forEach(prop => {
-                if (prop != "options" && prop!= "code" && localStorage.options[prop + "Notif"] === undefined) {
+                if (prop != "options" && prop != "code" && localStorage.options[prop + "Notif"] === undefined) {
                     localStorage.options[prop + "Notif"] = true;
                     localStorage.options[prop + "Tick"] = true;
                     console.log("AUDIT: Options for " + prop + " added")
@@ -135,7 +144,7 @@ function auditStorage() {
                     code: {
                         generated: "",
                         userID: "",
-                        req: [],
+                        req: {},
                         enabled: false
                     }
                 }
@@ -182,7 +191,7 @@ function installStorage() {
                 code: {
                     generated: "",
                     userID: "",
-                    req: [],
+                    req: {},
                     enabled: false
                 }
             }
@@ -230,7 +239,71 @@ function pulse() {
                 setBadge()
             })
         })
+        .then(()=>{
+            Object.keys(localStorage).forEach(prop => {
+                if (prop != "options" && prop != "code" && localStorage.options[prop + "Notif"] === undefined) {
+                    localStorage.options[prop + "Notif"] = true;
+                    localStorage.options[prop + "Tick"] = true;
+                    console.log("PULSE: Options for " + prop + " added")
+                    chrome.storage.sync.set(localStorage, () => {
+                        console.log("FROM PULSE: New options saved")
+                    })
+                    sendAddedNotification(prop);
+                }
+            })
+        })
+        .catch((e) => {
+            console.log(e)
+        })
 
+}
+
+function starPulse() {
+    console.log(localStorage.code.req)
+    fetch(
+        starUrl,
+        {
+            method: "POST",
+            mode: "cors",
+            body: JSON.stringify(localStorage.code.req),
+            headers:
+            {
+                "Content-type": "application/json",
+                "chrome": outAuth
+            },
+        })
+        .then(response=> response.json())
+        .then(data => {
+            console.log(data)
+            Object.keys(localStorage).forEach(prop => {
+                if (!data.hasOwnProperty(prop) && prop != "options" && prop != "code") {
+                    chrome.storage.sync.remove(prop)
+                    chrome.storage.sync.remove([(prop + "Notif"), (prop + "Tick")])
+                    delete localStorage[prop]
+                    delete localStorage.options[prop + "Notif"]
+                    delete localStorage.options[prop + "Tick"]
+                    console.log("STARPULSE: " + prop + " has been removed")
+                }
+            })
+            Object.assign(localStorage, data)
+            chrome.storage.sync.set(localStorage, () => {
+                console.log("FROM STARPULSE: Data updated")
+                console.log(localStorage);
+                setBadge()
+            })
+        })
+        .then(()=>{
+            Object.keys(localStorage).forEach(prop => {
+                if (prop != "options" && prop!= "code" && localStorage.options[prop + "Notif"] === undefined) {
+                    localStorage.options[prop + "Notif"] = true;
+                    localStorage.options[prop + "Tick"] = true;
+                    console.log("STARPULSE: Options for " + prop + " added")
+                    chrome.storage.sync.set(localStorage, () => {
+                        console.log("STARPULSE: New options saved")
+                    })
+                }
+            })
+        })
         .catch((e) => {
             console.log(e)
         })
@@ -280,6 +353,25 @@ function setBadge() {
 
 
 //FUNCTION TO DEPLOY NOTIFS-----//
+function sendAddedNotification(streamer) {
+    const notif = {
+        type: "basic",
+        message: (streamer + " has been added!"),
+        contextMessage: "The followed list has been updated, check the options page for more info",
+        title: "Starlight",
+        iconUrl: ("./images/icon48.png"),
+        eventTime: Date.now()
+    };
+
+    chrome.notifications.create(streamer, notif, function () {
+        setTimeout(() => {
+            chrome.notifications.clear(streamer, (cleared) => {
+                console.log("Notification Cleared = " + cleared)
+            })
+        }, 6000)
+    })
+}
+
 function sendNotification(streamer) {
     const notif = {
         type: "basic",

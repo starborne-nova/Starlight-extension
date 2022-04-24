@@ -57,6 +57,10 @@ function loadOptions() {
             })
             document.body.setAttribute("data-theme", items.options.theme);
             $("#setTheme").prop("value", items.options.theme);
+            if(items.code.enabled === true){
+                $("#codeInput").prop("disabled", true)
+                $("#codeSend").prop("disabled", true)
+            }
         }
     });
 }
@@ -135,7 +139,7 @@ function populateOptions() {
         else {
             Object.keys(items).forEach(item => {
                 if (item != "options" && item != "code"){
-                    $("#insertOptions").append("<div class='col'><div class='card mb-3 mx-auto border-0 bg-transparent' style='max-width: 900px;'><div class='row g-0 card-bg p-2' style='border-radius: 15px;'><div class='col-md-2 d-flex align-items-center'><img src=" + items[item].profile + " class='card-img border border-4 mx-auto'></div><div class='col-md-7'><div class='card-body'><figure class='text my-auto'><h5 class='card-title my-2'>" + item + "</h5><p class='card-text my-2' id='" + item + "Online'>Offline</p><p class='card-text my-2'><a href='https://www.twitch.tv/" + item.toLowerCase() + "' target='_blank'> <small >Visit Twitch Channel</small></a></p></figure></div></div><div class='col-md-3 d-flex flex-column'><div class='form-check form-switch  mt-auto mb-2 ms-4 me-auto'><input class='form-check-input' type='checkbox' role='switch' id='" + item + "Notifs' checked><label class='form-check-label' for='" + item + "Notifs'>Notifications</label></div><div class='form-check form-switch mt-2 mb-auto ms-4 me-auto'><label class='form-check-label' for='" + item + "Ticker'>Ticker Updates</label><input class='form-check-input' type='checkbox' role='switch' id='" + item + "Ticker' checked></div></div></div></div></div>")
+                    $("#insertOptions").append("<div class='col'><div class='card mb-3 mx-auto border-0 bg-transparent' style='max-width: 900px;'><div class='row g-0 card-bg p-2' style='border-radius: 15px;'><div class='col-md-2 d-flex align-items-center'><img src=" + items[item].profile + " class='card-img border border-4 mx-auto'></div><div class='col-md-7'><div class='card-body'><figure class='text my-auto d-flex'><a href='https://www.twitch.tv/" + item.toLowerCase() + "' target='_blank'><h5 class='card-title my-2'>" + item + "</h5></a></figure><figure class='text my-auto d-flex'><p class='card-text my-2' id='" + item + "Online'>Offline</p></figure></div></div><div class='col-md-3 d-flex flex-column'><div class='form-check form-switch  mt-auto mb-2 ms-4 me-auto'><input class='form-check-input' type='checkbox' role='switch' id='" + item + "Notifs' checked><label class='form-check-label' for='" + item + "Notifs'>Notifications</label></div><div class='form-check form-switch mt-2 mb-auto ms-4 me-auto'><label class='form-check-label' for='" + item + "Ticker'>Ticker Updates</label><input class='form-check-input' type='checkbox' role='switch' id='" + item + "Ticker' checked></div></div></div></div></div>")
             }})
         }
     })
@@ -313,11 +317,14 @@ function parseCode(code) {
                 Object.assign(reqObject, insert)
             })
             Object.assign(localStorage.code.req, reqObject)
-            localStorage.code.enabled = true
-            console.log("OPTIONS: Request code saved. Enabling StarPulse")
+            localStorage.code.enabled = true  
         })
         .then(()=>{
-            saveOptions()
+           chrome.storage.sync.set(localStorage, ()=>{
+            console.log("OPTIONS: Request code saved. Enabling StarPulse")
+            console.log(localStorage.code)
+            loadOptions()
+           })
         })
 
 }
@@ -325,7 +332,6 @@ function parseCode(code) {
 $("#codeSend").on("click", function(e){
     const codeInput = $("#codeInput").val();
     parseCode(codeInput);
-    console.log(localStorage);
 });
 
 document.getElementById("testNotif").addEventListener("click", handleTestNotif);
