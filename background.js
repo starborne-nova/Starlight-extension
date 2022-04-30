@@ -58,7 +58,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
         const updateNotif = {
             type: "basic",
             message: ("Updated to version " + manifest.version),
-            contextMessage: "Check options page for changelog!",
+            contextMessage: "Custom lists have entered the testing phase. Check options page for more info!",
             title: "Starlight",
             iconUrl: "./images/icon48.png",
             eventTime: Date.now()
@@ -258,39 +258,44 @@ function pulse() {
 
 }
 
-function starPulse() {
-    console.log(localStorage.code.req)
-    fetch(
-        starUrl,
-        {
-            method: "POST",
-            mode: "cors",
-            body: JSON.stringify(localStorage.code.req),
-            headers:
+async function starPulse() {
+    chrome.storage.sync.get(null, (items)=>{
+        Object.assign(localStorage, items)
+        console.log(localStorage.code.req)
+        fetch(
+            starUrl,
             {
-                "Content-type": "application/json",
-                "chrome": outAuth
-            },
-        })
+                method: "POST",
+                mode: "cors",
+                body: JSON.stringify(localStorage.code.req),
+                headers:
+                {
+                    "Content-type": "application/json",
+                    "chrome": outAuth
+                },
+            })
+    
         .then(response=> response.json())
         .then(data => {
             console.log(data)
-            Object.keys(localStorage).forEach(prop => {
-                if (!data.hasOwnProperty(prop) && prop != "options" && prop != "code") {
-                    chrome.storage.sync.remove(prop)
-                    chrome.storage.sync.remove([(prop + "Notif"), (prop + "Tick")])
-                    delete localStorage[prop]
-                    delete localStorage.options[prop + "Notif"]
-                    delete localStorage.options[prop + "Tick"]
-                    console.log("STARPULSE: " + prop + " has been removed")
-                }
-            })
-            Object.assign(localStorage, data)
-            chrome.storage.sync.set(localStorage, () => {
-                console.log("FROM STARPULSE: Data updated")
-                console.log(localStorage);
-                setBadge()
-            })
+            if(Object.keys(data).length > 0){
+                Object.keys(localStorage).forEach(prop => {
+                    if (!data.hasOwnProperty(prop) && prop != "options" && prop != "code") {
+                        chrome.storage.sync.remove(prop)
+                        chrome.storage.sync.remove([(prop + "Notif"), (prop + "Tick")])
+                        delete localStorage[prop]
+                        delete localStorage.options[prop + "Notif"]
+                        delete localStorage.options[prop + "Tick"]
+                        console.log("STARPULSE: " + prop + " has been removed")
+                    }
+                })
+                Object.assign(localStorage, data)
+                chrome.storage.sync.set(localStorage, () => {
+                    console.log("FROM STARPULSE: Data updated")
+                    console.log(localStorage);
+                    setBadge()
+                })
+            }
         })
         .then(()=>{
             Object.keys(localStorage).forEach(prop => {
@@ -307,7 +312,7 @@ function starPulse() {
         .catch((e) => {
             console.log(e)
         })
-
+    })
 }
 
 

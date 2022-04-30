@@ -11,12 +11,6 @@ const initStorageCache = getAllStorageSyncData()
   });
 
 
-//COCK
-//
-//Skeleton out all the streamitems first and sort them
-//Then make the page divs and slap them together
-
-
 function populate() {
   document.body.setAttribute("data-theme", localStorage.options.theme);
   var counter = 1;
@@ -30,7 +24,7 @@ function populate() {
       page++;
       pageCounter = 1;
     }
-    if (prop != "options") {
+    if (prop != "options" && prop != "code") {
       if (localStorage.options[prop + "Notif"] === true && localStorage[prop].status) {
         $("#page" + page.toString()).append(("<div class='streamItem' id='" + prop + "'><a href='https://www.twitch.tv/" + prop.toLowerCase() + "' target='_blank'><ul class='popup-container'><li id='" + item + "'><h3 class='streamer'>" + prop + "</h3><h4 class='offline' id='" + prop + "Status'>OFFLINE</h4></li><li><h4 class='ticker hide' id='" + ticker + "'>Ticker: </h4></li></ul></a></div>"))
         $("#" + prop + "Status").text((localStorage[prop].game.substring(0, 32))).attr("class", "online")
@@ -58,7 +52,7 @@ function populate() {
       pageCounter = 1;
     }
 
-    if (prop != "options") {
+    if (prop != "options" && prop != "code") {
       if (localStorage.options[prop + "Notif"] === true && !localStorage[prop].status) {
         $("#page" + page.toString()).append(("<div class='streamItem' id='" + prop + "'><a href='https://www.twitch.tv/" + prop.toLowerCase() + "' target='_blank'><ul class='popup-container'><li id='" + item + "'><h3 class='streamer'>" + prop + "</h3><h4 class='offline' id='" + prop + "Status'>OFFLINE</h4></li><li><h4 class='ticker hide' id='" + ticker + "'>Ticker: </h4></li></ul></a></div>"))
         if (localStorage[prop].ticker.indexOf("http") < 55) {
