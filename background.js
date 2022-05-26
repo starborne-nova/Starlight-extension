@@ -44,7 +44,7 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
 console.log("FROM BACKGROUND: Listener Created");
 
 //SET BADGE BACKGROUND(because white looks bad)----//
-chrome.action.setBadgeBackgroundColor({ color: "#0a1f27" }, function () { console.log("FROM BACKGROUND:background color changed") });
+chrome.action.setBadgeBackgroundColor({ color: "#7f7f7f" }, function () { console.log("FROM BACKGROUND:background color changed") });
 
 //FIRST RUN INITIALIZE CLOUD STORAGE----//
 chrome.runtime.onInstalled.addListener(function (details) {
@@ -58,7 +58,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
         const updateNotif = {
             type: "basic",
             message: ("Updated to version " + manifest.version),
-            contextMessage: "Custom lists have entered the testing phase. Check options page for more info!",
+            contextMessage: "Updates to the popup. Custom lists are available, see options page for more.",
             title: "Starlight",
             iconUrl: "./images/icon48.png",
             eventTime: Date.now()
@@ -196,7 +196,7 @@ function installStorage() {
                 }
             }
             Object.keys(localStorage).forEach(prop => {
-                if (prop != "options") {
+                if (prop != "options" && prop != "code") {
                     storage.options[prop + "Notif"] = true;
                     storage.options[prop + "Tick"] = true;
                 }

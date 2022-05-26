@@ -1,142 +1,186 @@
-const localStorage = {};
-// Asynchronously retrieve data from storage.sync, then cache it.
-const initStorageCache = getAllStorageSyncData()
-  .then(items => {
-    // Copy the data retrieved from storage into storageCache.
-    Object.assign(localStorage, items)
-  })
-  .then(() => {
-    console.log(localStorage)
-    populate();
-  });
+const initPopup = populate();
 
 
 function populate() {
-  document.body.setAttribute("data-theme", localStorage.options.theme);
-  var counter = 1;
-  var pageCounter = 1;
-  var page = 1
 
-  Object.keys(localStorage).forEach(prop => {
-    const item = "item" + counter.toString();
-    const ticker = "ticker" + counter.toString();
-    if (pageCounter > 6) {
-      page++;
-      pageCounter = 1;
-    }
-    if (prop != "options" && prop != "code") {
-      if (localStorage.options[prop + "Notif"] === true && localStorage[prop].status) {
-        $("#page" + page.toString()).append(("<div class='streamItem' id='" + prop + "'><a href='https://www.twitch.tv/" + prop.toLowerCase() + "' target='_blank'><ul class='popup-container'><li id='" + item + "'><h3 class='streamer'>" + prop + "</h3><h4 class='offline' id='" + prop + "Status'>OFFLINE</h4></li><li><h4 class='ticker hide' id='" + ticker + "'>Ticker: </h4></li></ul></a></div>"))
-        $("#" + prop + "Status").text((localStorage[prop].game.substring(0, 32))).attr("class", "online")
-        $("#" + prop).attr("class", "streamItem-online")
-        $("#" + item).mouseenter(function () {
-          $("#" + ticker).removeClass("hide");
-        })
-        if (localStorage[prop].ticker.indexOf("http") < 55) {
-          $("#" + ticker).text((localStorage[prop].ticker.substring(0, (localStorage[prop].ticker.indexOf("http"))))).attr("class", "ticker hide overflow-hidden")
+  chrome.storage.sync.get(null, (items) => {
+
+    document.body.setAttribute("data-theme", items.options.theme);
+    var counter = 1;
+    var pageCounter = 1;
+    var page = 1
+
+    Object.keys(items).forEach(prop => {
+      const item = "item" + counter.toString();
+      const ticker = "ticker" + counter.toString();
+
+      if (prop != "options" && prop != "code") {
+        if (pageCounter > 6) {
+          page++;
+          pageCounter = 1;
         }
-        if (localStorage[prop].ticker.indexOf("http") === -1 || localStorage[prop].ticker.indexOf("http") >= 55) {
-          $("#" + ticker).text((localStorage[prop].ticker.substring(0, 55))).attr("class", "ticker hide overflow-hidden")
+        if (items.options[prop + "Notif"] === true && items[prop].status) {
+
+          const startT = new Date(items[prop].online);
+          const nowT = new Date();
+          const elapsed = Math.abs(nowT - startT);
+          const eMinutes = Math.ceil(elapsed / (1000 * 60));
+          var eHours = 0;
+          const indexLink = items[prop].ticker.indexOf("http");
+          const indexBars = items[prop].ticker.indexOf("||");
+
+
+          if (Math.floor(eMinutes % 60) < 10) {
+            eHours = Math.floor(eMinutes / 60).toString() + ":0" + Math.floor(eMinutes % 60).toString();
+          }
+
+          if (Math.floor(eMinutes % 60) > 10) {
+            eHours = Math.floor(eMinutes / 60).toString() + ":" + Math.floor(eMinutes % 60).toString();
+          }
+
+          $("#page" + page.toString()).prepend(("<div class='streamItem-online' id='" + prop + "'><a href='https://www.twitch.tv/" + prop.toLowerCase() + "'target='_blank'><div class='me-auto my-2'><h5 class='ms-2 mb-1'>" + prop + "</h5><h6 class='ms-2 my-1' id='" + prop + "Status'>Game Name</h6><small class='ms-2 mt-1' id='" + ticker + "'>Ticker: </small></div><div><div class='position-relative m-2'><div class='position-absolute bottom-0 end-0 timestamp'><p class='m-1' id='" + prop + "Time'>" + eHours + "</p></div><img src='https://static-cdn.jtvnw.net/previews-ttv/live_user_" + prop.toLowerCase() + "-440x248.jpg' style='width:130px; height:73px; border-radius: 10px;'></div></div></div></a></div>"))
+
+          $("#" + prop + "Status").text((items[prop].game.substring(0, 32)))
+          $("#" + prop).attr("class", "streamItem-online")
+          $("#" + item).mouseenter(function () {
+            $("#" + ticker).removeClass("hide");
+          })
+          if (indexBars != -1) {
+            if (indexLink < 40) {
+              $("#" + ticker).text((items[prop].ticker.substring((indexBars + 2), indexLink)))
+            }
+
+            if (indexLink === -1 || indexLink >= 40) {
+              $("#" + ticker).text((items[prop].ticker.substring((indexBars + 2), (indexBars + 42))))
+            }
+          }
+          if (indexBars === -1) {
+            if (indexLink < 40) {
+              $("#" + ticker).text((items[prop].ticker.substring(0, indexLink)))
+            }
+
+            if (indexLink === -1 || indexLink >= 40) {
+              $("#" + ticker).text((items[prop].ticker.substring(0, 40)))
+            }
+          }
+
+          counter++;
+          pageCounter++;
         }
-        counter++;
-        pageCounter++;
       }
-    }
-  })
-
-  Object.keys(localStorage).forEach(prop => {
-    const item = "item" + counter.toString();
-    const ticker = "ticker" + counter.toString();
-    if (pageCounter > 6) {
-      page++;
-      pageCounter = 1;
-    }
-
-    if (prop != "options" && prop != "code") {
-      if (localStorage.options[prop + "Notif"] === true && !localStorage[prop].status) {
-        $("#page" + page.toString()).append(("<div class='streamItem' id='" + prop + "'><a href='https://www.twitch.tv/" + prop.toLowerCase() + "' target='_blank'><ul class='popup-container'><li id='" + item + "'><h3 class='streamer'>" + prop + "</h3><h4 class='offline' id='" + prop + "Status'>OFFLINE</h4></li><li><h4 class='ticker hide' id='" + ticker + "'>Ticker: </h4></li></ul></a></div>"))
-        if (localStorage[prop].ticker.indexOf("http") < 55) {
-          $("#" + ticker).text((localStorage[prop].ticker.substring(0, (localStorage[prop].ticker.indexOf("http"))))).attr("class", "ticker hide overflow-hidden")
-        }
-        if (localStorage[prop].ticker.indexOf("http") === -1 || localStorage[prop].ticker.indexOf("http") >= 55) {
-          $("#" + ticker).text((localStorage[prop].ticker.substring(0, 55))).attr("class", "ticker hide overflow-hidden")
-        }
-        $("#" + item).mouseenter(function () {
-          $("#" + ticker).removeClass("hide");
-        })
-        counter++;
-        pageCounter++;
-      }
-    }
-  })
-
-  if (page > 1) {
-    $("#popupControl").append(("<li class='page-item'><a class='page-link bg-dark text-white' href='#' aria-label='Previous' id='pLast'><span aria-hidden='true'>&laquo;</span></a><li>"))
-
-    $("#popupControl").append(("<li class='page-item active' id='pitem1'><a class='page-link bg-dark text-white' href='#' id='pbutton1'>1</a></li>"))
-
-    for (let i = 1; i <= page; i++) {
-      if (i != 1) {
-        $("#popupControl").append(("<li class='page-item' id='pitem" + i.toString() + "'><a class='page-link bg-dark text-white' href='#' id='pbutton" + i.toString() + "'>" + i.toString() + "</a></li>"))
-        $("#pbutton" + i.toString()).click((e) => {
-          e.preventDefault();
-          $( "div[id*='page']" ).filter(":visible").hide()
-          $(".active").toggleClass("active")
-          $("#pitem" + i.toString()).toggleClass("active")
-          $("#page" + i.toString()).show()
-        })
-      }
-    }
-    $("#popupControl").append(("<li class='page-item'><a class='page-link bg-dark text-white' href='#' aria-label='Next' id='pNext'><span aria-hidden='true'>&raquo;</span></a></li>"))
-
-    $("#pbutton1").click((e) => {
-      e.preventDefault();
-      $( "div[id*='page']" ).filter(":visible").hide()
-      $(".active").toggleClass("active")
-      $("#pitem1").toggleClass("active")
-      $("#page1").show()
     })
+    Object.keys(items).forEach(prop => {
+      const item = "item" + counter.toString();
+      const ticker = "ticker" + counter.toString();
+      
 
-    $("#pNext").click((e) => {
-    e.preventDefault();
-    const activeS = $("div[id*='page']").filter(":visible").attr("id").substring(4);
-    const activeI = parseInt(activeS)
-    console.log(activeI)
-    if (activeI != page) {
-      $( "div[id*='page']" ).filter(":visible").hide()
-      $(".active").toggleClass("active")
-      $("#page" + ((activeI + 1).toString())).show()
-      $("#pitem" + ((activeI + 1).toString())).toggleClass("active")
+      if (prop != "options" && prop != "code") {
+        if (pageCounter > 6) {
+          page++;
+          pageCounter = 1;
+        }
+        if (items.options[prop + "Notif"] === true && !items[prop].status) {
+          const indexLink = items[prop].ticker.indexOf("http");
+          const indexBars = items[prop].ticker.indexOf("||");
+
+          $("#page" + page.toString()).append(("<div class='streamItem' id='" + prop + "'><a href='https://www.twitch.tv/" + prop.toLowerCase() + "' target='_blank'><ul class='popup-container'><li id='" + item + "'><h5 class='streamer'>" + prop + "</h5><h6 class='offline' id='" + prop + "Status'>OFFLINE</h6></li><li><small class='ms-2 hide' id='" + ticker + "'>Ticker: </small></li></ul></a></div>"))
+          
+          if (indexBars != -1) {
+            if (indexLink < 55) {
+              $("#" + ticker).text((items[prop].ticker.substring((indexBars + 2), indexLink))).attr("class", "ticker hide overflow-hidden")
+            }
+
+            if (indexLink === -1 || indexLink >= 55) {
+              $("#" + ticker).text((items[prop].ticker.substring((indexBars + 2), (indexBars + 57)))).attr("class", "ticker hide overflow-hidden")
+            }
+          }
+          if (indexBars === -1) {
+            if (indexLink < 55) {
+              $("#" + ticker).text((items[prop].ticker.substring(0, indexLink))).attr("class", "ticker hide overflow-hidden")
+            }
+
+            if (indexLink === -1 || indexLink >= 55) {
+              $("#" + ticker).text((items[prop].ticker.substring(0, 55))).attr("class", "ticker hide overflow-hidden")
+            }
+          }
+
+          $("#" + item).mouseenter(function () {
+            $("#" + ticker).removeClass("hide");
+          })
+          counter++;
+          pageCounter++;
+        }
+      }
+    })
+    if (page > 1) {
+      $("#popupControl").append(("<li class='page-item'><a class='page-link bg-dark text-white' href='#' aria-label='Previous' id='pLast'><span aria-hidden='true'>&laquo;</span></a><li>"))
+
+      $("#popupControl").append(("<li class='page-item active' id='pitem1'><a class='page-link bg-dark text-white' href='#' id='pbutton1'>1</a></li>"))
+
+      for (let i = 1; i <= page; i++) {
+        if (i != 1) {
+          $("#popupControl").append(("<li class='page-item' id='pitem" + i.toString() + "'><a class='page-link bg-dark text-white' href='#' id='pbutton" + i.toString() + "'>" + i.toString() + "</a></li>"))
+          $("#pbutton" + i.toString()).click((e) => {
+            e.preventDefault();
+            $("div[id*='page']").filter(":visible").hide()
+            $(".active").toggleClass("active")
+            $("#pitem" + i.toString()).toggleClass("active")
+            $("#page" + i.toString()).show()
+          })
+        }
+      }
+      $("#popupControl").append(("<li class='page-item'><a class='page-link bg-dark text-white' href='#' aria-label='Next' id='pNext'><span aria-hidden='true'>&raquo;</span></a></li>"))
+
+      $("#pbutton1").click((e) => {
+        e.preventDefault();
+        $("div[id*='page']").filter(":visible").hide()
+        $(".active").toggleClass("active")
+        $("#pitem1").toggleClass("active")
+        $("#page1").show()
+      })
+
+      $("#pNext").click((e) => {
+        e.preventDefault();
+        const activeS = $("div[id*='page']").filter(":visible").attr("id").substring(4);
+        const activeI = parseInt(activeS)
+        console.log(activeI)
+        if (activeI != page) {
+          $("div[id*='page']").filter(":visible").hide()
+          $(".active").toggleClass("active")
+          $("#page" + ((activeI + 1).toString())).show()
+          $("#pitem" + ((activeI + 1).toString())).toggleClass("active")
+        }
+        if (activeI === page) {
+          $("div[id*='page']").filter(":visible").hide()
+          $(".active").toggleClass("active")
+          $("#page1").show()
+          $("#pitem1").toggleClass("active")
+        }
+      })
+
+      $("#pLast").click((e) => {
+        e.preventDefault();
+        const activeS = $("div[id*='page']").filter(":visible").attr("id").substring(4);
+        const activeI = parseInt(activeS)
+        console.log(activeI)
+        if (activeI != 1) {
+          $("div[id*='page']").filter(":visible").hide()
+          $(".active").toggleClass("active")
+          $("#page" + ((activeI - 1).toString())).show()
+          $("#pitem" + ((activeI - 1).toString())).toggleClass("active")
+        }
+        if (activeI === 1) {
+          $("div[id*='page']").filter(":visible").hide()
+          $(".active").toggleClass("active")
+          $("#page" + page.toString()).show()
+          $("#pitem" + page.toString()).toggleClass("active")
+        }
+      })
     }
-    if (activeI === page) {
-      $( "div[id*='page']" ).filter(":visible").hide()
-      $(".active").toggleClass("active")
-      $("#page1").show()
-      $("#pitem1").toggleClass("active")
-    }
+    $("div[id*='page']").filter(":visible").hide()
+    $("#page1").show()
   })
-  
-  $("#pLast").click((e) => {
-    e.preventDefault();
-    const activeS = $("div[id*='page']").filter(":visible").attr("id").substring(4);
-    const activeI = parseInt(activeS)
-    console.log(activeI)
-    if (activeI != 1) {
-      $( "div[id*='page']" ).filter(":visible").hide()
-      $(".active").toggleClass("active")
-      $("#page" + ((activeI - 1).toString())).show()
-      $("#pitem" + ((activeI - 1).toString())).toggleClass("active")
-    }
-    if (activeI === 1) {
-      $( "div[id*='page']" ).filter(":visible").hide()
-      $(".active").toggleClass("active")
-      $("#page" + page.toString()).show()
-      $("#pitem" + page.toString()).toggleClass("active")
-    }
-  })
-  }
-  $( "div[id*='page']" ).filter(":visible").hide()
-  $("#page1").show()
+
 }
 
 
@@ -167,15 +211,3 @@ function populate() {
 //   $("#page2").hide()
 
 // })
-
-function getAllStorageSyncData() {
-
-  return new Promise((resolve, reject) => {
-    chrome.storage.sync.get(null, (items) => {
-      if (chrome.runtime.lastError) {
-        return reject(chrome.runtime.lastError);
-      }
-      resolve(items);
-    });
-  });
-}
