@@ -1,84 +1,3 @@
-:root {
-    --background-color: rgb(65, 17, 94);
-    --border-color: rgb(95, 26, 134);
-    --gradient-color: #530953;
-    --gradient-color-2: black;
-}
-
-body {
-    font-family: 'Poppins', sans-serif;
-    font-size: 100% !important;
-    background-image: linear-gradient(to bottom, var(--gradient-color), var(--gradient-color-2));
-    background-repeat: no-repeat;
-}
-
-
-body[data-theme="star"] {
-    --background-color: rgb(15, 15, 15);
-    --border-color: rgb(70, 70, 70);
-    --gradient-color: #100036;
-    --gradient-color-2: black;
-}
-
-body[data-theme="purple"] {
-    --background-color: rgb(65, 17, 94);
-    --border-color: rgb(95, 26, 134);
-    --gradient-color: #530953;
-    --gradient-color-2: black;
-}
-
-body[data-theme="dark"] {
-    --background-color: rgb(66, 66, 66);
-    --border-color: #999da2;
-    --gradient-color: #202124;
-    --gradient-color-2: black;
-}
-
-body[data-theme="light"] {
-    --background-color: #999da2;
-    --border-color: #171717;
-    --gradient-color: white;
-    --gradient-color-2: #999da2;
-}
-
-
-h1 {
-    font-size: 2rem;
-
-}
-
-a,
-a:visited {
-    font-weight: 300;
-    color: white !important;
-    text-decoration: none;
-}
-
-a:hover {
-    color: gray !important;
-}
-
-#logo {
-    height: 60px;
-    width: 60px;
-
-
-    transform: rotate(90deg);
-}
-
-#mainHead {
-    font-weight: 600;
-    font-size: 3rem;
-    margin-top: auto;
-    margin-bottom: auto;
-}
-
-#notifStatus {
-    font-weight: 300;
-    margin: 10px;
-    text-align: center;
-}
-
 @font-face {
     font-family: 'Material Icons';
     font-style: normal;
@@ -115,6 +34,102 @@ a:hover {
 
     /* Support for IE. */
     font-feature-settings: 'liga';
+}
+
+:root {
+    --background-color: rgb(65, 17, 94);
+    --border-color: rgb(95, 26, 134);
+    --gradient-color: #530953;
+    --gradient-color-2: black;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    font-size: 100% !important;
+    background-image: linear-gradient(to bottom, var(--gradient-color), var(--gradient-color-2));
+    background-repeat: no-repeat;
+    min-width: 850px;
+}
+
+body[data-theme="green"] {
+    --background-color: rgb(33,37,41);
+    --border-color: rgb(15, 46, 16);
+    --gradient-color: #00360c;
+    --gradient-color-2: black;
+    --text-color: white;
+}
+
+body[data-theme="star"] {
+    --background-color: rgb(15, 15, 15);
+    --border-color: rgb(70, 70, 70);
+    --gradient-color: #100036;
+    --gradient-color-2: black;
+    --text-color: white;
+}
+
+body[data-theme="purple"] {
+    --background-color: rgb(65, 17, 94);
+    --border-color: rgb(95, 26, 134);
+    --gradient-color: #530953;
+    --gradient-color-2: black;
+    --text-color: white;
+}
+
+body[data-theme="dark"] {
+    --background-color: rgb(66, 66, 66);
+    --border-color: #999da2;
+    --gradient-color: #202124;
+    --gradient-color-2: black;
+    --text-color: white;
+}
+
+body[data-theme="light"] {
+    --background-color: #999da2;
+    --border-color: #171717;
+    --gradient-color: white;
+    --gradient-color-2: #999da2;
+    --text-color: black;
+}
+
+
+h1 {
+    font-size: 2rem;
+
+}
+
+a,
+a:visited {
+    font-weight: 300;
+    color: var(--text-color) !important;
+    text-decoration: none;
+}
+
+a:hover {
+    color: gray !important;
+}
+
+nav{
+    color: var(--text-color);
+    background-color: var(--background-color);
+}
+
+#logo {
+    height: 60px;
+    width: 60px;
+    transform: rotate(90deg);
+}
+
+#mainHead {
+    font-weight: 600;
+    font-size: 3rem;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#notifStatus {
+    font-weight: 300;
+    margin: 10px;
+    text-align: center;
 }
 
 .card-img {
@@ -156,12 +171,26 @@ a:hover {
     flex-direction: column;
 }
 
+.optionsBoxBg{
+    background-color: var(--background-color);
+    border-radius: 25px !important;
+}
+
+.optionsBoxStart{
+    border-top-left-radius: 25px !important;
+    border-top-right-radius: 25px !important;
+}
+
+.optionsBoxEnd{
+    border-bottom-right-radius: 25px !important;
+    border-bottom-left-radius: 25px !important;
+}
+
 .optionList {
-    color: white;
+    color: var(--text-color);
     display: flex;
     flex-direction: column;
-
-
+    min-height: 52rem;
 }
 
 .optionItem {
@@ -179,18 +208,14 @@ a:hover {
     background-color: var(--background-color);
     border: 5px ridge var(--border-color);
     border-radius: 10px;
-
 }
 
 .optionHeading {
-
     font-size: 1.5rem;
     margin-left: 10px;
     margin-top: 0;
     margin-bottom: 0;
-
     padding: 10px;
-
 }
 
 .optionControl {
@@ -203,12 +228,6 @@ a:hover {
     font-weight: 300;
 }
 
-.header {
-    display: flex;
-    height: fit-content;
-    color: white;
-    background-image: url("images/gplay.png");
-    background-color: var(--background-color);
-    align-content: flex-start;
-    border-bottom: 5px ridge var(--border-color);
+.header-text{
+    color: var(--text-color) !important;
 }

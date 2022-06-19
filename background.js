@@ -1,12 +1,11 @@
 /* eslint-disable no-undef */
 //TODO LIST:
-// Is there a less fucking stupid way to do this with Object.defineProperty?
-//Package all CSS JS and Fonts in extension
+// Check for existing notifications before shitting out new ones
 //See if you can make modules on extensions or if it's just fucking stupid
 
 const outAuth = "stealthystars";
-const url = "https://jabroni-server.herokuapp.com/pulse";
-const starUrl = "https://jabroni-server.herokuapp.com/starpulse";
+const url = "https://star-reactor.fly.dev/pulse";
+const starUrl = "https://star-reactor.fly.dev/starpulse";
 const localStorage = {};
 const initStorage = getAllStorageSyncData()
     .then(items => {
@@ -58,7 +57,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
         const updateNotif = {
             type: "basic",
             message: ("Updated to version " + manifest.version),
-            contextMessage: "Updates to the popup. Custom lists are available, see options page for more.",
+            contextMessage: "Updates to the way custom lists are handled. Check the options page for more!",
             title: "Starlight",
             iconUrl: "./images/icon48.png",
             eventTime: Date.now()
@@ -358,59 +357,49 @@ function setBadge() {
 
 
 //FUNCTION TO DEPLOY NOTIFS-----//
-function sendAddedNotification(streamer) {
+function sendNotification(streamer) {
     const notif = {
         type: "basic",
-        message: (streamer + " has been added!"),
-        contextMessage: "The followed list has been updated, check the options page for more info",
-        title: "Starlight",
+        message: localStorage[streamer].game,
+        title: (streamer + " is Live!"),
+        buttons: [{title: "Open Twitch"}],
         iconUrl: ("./images/icon48.png"),
         eventTime: Date.now()
     };
 
-    chrome.notifications.create(streamer, notif, function () {
-        setTimeout(() => {
-            chrome.notifications.clear(streamer, (cleared) => {
-                console.log("Notification Cleared = " + cleared)
+    chrome.notifications.getAll((notifications)=>{
+        if(Object.keys(notifications).length === 0){
+            chrome.notifications.create(streamer, notif, function () {
+                chrome.notifications.onButtonClicked.addListener(()=>{
+                    chrome.tabs.create({url:("https://www.twitch.tv/" + streamer.toLowerCase())})
+                })
+                setTimeout(() => {
+                    chrome.notifications.clear(streamer, (cleared) => {
+                        console.log("Notification Cleared = " + cleared)
+                    })
+                }, 6000)
             })
-        }, 6000)
-    })
-}
-
-function sendNotification(streamer) {
-    const notif = {
-        type: "basic",
-        message: (streamer + " is Live!"),
-        contextMessage: localStorage[streamer].game,
-        title: "Starlight",
-        iconUrl: ("./images/" + streamer + ".png"),
-        eventTime: Date.now()
-    };
-
-    chrome.notifications.create(streamer, notif, function () {
-        setTimeout(() => {
-            chrome.notifications.clear(streamer, (cleared) => {
-                console.log("Notification Cleared = " + cleared)
-            })
-        }, 6000)
+        }
     })
 }
 
 function sendTickerUpdate(streamer) {
     const notif = {
         type: "basic",
-        message: (streamer + " has updated their ticker!"),
-        contextMessage: localStorage[streamer].ticker,
-        title: "Starlight",
-        iconUrl: ("./images/" + streamer + ".png"),
+        message: localStorage[streamer].ticker,
+        title: (streamer + " has updated their ticker!"),
+        iconUrl: ("./images/icon48.png"),
         eventTime: Date.now()
     };
-
-    chrome.notifications.create(streamer, notif, function () {
-        setTimeout(() => {
-            chrome.notifications.clear(streamer, (cleared) => {
-                console.log("Notification Cleared = " + cleared)
+    chrome.notifications.getAll((notifications)=>{
+        if(Object.keys(notifications).length === 0){
+            chrome.notifications.create(streamer, notif, function () {
+                setTimeout(() => {
+                    chrome.notifications.clear(streamer, (cleared) => {
+                        console.log("Notification Cleared = " + cleared)
+                    })
+                }, 6000)
             })
-        }, 6000)
+        }
     })
 }

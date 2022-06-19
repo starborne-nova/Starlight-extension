@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Starlight",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "description": "Receive twitch notifications from this extension more reliably than twitch push notifications, forked from Jabroni Notify",
     "background": {
         "service_worker": "background.js"
@@ -13,12 +13,12 @@
     },
     "externally_connectable": {
         "matches": [
-            "https://jabroni-server.herokuapp.com/pulse",
+            "https://star-reactor.fly.dev/pulse",
             "https://static-cdn.jtvnw.net/jtv_user_pictures/*"
         ]
     },
     "host_permissions": [
-        "https://jabroni-server.herokuapp.com/pulse"
+        "https://star-reactor.fly.dev/pulse"
     ],
     "action": {
         "default_icon": {
@@ -35,6 +35,7 @@
     "permissions": [
         "alarms",
         "storage",
-        "notifications"
+        "notifications",
+        "tabs"
     ]
 }

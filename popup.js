@@ -1,9 +1,13 @@
 const initPopup = populate();
 
 
-function populate() {
 
+function populate() {
   chrome.storage.sync.get(null, (items) => {
+    var pageTotal = Math.ceil(((Object.keys(items).length - 2)/6))
+    for(let i = 2; i <= pageTotal; i++){
+      $("#page" + ((i - 1).toString())).after("<div id='page" + i.toString() + "' class='page' style='display:none'>")
+    }
 
     document.body.setAttribute("data-theme", items.options.theme);
     var counter = 1;
@@ -34,14 +38,12 @@ function populate() {
             eHours = Math.floor(eMinutes / 60).toString() + ":0" + Math.floor(eMinutes % 60).toString();
           }
 
-          if (Math.floor(eMinutes % 60) > 10) {
+          if (Math.floor(eMinutes % 60) >= 10) {
             eHours = Math.floor(eMinutes / 60).toString() + ":" + Math.floor(eMinutes % 60).toString();
           }
 
-          $("#page" + page.toString()).prepend(("<div class='streamItem-online' id='" + prop + "'><a href='https://www.twitch.tv/" + prop.toLowerCase() + "'target='_blank'><div class='me-auto my-2'><h5 class='ms-2 mb-1'>" + prop + "</h5><h6 class='ms-2 my-1' id='" + prop + "Status'>Game Name</h6><small class='ms-2 mt-1' id='" + ticker + "'>Ticker: </small></div><div><div class='position-relative m-2'><div class='position-absolute bottom-0 end-0 timestamp'><p class='m-1' id='" + prop + "Time'>" + eHours + "</p></div><img src='https://static-cdn.jtvnw.net/previews-ttv/live_user_" + prop.toLowerCase() + "-440x248.jpg' style='width:130px; height:73px; border-radius: 10px;'></div></div></div></a></div>"))
+          $("#page" + page.toString()).prepend(("<div class='streamItem-online' id='" + prop + "'><a href='https://www.twitch.tv/" + prop.toLowerCase() + "'target='_blank'><div class='me-auto my-2'><h5 class='ms-2 mb-1'>" + prop + "</h5><h6 class='ms-2 my-1' id='" + prop + "Status'>" + (items[prop].game.substring(0, 32)) + "</h6><small class='ms-2 mt-1' id='" + ticker + "'>Ticker: </small></div><div><div class='position-relative m-2'><div class='position-absolute bottom-0 end-0 timestamp'><p class='m-1' id='" + prop + "Time'>" + eHours + "</p></div><img src='https://static-cdn.jtvnw.net/previews-ttv/live_user_" + prop.toLowerCase() + "-440x248.jpg' style='width:130px; height:73px; border-radius: 10px;'></div></div></div></a></div>"))
 
-          $("#" + prop + "Status").text((items[prop].game.substring(0, 32)))
-          $("#" + prop).attr("class", "streamItem-online")
           $("#" + item).mouseenter(function () {
             $("#" + ticker).removeClass("hide");
           })
@@ -113,31 +115,9 @@ function populate() {
       }
     })
     if (page > 1) {
-      $("#popupControl").append(("<li class='page-item'><a class='page-link bg-dark text-white' href='#' aria-label='Previous' id='pLast'><span aria-hidden='true'>&laquo;</span></a><li>"))
+      $("#popupControl").prepend(("<li class='page-item border-0'><a class='page-link bg-dark text-white border-0 rounded-4' href='#' aria-label='Previous' id='pLast'><span aria-hidden='true'>&laquo;</span></a><li>"))
 
-      $("#popupControl").append(("<li class='page-item active' id='pitem1'><a class='page-link bg-dark text-white' href='#' id='pbutton1'>1</a></li>"))
-
-      for (let i = 1; i <= page; i++) {
-        if (i != 1) {
-          $("#popupControl").append(("<li class='page-item' id='pitem" + i.toString() + "'><a class='page-link bg-dark text-white' href='#' id='pbutton" + i.toString() + "'>" + i.toString() + "</a></li>"))
-          $("#pbutton" + i.toString()).click((e) => {
-            e.preventDefault();
-            $("div[id*='page']").filter(":visible").hide()
-            $(".active").toggleClass("active")
-            $("#pitem" + i.toString()).toggleClass("active")
-            $("#page" + i.toString()).show()
-          })
-        }
-      }
-      $("#popupControl").append(("<li class='page-item'><a class='page-link bg-dark text-white' href='#' aria-label='Next' id='pNext'><span aria-hidden='true'>&raquo;</span></a></li>"))
-
-      $("#pbutton1").click((e) => {
-        e.preventDefault();
-        $("div[id*='page']").filter(":visible").hide()
-        $(".active").toggleClass("active")
-        $("#pitem1").toggleClass("active")
-        $("#page1").show()
-      })
+      $("#popupControl").append(("<li class='page-item border-0'><a class='page-link bg-dark text-white border-0' href='#' aria-label='Next' id='pNext'><span aria-hidden='true'>&raquo;</span></a></li>"))
 
       $("#pNext").click((e) => {
         e.preventDefault();
@@ -177,37 +157,6 @@ function populate() {
         }
       })
     }
-    $("div[id*='page']").filter(":visible").hide()
-    $("#page1").show()
   })
 
 }
-
-
-//   // $(".active").toggleClass("active")
-//   // $("#pitem1").toggleClass("active")
-//   // $("#page1").show()
-//   // $("#page2").hide()
-//   // $("#page3").hide()
-
-// })
-
-// $("#pbutton2").click((e) => {
-//   e.preventDefault();
-//   $(".active").toggleClass("active")
-//   $("#pitem2").toggleClass("active")
-//   $("#page2").show()
-//   $("#page1").hide()
-//   $("#page3").hide()
-
-// })
-
-// $("#pbutton3").click((e) => {
-//   e.preventDefault();
-//   $(".active").toggleClass("active")
-//   $("#pitem3").toggleClass("active")
-//   $("#page3").show()
-//   $("#page1").hide()
-//   $("#page2").hide()
-
-// })

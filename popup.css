@@ -20,8 +20,16 @@ body{
     border-right: 1px solid;
     border-bottom: 1px solid;
     border-color: var(--border-color-2);
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+}
+
+body[data-theme="green"] {
+    --background-color: rgb(29, 32, 36);
+    --border-color: rgb(15, 46, 16);
+    --border-color-2: rgb(129, 129, 129);
+    --stream-item: #00360c;
+    --options:rgb(33,37,41);
+    --no-shadow: none;
+    --text-color: white;
 }
 
 body[data-theme="star"]{
@@ -31,6 +39,7 @@ body[data-theme="star"]{
     --stream-item: #202124;
     --options: #171717;
     --no-shadow: none;
+    --text-color: #999da2;
 }
 
 body[data-theme="purple"]{
@@ -40,6 +49,7 @@ body[data-theme="purple"]{
     --stream-item: slateblue;
     --options: rebeccapurple;
     --no-shadow: none;
+    --text-color: white;
 }
 
 body[data-theme="dark"]{
@@ -49,6 +59,7 @@ body[data-theme="dark"]{
     --stream-item: #202124;
     --options: #171717;
     --no-shadow: none;
+    --text-color: #999da2;
 }
 
 body[data-theme="light"]{
@@ -58,6 +69,7 @@ body[data-theme="light"]{
     --stream-item: rgb(228, 228, 228);
     --options: #999da2;
     --no-shadow: none;
+    --text-color: #171717;
 }
 
 ul {
@@ -104,7 +116,7 @@ li{
     margin: 0;
     display: flex;
     background-color:var(--stream-item);
-    color:var(--border-color-2);
+    color:var(--text-color);
 }
 
 .streamItem-online{
@@ -116,7 +128,7 @@ li{
     padding: 0;
     margin: 0;
     display: flex;
-    color:var(--border-color-2);
+    color:var(--text-color);
     animation-name: backgroundColorPalette;
 	animation-duration: 2s;
 	animation-iteration-count: infinite;
@@ -168,7 +180,7 @@ a, a:link, a:visited, a:hover, a:active {
     margin: 0;
     display: flex;
     background-color:var(--options);
-    color:var(--border-color-2);
+    color:var(--text-color);
     align-items: center;
 }
 
@@ -182,7 +194,7 @@ a, a:link, a:visited, a:hover, a:active {
     margin: 0;
     display: flex;
     background-color:var(--background-color);
-    color:var(--border-color-2);
+    color:var(--text-color);
     align-items: center;
 }
 

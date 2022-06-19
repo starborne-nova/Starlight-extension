@@ -1,6 +1,6 @@
 const localStorage = {};
 const outAuth = "stealthystars";
-const url = "https://jabroni-server.herokuapp.com/pulse";
+const url = "https://star-reactor.fly.dev/pulse";
 
 //border + shadow on boxes
 //gradient on boxes?
@@ -16,6 +16,7 @@ const notifOptions = {
     title: "Starlight",
     message: "This is a test!",
     iconUrl: "./images/icon48.png",
+    buttons: [{title: "Open Twitch"}],
     eventTime: Date.now()
 }
 
@@ -57,9 +58,14 @@ function loadOptions() {
             })
             document.body.setAttribute("data-theme", items.options.theme);
             $("#setTheme").prop("value", items.options.theme);
-            if(items.code.enabled === true){
+            if (items.code.enabled === true) {
                 $("#codeInput").prop("disabled", true)
                 $("#codeSend").prop("disabled", true)
+                $("#codeUpdate").prop("disabled", false)
+                $("#codeSend2").prop("disabled", false)
+                $("#codeAddition").prop("disabled", false)
+                $("#codeSend3").prop("disabled", false)
+                $("#existingCode").text(items.code.generated)
             }
         }
     });
@@ -82,20 +88,11 @@ function loadOnline() {
 
 function handleTestNotif() {
     chrome.notifications.getAll((notifications) => {
-
-        if (Object.keys(notifications).length != 0) {
-            setTimeout(() => {
-                chrome.notifications.create("testNote", notifOptions, function (id) {
-                    setTimeout(() => {
-                        chrome.notifications.clear("testNote", (cleared) => {
-                            console.log("Notification Cleared = " + cleared)
-                        })
-                    }, 5000)
-                })
-            }, 5500)
-        }
-        else {
+        if (Object.keys(notifications).length === 0) {
             chrome.notifications.create("testNote", notifOptions, function (id) {
+                chrome.notifications.onButtonClicked.addListener(()=>{
+                    window.open("https://twitch.tv")
+                })
                 setTimeout(() => {
                     chrome.notifications.clear("testNote", (cleared) => {
                         console.log("Notification Cleared = " + cleared)
@@ -133,21 +130,31 @@ function sendNotification(streamer, notif) {
 
 function populateOptions() {
     chrome.storage.sync.get(null, (items) => {
+        var count = 1
         if (chrome.runtime.lastError) {
             return reject(chrome.runtime.lastError);
         }
         else {
+
             Object.keys(items).forEach(item => {
-                if (item != "options" && item != "code"){
-                    $("#insertOptions").append("<div class='col'><div class='card mb-3 mx-auto border-0 bg-transparent' style='max-width: 900px;'><div class='row g-0 card-bg p-2' style='border-radius: 15px;'><div class='col-md-2 d-flex align-items-center'><img src=" + items[item].profile + " class='card-img border border-4 mx-auto'></div><div class='col-md-7'><div class='card-body'><figure class='text my-auto d-flex'><a href='https://www.twitch.tv/" + item.toLowerCase() + "' target='_blank'><h5 class='card-title my-2'>" + item + "</h5></a></figure><figure class='text my-auto d-flex'><p class='card-text my-2' id='" + item + "Online'>Offline</p></figure></div></div><div class='col-md-3 d-flex flex-column'><div class='form-check form-switch  mt-auto mb-2 ms-4 me-auto'><input class='form-check-input' type='checkbox' role='switch' id='" + item + "Notifs' checked><label class='form-check-label' for='" + item + "Notifs'>Notifications</label></div><div class='form-check form-switch mt-2 mb-auto ms-4 me-auto'><label class='form-check-label' for='" + item + "Ticker'>Ticker Updates</label><input class='form-check-input' type='checkbox' role='switch' id='" + item + "Ticker' checked></div></div></div></div></div>")
-            }})
+                if (item != "options" && item != "code") {
+                    if (count % 2 === 0) {
+                        $("#firstCol").prepend("<div class='list-group-item m-3 optionsBoxBg header-text py-4 px-5'><div class=' d-flex align-items-center'><div class='flex-shrink-0'><img src=" + items[item].profile + " class='card-img border border-4'></div><div class='flex-grow-1 ms-3'><a href='https://www.twitch.tv/" + item.toLowerCase() + "' target='_blank'><h5 class='mb-1'>" + item + "</h5></a><small id='" + item + "Online'>Offline</small></div><div class='d-flex flex-column'><div class='form-check form-switch  mt-auto mb-2 me-auto'><input class='form-check-input' type='checkbox' role='switch' id='" + item + "Notifs' checked><label class='form-check-label' for='" + item + "Notifs'>Notifications</label></div><div class='form-check form-switch mt-2 mb-auto me-auto'><label class='form-check-label' for='" + item + "Ticker'>Ticker Updates</label><input class='form-check-input' type='checkbox' role='switch' id='" + item + "Ticker' checked></div></div></div></div>")
+                        count++
+                    }
+                    else if (count % 2 === 1) {
+                        $("#secondCol").prepend("<div class='list-group-item m-3 optionsBoxBg header-text py-4 px-5'><div class='d-flex align-items-center'><div class='flex-shrink-0'><img src=" + items[item].profile + " class='card-img border border-4'></div><div class='flex-grow-1 ms-3'><a href='https://www.twitch.tv/" + item.toLowerCase() + "' target='_blank'><h5 class='mb-1'>" + item + "</h5></a><small id='" + item + "Online'>Offline</small></div><div class='d-flex flex-column'><div class='form-check form-switch  mt-auto mb-2 me-auto'><input class='form-check-input' type='checkbox' role='switch' id='" + item + "Notifs' checked><label class='form-check-label' for='" + item + "Notifs'>Notifications</label></div><div class='form-check form-switch mt-2 mb-auto me-auto'><label class='form-check-label' for='" + item + "Ticker'>Ticker Updates</label><input class='form-check-input' type='checkbox' role='switch' id='" + item + "Ticker' checked></div></div></div></div>")
+                        count++
+                    }
+                }
+            })
         }
     })
 }
 
 function storageReset() {
-    
-    chrome.storage.sync.clear(()=>{
+
+    chrome.storage.sync.clear(() => {
         installStorage();
     })
 }
@@ -168,8 +175,8 @@ function storageAudit() {
         .then(data => {
             console.log("AUDIT: Begin streamer audit")
             Object.assign(localStorage, data[0])
-            Object.keys(localStorage).forEach(prop =>{
-                if(!data[0].hasOwnProperty(prop) && prop != "options"){
+            Object.keys(localStorage).forEach(prop => {
+                if (!data[0].hasOwnProperty(prop) && prop != "options") {
                     chrome.storage.sync.remove(prop)
                     chrome.storage.sync.remove([(prop + "Notif"), (prop + "Tick")])
                     delete localStorage[prop]
@@ -183,15 +190,15 @@ function storageAudit() {
         .then(() => {
             console.log("AUDIT: Begin options audit")
             Object.keys(localStorage).forEach(prop => {
-                if(prop != "options" && localStorage.options[prop + "Notif"] === undefined){
+                if (prop != "options" && localStorage.options[prop + "Notif"] === undefined) {
                     localStorage.options[prop + "Notif"] = true;
                     localStorage.options[prop + "Tick"] = true;
                     console.log("AUDIT: Options for " + prop + " added")
                 }
             })
-            if(localStorage.code === undefined){
+            if (localStorage.code === undefined) {
                 const codeBlock = {
-                    code:{
+                    code: {
                         generated: "",
                         userID: "",
                         req: {},
@@ -237,7 +244,7 @@ function installStorage() {
                 options: {
                     theme: "star"
                 },
-                code:{
+                code: {
                     generated: "",
                     userID: "",
                     req: {},
@@ -245,7 +252,7 @@ function installStorage() {
                 }
             }
             Object.keys(fresh).forEach(prop => {
-                if(prop != "options"){
+                if (prop != "options") {
                     storage.options[prop + "Notif"] = true;
                     storage.options[prop + "Tick"] = true;
                 }
@@ -286,7 +293,7 @@ function parseCode(code) {
     const unparsed = code;
     localStorage.code.generated = unparsed;
     const codePayload = {}
-    unparsed.split("%").forEach(id =>{
+    unparsed.split("%").forEach(id => {
         let insert = {
             [id]: "enabled"
         }
@@ -295,7 +302,7 @@ function parseCode(code) {
     console.log(codePayload);
 
     fetch(
-        "https://jabroni-server.herokuapp.com/starpulse/init",
+        "https://star-reactor.fly.dev/starpulse/init",
         {
             method: "POST",
             body: JSON.stringify(codePayload),
@@ -306,8 +313,17 @@ function parseCode(code) {
                 "chrome": outAuth
             },
         })
-        .then(response => response.json())
-        .then(data =>{
+        .then(response =>{ 
+            if(response.status === 500){
+                $("#codeResults").text("Invalid Code or Server Error")
+                setTimeout(function () {
+                    $("#codeResults").text("");
+                }, 2000);
+                return
+            }
+            
+            return response.json()})
+        .then(data => {
             const reqObject = {}
             const incData = data.converted;
             incData.forEach(name => {
@@ -317,21 +333,99 @@ function parseCode(code) {
                 Object.assign(reqObject, insert)
             })
             Object.assign(localStorage.code.req, reqObject)
-            localStorage.code.enabled = true  
-        })
-        .then(()=>{
-           chrome.storage.sync.set(localStorage, ()=>{
+            localStorage.code.enabled = true
             console.log("OPTIONS: Request code saved. Enabling StarPulse")
-            console.log(localStorage.code)
-            loadOptions()
-           })
+            $("#codeResults").text("Code accepted")
+                setTimeout(function () {
+                    $("#codeResults").text("");
+                }, 2000);
+
+        })
+        .then(() => {
+            chrome.storage.sync.set(localStorage, () => {
+                
+                console.log(localStorage.code)
+                loadOptions()
+            })
         })
 
 }
 
-$("#codeSend").on("click", function(e){
+function additionCode(code) {
+    const update = localStorage.code.generated + "%" + code;
+    const codePayload = {}
+    update.split("%").forEach(id => {
+        let insert = {
+            [id]: "enabled"
+        }
+        Object.assign(codePayload, insert)
+    });
+    console.log(codePayload);
+
+    fetch(
+        "https://star-reactor.fly.dev/starpulse/init",
+        {
+            method: "POST",
+            body: JSON.stringify(codePayload),
+            mode: "cors",
+            headers:
+            {
+                "Content-type": "application/json",
+                "chrome": outAuth
+            },
+        })
+        .then(response =>{ 
+            if(response.status === 500){
+                $("#codeResults").text("Invalid Code or Server Error")
+                setTimeout(function () {
+                    $("#codeResults").text("");
+                }, 2000);
+                return
+            }
+            
+            return response.json()})
+        .then(data => {
+            const reqObject = {}
+            const incData = data.converted;
+            incData.forEach(name => {
+                let insert = {
+                    [name]: "enabled"
+                }
+                Object.assign(reqObject, insert)
+            })
+            Object.assign(localStorage.code.req, reqObject)
+            localStorage.code.enabled = true
+            console.log("OPTIONS: Request code saved. Enabling StarPulse")
+            $("#codeResults").text("Code accepted")
+                setTimeout(function () {
+                    $("#codeResults").text("");
+                }, 2000);
+
+        })
+        .then(() => {
+            localStorage.code.generated = update
+            chrome.storage.sync.set(localStorage, () => {
+                
+                console.log(localStorage.code)
+                loadOptions()
+            })
+        })
+
+}
+
+$("#codeSend").on("click", function (e) {
     const codeInput = $("#codeInput").val();
     parseCode(codeInput);
+});
+
+$("#codeSend2").on("click", function (e) {
+    const codeUpdate = $("#codeUpdate").val();
+    parseCode(codeUpdate);
+});
+
+$("#codeSend3").on("click", function (e) {
+    const codeAddition = $("#codeAddition").val();
+    additionCode(codeAddition);
 });
 
 document.getElementById("testNotif").addEventListener("click", handleTestNotif);

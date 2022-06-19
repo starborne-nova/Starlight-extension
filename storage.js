@@ -1,6 +1,6 @@
 const localStorage = {};
 const outAuth = "stealthystars";
-const url = "https://jabroni-server.herokuapp.com/pulse";
+const url = "https://star-reactor.fly.dev/pulse";
 
 const initStorageCache = getAllStorageSyncData()
     .then(items => {

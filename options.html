@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="options.css">
     <title>Options Page</title>
 </head>
-<nav class="navbar navbar-light bg-dark mb-5">
+<nav class="navbar mb-5">
     <div class="container-fluid justify-content-start">
         <img src="images/cometTest.png" id="logo">
         <span class="navbar-brand my-2 ms-1 h1 text-light">Starlight Options</span>
@@ -45,113 +45,153 @@
 </nav>
 
 <body data-theme="purple">
-    <div class="container-fluid">
-        <div class="container-fluid optionList" id="optionDiv">
 
-            <div class="row row-cols-1 row-cols-md-1 g-4">
+    <div class="container optionList" id="optionDiv">
 
-                <div class="col" id="insertOptions">
-                    <div class="card mb-3 mx-auto border-0 bg-transparent" style="max-width: 900px;">
-                        <div class="row g-0 card-bg p-3" style="border-radius: 15px;">
-                            <div class="col-12">
-                                <h5 class="text-center">Recent News</h5>
-                                <ul class="m-2">
-                                    <li class="my-2">
-                                        Custom follow lists have entered the experimental stage. If you want to set up
-                                        your own list, follow the link to generate a request code that will set up the
-                                        list for you. For now, everyone has 5 credits to add streamers not already
-                                        registered on the server's end. Credits will be increased if the server performs
-                                        well with an increased amount of users
-                                    </li>
-                                    <li class="my-2">
-                                        The maximum capacity for streamers is currently 18. Anyone added over the 18
-                                        mark will not display properly yet. Once the page system works properly, it
-                                        won't be a problem.
-                                    </li>
-                                    <li class="my-2">
-                                        You can change the selected streamers by going through the code generation
-                                        process again. To delete an existing saved code, use the storage tool to reset
-                                        the code block. Eventually there will be a reset button
-                                    </li>
-                                    <li class="my-2">
-                                        Thank you for using Starlight! The next stage of the project is approaching and
-                                        any large changes to settings will be documented on the options page. The
-                                        extension will always be free but any donations for server upkeep are greatly
-                                        appreciated
-                                    </li>
-                                </ul>
-                                <p class="text-center">Something broken? Report issues on the extension page or email
-                                    starbornedevops@gmail.com</p>
-                            </div>
+        <div class="row row-cols-1 row-cols-md-1 g-4">
+
+            <div class="col" id="insertOptions">
+
+                <div class="row g-0 card-bg p-3 optionsBoxStart mx-3">
+
+                    <div class="col-12">
+                        <p class="text-center">
+                            <a class="btn btn-outline-success" data-bs-toggle="collapse" href="#collapseExample"
+                                role="button" aria-expanded="false" aria-controls="collapseExample">
+                                Recent News
+                            </a>
+                        </p>
+                        <div class="collapse" id="collapseExample">
+
+                            <p id="version" class="nav-link header-text text-center"></p>
+                            <ul class="m-2">
+                                <li>
+                                    Custom lists are fully implemented. 
+                                </li>
+                                <li>
+                                    There is a small limit to the number of new streamers that can be added to the server at once. A "new streamer" is anyone that is not currently registered to recieve information in the server. Once the cost has reached the maximum allowed, you will have to make a separate requests to add more new streamers. This limitation is a server-based issue and should be resolved soon.
+                                </li>
+                                <li>
+                                   There are 2 ways to adjust your custom list. You can generate a new code that will replace your current selection, or you can select the streamers you want to add and paste that code into the Add Streamers box. There is a possibility that the code system will become more streamlined in the future.
+                                </li>
+                                <li>
+                                    As the extension gets further refined, some of the debugging tools will be moved or have a more user-friendly version implemented. For now, they will remain available for troubleshooting and to solve smaller issues.
+                                 </li>
+                                 <li>
+                                    A green theme is being worked on and is available to use. If you have color suggestions to improve existing themes, or ideas for a new theme, please send an email!
+                                 </li>
+                                <li>
+                                    Thank you for using Starlight! The extension will always be free but any donations
+                                    for server upkeep are greatly appreciated
+                                </li>
+                            </ul>
+                            <p class="text-center">Something broken? Report issues on the extension page or email
+                                starbornedevops@gmail.com</p>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <div class="card mb-3 mx-auto border-0 rounded-0 bg-transparent">
+                    <div class="row g-0 card-bg p-2 mx-3">
+                        <div class="col-12 mt-3 mb-4">
+                            <a href="https://star-reactor.fly.dev/starlight" target="_blank">
+                                <h5 class="text-center">Click here to start the custom list process</h5>
+                            </a>
+                            <h4 class="text-center text-warning" id="codeResults"></h4>
+                        </div>
+                        <div class="col-md-4 mb-3 d-flex align-items-center">
+                            <h5 class="mx-auto me-auto ms-4">Insert Code from Server</h5>
+                        </div>
+                        <div class="col-md-3" id="spacer1">
+                            
+                        </div>
+                        <div class="col-md-5 mb-3 d-flex align-items-center">
+
+                            <input type="text" id="codeInput" name="codeInput" class="ms-auto">
+                            <button id="codeSend" class="btn btn-outline-success ms-4 me-4">Save</button>
+
+                        </div>
+                        <div class="col-md-4 mb-3 d-flex align-items-center">
+                            <h5 class="mx-auto me-auto ms-4">Replace Existing Code</h5>
+                        </div>
+                        <div class="col-md-3" id="spacer2">
+                    
+                        </div>
+                        <div class="col-md-5 mb-3 d-flex align-items-center">
+
+                            <input type="text" id="codeUpdate" name="codeUpdate" class="ms-auto" disabled>
+                            <button id="codeSend2" class="btn btn-outline-success ms-4 me-4" disabled>Save</button>
+
+                        </div>
+                        <div class="col-md-4 mb-3 d-flex align-items-center">
+                            <h5 class="mx-auto me-auto ms-4">Add Streamers</h5>
+                        </div>
+                        <div class="col-md-3" id="spacer2">
+                    
+                        </div>
+                        <div class="col-md-5 mb-3 d-flex align-items-center">
+
+                            <input type="text" id="codeAddition" name="codeAddition" class="ms-auto" disabled>
+                            <button id="codeSend3" class="btn btn-outline-success ms-4 me-4" disabled>Save</button>
+
+                        </div>
+                        <label for="existingCode" class="form-label form-control-lg text-center mt-3">Existing Code</label>
+                        <div class="col-12 mb-3 d-flex align-items-center">
+                            <textarea id="existingCode" readonly rows="5" class="form-control mx-5" style="resize:none"></textarea>
                         </div>
                     </div>
-                    <div class="card mb-3 mx-auto border-0 bg-transparent" style="max-width: 900px;">
-                        <div class="row g-0 card-bg p-2" style="border-radius: 15px;">
-                            <div class="col-12 mt-3 mb-4">
-                                <a href="https://jabroni-server.herokuapp.com/starlight" target="_blank">
-                                    <h5 class="text-center">Click here to start the custom list process</h5>
-                                </a>
-                            </div>
-                            <div class="col-md-4 mb-3 d-flex align-items-center">
-                                <h5 class="mx-auto my-auto">Insert Code from Server</h5>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="card-body">
-
-                                </div>
-                            </div>
-                            <div class="col-md-5 mb-3 d-flex align-items-center">
-
-                                <input type="text" id="codeInput" name="codeInput" class="ms-auto">
-                                <button id="codeSend" class="btn btn-outline-success ms-4 me-4">Save</button>
-
-                            </div>
+                    <div class="row g-0 card-bg p-2 rounded-0 optionsBoxEnd mx-3" style="height:100px;">
+                        <div class="col-md-12 d-flex justify-content-center align-items-center">
+                            <h5 class="ms-4 me-3 my-auto">Color Theme</h5>
+                            <select id="setTheme" name="theme" class="me-4">
+                                <option value="purple">Purple</option>
+                                <option value="dark">Dark</option>
+                                <option value="light">Light</option>
+                                <option value="star">Star</option>
+                                <option value="green">Green</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="card mb-3 mx-auto border-0 bg-transparent" style="max-width: 900px;">
-                        <div class="row g-0 card-bg p-2" style="height:100px; border-radius: 15px;">
-                            <div class="col-md-4 d-flex align-items-center">
-                                <h5 class="ms-4 me-auto my-auto">Color Theme</h5>
-                            </div>
-                            <div class="col-md-5">
-                                <div class="card-body">
+                </div>
+                <div class="row g-0">
+                    <div class="col col-6-lg col-12-sm m-0">
+                        <div id="firstCol" class="list-group">
 
-                                </div>
-                            </div>
-                            <div class="col-md-3 d-flex align-items-center">
+                        </div>
+                    </div>
+                    <div class="col col-6-lg col-12-sm m-0">
+                        <div id="secondCol" class="list-group">
 
-                                <select id="setTheme" name="theme" class="ms-auto me-4">
-                                    <option value="purple">Purple</option>
-                                    <option value="dark">Dark</option>
-                                    <option value="light">Light</option>
-                                    <option value="star">Star</option>
-                                </select>
-
-                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col mb-5">
-                    <div class="card mb-3 mx-auto border-0 bg-transparent" style="max-width: 900px;">
-                        <div class="row g-0 card-bg p-2" style="height:100px; border-radius: 15px;">
-                            <div class="col-12 d-flex align-items-center justify-content-center">
-                                <h3 id="status" style="text-align: center;"></h3>
-                            </div>
-                            <div class="col d-flex align-items-center justify-content-center mb-3">
-                                <button id="save" class="btn btn-outline-success mx-3">Save Changes</button>
-                                <button id="testNotif" class="btn btn-outline-warning mx-3">Test Notifications</button>
-                                <button id="auditStorage" class="btn btn-outline-warning mx-3">Repair Storage</button>
-                                <button id="resetStorage" class="btn btn-outline-warning mx-3">Reset Storage</button>
-                                <a href="/storage.html" class="btn btn-outline-primary mx-3" role="button">Storage
-                                    Tool</a>
 
-                            </div>
+            </div>
+
+            <div class="col mb-5">
+                <div class="card mb-3 mx-auto border-0 bg-transparent">
+                    <div class="row g-0 card-bg p-2" style="height:100px; border-radius: 15px;">
+                        <div class="col-12 d-flex align-items-center justify-content-center">
+                            <h3 id="status" style="text-align: center;"></h3>
+                        </div>
+                        <div class="col d-flex align-items-center justify-content-evenly mb-3">
+                            <button id="save" class="btn btn-outline-success mx-3">Save Changes</button>
+                            <button id="testNotif" class="btn btn-outline-warning mx-3">Test Notifications</button>
+                            <button id="auditStorage" class="btn btn-outline-warning mx-3">Repair Storage</button>
+                            <button id="resetStorage" class="btn btn-outline-warning mx-3">Reset Storage</button>
+                            <a href="/storage.html" class="btn btn-outline-primary mx-3" role="button">Storage
+                                Tool</a>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
 </body>
