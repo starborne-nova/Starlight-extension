@@ -86,12 +86,11 @@ li{
 .header {
     text-align: center;
     background:  linear-gradient(to right,var(--background-color), transparent 40%,var(--background-color)),
-    url("images/cometTest2.png");
+    url("images/starlightEclipse.png");
     background-color: var(--background-color);
-    background-position: left;
     background-repeat: no-repeat;
     background-size: 450px;
-    background-position: 0% 50%;
+    background-position: 50% 50%;
     color: white; 
     display: table-header-group;
 }

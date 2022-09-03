@@ -14,7 +14,7 @@
 </head>
 <nav class="navbar mb-5">
     <div class="container-fluid justify-content-start">
-        <img src="images/cometTest.png" id="logo">
+        <img src="images/eclipseLogo.png" id="logo">
         <span class="navbar-brand my-2 ms-1 h1 text-light">Starlight Options</span>
         <a class="nav-link active d-flex my-0 me-3 p-0" aria-current="page"
             href="https://chrome.google.com/webstore/detail/starlight/mjpipkhmdoghaollbfhfhhjblegomlaj" target="_blank">
@@ -66,23 +66,10 @@
                             <p id="version" class="nav-link header-text text-center"></p>
                             <ul class="m-2">
                                 <li>
-                                    Custom lists are fully implemented. 
+                                    Updates will be smaller and less frequent now that the core functionality and features are complete. Look forward to more theme customization and server improvements. As always, please report any issues and thank you for using Starlight!
                                 </li>
                                 <li>
-                                    There is a small limit to the number of new streamers that can be added to the server at once. A "new streamer" is anyone that is not currently registered to recieve information in the server. Once the cost has reached the maximum allowed, you will have to make a separate requests to add more new streamers. This limitation is a server-based issue and should be resolved soon.
-                                </li>
-                                <li>
-                                   There are 2 ways to adjust your custom list. You can generate a new code that will replace your current selection, or you can select the streamers you want to add and paste that code into the Add Streamers box. There is a possibility that the code system will become more streamlined in the future.
-                                </li>
-                                <li>
-                                    As the extension gets further refined, some of the debugging tools will be moved or have a more user-friendly version implemented. For now, they will remain available for troubleshooting and to solve smaller issues.
-                                 </li>
-                                 <li>
-                                    A green theme is being worked on and is available to use. If you have color suggestions to improve existing themes, or ideas for a new theme, please send an email!
-                                 </li>
-                                <li>
-                                    Thank you for using Starlight! The extension will always be free but any donations
-                                    for server upkeep are greatly appreciated
+                                    This extension will always be free but any donations for server upkeep are greatly appreciated
                                 </li>
                             </ul>
                             <p class="text-center">Something broken? Report issues on the extension page or email
@@ -180,12 +167,14 @@
                         </div>
                         <div class="col d-flex align-items-center justify-content-evenly mb-3">
                             <button id="save" class="btn btn-outline-success mx-3">Save Changes</button>
-                            <button id="testNotif" class="btn btn-outline-warning mx-3">Test Notifications</button>
-                            <button id="auditStorage" class="btn btn-outline-warning mx-3">Repair Storage</button>
+                            <button id="testNotif" class="btn btn-outline-warning mx-3">Test Notifications</button>  
                             <button id="resetStorage" class="btn btn-outline-warning mx-3">Reset Storage</button>
+
+                        </div>
+                        <div class="col d-flex align-items-center justify-content-evenly mb-3" style="display:none !important" id="debug">                       
+                            <button id="auditStorage" class="btn btn-outline-warning mx-3">Repair Storage</button>                          
                             <a href="/storage.html" class="btn btn-outline-primary mx-3" role="button">Storage
                                 Tool</a>
-
                         </div>
                     </div>
                 </div>

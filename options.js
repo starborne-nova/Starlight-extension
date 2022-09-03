@@ -440,5 +440,11 @@ document.addEventListener('DOMContentLoaded', loadOptions);
 
 document.addEventListener('DOMContentLoaded', loadOnline, { once: true });
 
+document.addEventListener('keydown', (event)=>{
+    if(event.key === 'x'){
+        $('#debug').removeAttr('style')
+    }
+}, {once: true})
+
 document.getElementById('save').addEventListener('click',
     saveOptions);
