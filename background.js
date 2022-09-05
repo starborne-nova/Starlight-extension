@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 //TODO LIST:
-// Check for existing notifications before shitting out new ones
 //See if you can make modules on extensions or if it's just fucking stupid
+//Rewrite options functions to use await instead of 15000 thens
 
 const outAuth = "stealthystars";
 const url = "https://star-reactor.fly.dev/pulse";
@@ -14,8 +14,7 @@ const initStorage = getAllStorageSyncData()
         console.log("Storage Loaded")
     })
     .then(() => {
-        setBadge();
-        localStorage.code.enabled?starPulse():pulse();
+        localStorage.code.enabled ? starPulse() : pulse();
     });
 
 //--------------------------------------------------------END OF INIT VARIABLES-----------------------------------------------------------------//
@@ -28,12 +27,12 @@ chrome.alarms.create("twitchPulse", {
 console.log("FROM BACKGROUND: Alarm Created")
 chrome.alarms.onAlarm.addListener(function (alarm) {
     if (alarm.name === "twitchPulse") {
-        chrome.storage.sync.get(null, (items)=>{
-            if(items.code.enabled === false){
+        chrome.storage.sync.get(null, (items) => {
+            if (items.code.enabled === false) {
                 console.log("FROM BACKGROUND: Alarm twitchpulse has triggered")
                 pulse();
             }
-            else if(items.code.enabled === true){
+            else if (items.code.enabled === true) {
                 console.log("FROM BACKGROUND: STARPULSE TRIGGERED")
                 starPulse();
             }
@@ -57,7 +56,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
         const updateNotif = {
             type: "basic",
             message: ("Updated to version " + manifest.version),
-            contextMessage: "Updates to the way custom lists are handled. Check the options page for more!",
+            contextMessage: "Background optimizations and fixed an options bug",
             title: "Starlight",
             iconUrl: "./images/icon48.png",
             eventTime: Date.now()
@@ -81,63 +80,40 @@ chrome.storage.onChanged.addListener(function (changes) {
         console.log(prop);
         if (changes[prop].hasOwnProperty("newValue") && changes[prop].hasOwnProperty("oldValue")) {
             if (changes[prop].newValue.status === true && changes[prop].oldValue.status === false && changes[prop].oldValue.status != undefined) {
-                if (localStorage.options[prop + "Notif"] === true) {
+                const startT = new Date(changes[prop].newValue.online);
+                const nowT = new Date();
+                const elapsed = Math.abs(nowT - startT);
+                const eMinutes = Math.ceil(elapsed / (1000 * 60));
+
+                if (localStorage.options[prop + "Notif"] === true && eMinutes <= 60) {
                     sendNotification(prop);
                     setBadge()
-                }}
+                }
+            }
             if (changes[prop].newValue.ticker != undefined && changes[prop].newValue.ticker != changes[prop].oldValue.ticker && changes[prop].oldValue.ticker != undefined) {
-                if (localStorage.options[prop + "Tick"] === true) {
+                const startT = new Date(changes[prop].newValue.update);
+                const nowT = new Date();
+                const elapsed = Math.abs(nowT - startT);
+                const eMinutes = Math.ceil(elapsed / (1000 * 60));
+
+                if (localStorage.options[prop + "Tick"] === true && eMinutes <= 60) {
                     sendTickerUpdate(prop);
                     setBadge()
-                }}
+                }
+            }
         }
     });
 })
 
-function auditStorage() {
-    getAllStorageSyncData()
-        .then(items => {
-            // Copy the data retrieved from storage into storageCache.
-            Object.assign(localStorage, items);
-        })
-        .then(() => {
-            return fetch(
-                url,
-                {
-                    method: "POST",
-                    mode: "cors",
-                    headers:
-                    {
-                        "Content-type": "application/json",
-                        "chrome": outAuth
-                    },
-                })
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log("AUDIT: Begin streamer audit")
-            Object.assign(localStorage, data[0])
-            Object.keys(localStorage).forEach(prop => {
-                if (!data[0].hasOwnProperty(prop) && prop != "options" && prop != "code") {
-                    chrome.storage.sync.remove(prop)
-                    chrome.storage.sync.remove([(prop + "Notif"), (prop + "Tick")])
-                    delete localStorage[prop]
-                    delete localStorage.options[prop + "Notif"]
-                    delete localStorage.options[prop + "Tick"]
-                    console.log("AUDIT: " + prop + " has been removed")
-                }
-            })
-            console.log("AUDIT: Streamer audit complete")
-        })
-        .then(() => {
-            console.log("AUDIT: Begin options audit")
-            Object.keys(localStorage).forEach(prop => {
-                if (prop != "options" && prop != "code" && localStorage.options[prop + "Notif"] === undefined) {
-                    localStorage.options[prop + "Notif"] = true;
-                    localStorage.options[prop + "Tick"] = true;
-                    console.log("AUDIT: Options for " + prop + " added")
-                }
-            })
+async function auditStorage() {
+    try{
+        const loadData = await getAllStorageSyncData()
+        const writeOp = await Object.assign(localStorage, loadData)
+        if (localStorage.code.enabled){
+            const sendPulse = await starPulse()
+        }
+        else{
+            const sendPulse = await pulse()
             if (localStorage.code === undefined) {
                 const codeBlock = {
                     code: {
@@ -150,118 +126,117 @@ function auditStorage() {
                 Object.assign(localStorage, codeBlock);
                 console.log("AUDIT: No code block found, insertion complete")
             }
-            console.log("AUDIT: Options audit complete")
-        })
-        .then(() => {
-            chrome.storage.sync.set(localStorage, () => {
+        }
+        return new Promise((resolve, reject)=>{
+            resolve(chrome.storage.sync.set(localStorage, () => {
                 console.log("AUDIT: Operation complete")
-            })
+                setBadge();
+            }))
         })
-        .then(() => {
-            setBadge();
-        })
-        .catch(e => { console.log(e) })
+    }
+    catch(e){
+        console.log(e)
+    }
 }
 
-function installStorage() {
-    fetch(
-        url,
-        {
-            method: "POST",
-            mode: "cors",
-            headers:
-            {
-                "Content-type": "application/json",
-                "chrome": outAuth
+async function installStorage() {
+    try{
+        const fresh = {}
+        const storage = {
+            options: {
+                theme: "star"
             },
-        })
-        .then(response => response.json())
-        .then(data => {
-            Object.assign(localStorage, data[0])
-            chrome.storage.sync.set(localStorage, () => {
-                console.log("INSTALL PULSE: Data updated")
-            })
-        })
-        .then(() => {
-            const storage = {
-                options: {
-                    theme: "star"
-                },
-                code: {
-                    generated: "",
-                    userID: "",
-                    req: {},
-                    enabled: false
-                }
+            code: {
+                generated: "",
+                userID: "",
+                req: {},
+                enabled: false
             }
-            Object.keys(localStorage).forEach(prop => {
-                if (prop != "options" && prop != "code") {
-                    storage.options[prop + "Notif"] = true;
-                    storage.options[prop + "Tick"] = true;
-                }
+        }
+        const incData = await fetch(
+            url,
+            {
+                method: "POST",
+                mode: "cors",
+                headers:
+                {
+                    "Content-type": "application/json",
+                    "chrome": outAuth
+                },
             })
-            Object.assign(localStorage, storage)
+        const converted = await incData.json()
+        Object.assign(fresh, converted[0])
+        Object.keys(fresh).forEach(prop => {
+            if (prop != "options") {
+                storage.options[prop + "Notif"] = true;
+                storage.options[prop + "Tick"] = true;
+            }
         })
-        .then(() => {
-            chrome.storage.sync.set(localStorage, () => {
+        Object.assign(fresh, storage)
+        return new Promise((resolve, reject)=>{
+            resolve(chrome.storage.sync.set(fresh, () => {
                 console.log("INSTALL OPTIONS BLOCK INITIALIZED")
-            })
+                setBadge()
+            }))
         })
-        .then(() => {
-            setBadge()
-        })
-        .catch(e => { console.log(e) })
-
+    }
+    catch(e){
+        console.log(e)
+    }
 }
 
 
 //PING THE SERVER FOR INFO AND UPDATE LOCAL AND CLOUD STORAGE(google give me webhooks pls)----//
-function pulse() {
-    fetch(
-        url,
-        {
-            method: "POST",
-            mode: "cors",
-            headers:
+async function pulse() {
+    try {
+        const incData = await fetch(
+            url,
             {
-                "Content-type": "application/json",
-                "chrome": outAuth
-            },
+                method: "POST",
+                mode: "cors",
+                headers:
+                {
+                    "Content-type": "application/json",
+                    "chrome": outAuth
+                },
+            })
+        const converted = await incData.json()
+        console.log(converted[0])
+        Object.keys(localStorage).forEach(prop => {
+            if (!converted[0].hasOwnProperty(prop) && prop != "options" && prop != "code") {
+                chrome.storage.sync.remove(prop)
+                chrome.storage.sync.remove([(prop + "Notif"), (prop + "Tick")])
+                delete localStorage[prop]
+                delete localStorage.options[prop + "Notif"]
+                delete localStorage.options[prop + "Tick"]
+                console.log("PULSE: " + prop + " has been removed")
+            }
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data[0])
-            Object.assign(localStorage, data[0])
-            chrome.storage.sync.set(localStorage, () => {
+        Object.assign(localStorage, converted[0])
+        Object.keys(localStorage).forEach(prop => {
+            if (prop != "options" && prop != "code" && localStorage.options[prop + "Notif"] === undefined) {
+                localStorage.options[prop + "Notif"] = true;
+                localStorage.options[prop + "Tick"] = true;
+                console.log("PULSE: Options for " + prop + " added")
+            }
+        })
+        return new Promise((resolve, reject) => {
+            resolve(chrome.storage.sync.set(localStorage, () => {
                 console.log("FROM PULSE: Data updated")
                 console.log(localStorage);
                 setBadge()
-            })
+            }))
         })
-        .then(()=>{
-            Object.keys(localStorage).forEach(prop => {
-                if (prop != "options" && prop != "code" && localStorage.options[prop + "Notif"] === undefined) {
-                    localStorage.options[prop + "Notif"] = true;
-                    localStorage.options[prop + "Tick"] = true;
-                    console.log("PULSE: Options for " + prop + " added")
-                    chrome.storage.sync.set(localStorage, () => {
-                        console.log("FROM PULSE: New options saved")
-                    })
-                    sendAddedNotification(prop);
-                }
-            })
-        })
-        .catch((e) => {
-            console.log(e)
-        })
-
+    }
+    catch (e) {
+        console.log(e)
+    }
 }
 
 async function starPulse() {
-    chrome.storage.sync.get(null, (items)=>{
-        Object.assign(localStorage, items)
-        console.log(localStorage.code.req)
-        fetch(
+    try {
+        const sync = await chrome.storage.sync.get(null, (items) => { Object.assign(localStorage, items) })
+        const incData = await fetch(
             starUrl,
             {
                 method: "POST",
@@ -273,45 +248,41 @@ async function starPulse() {
                     "chrome": outAuth
                 },
             })
-    
-        .then(response=> response.json())
-        .then(data => {
-            console.log(data)
-            if(Object.keys(data).length > 0){
-                Object.keys(localStorage).forEach(prop => {
-                    if (!data.hasOwnProperty(prop) && prop != "options" && prop != "code") {
-                        chrome.storage.sync.remove(prop)
-                        chrome.storage.sync.remove([(prop + "Notif"), (prop + "Tick")])
-                        delete localStorage[prop]
-                        delete localStorage.options[prop + "Notif"]
-                        delete localStorage.options[prop + "Tick"]
-                        console.log("STARPULSE: " + prop + " has been removed")
-                    }
-                })
-                Object.assign(localStorage, data)
+        const converted = await incData.json()
+        console.log(converted)
+        if (Object.keys(converted).length > 0) {
+            Object.keys(localStorage).forEach(prop => {
+                if (!converted.hasOwnProperty(prop) && prop != "options" && prop != "code") {
+                    chrome.storage.sync.remove(prop)
+                    chrome.storage.sync.remove([(prop + "Notif"), (prop + "Tick")])
+                    delete localStorage[prop]
+                    delete localStorage.options[prop + "Notif"]
+                    delete localStorage.options[prop + "Tick"]
+                    console.log("STARPULSE: " + prop + " has been removed")
+                }
+            })
+        }
+        Object.assign(localStorage, converted)
+        Object.keys(localStorage).forEach(prop => {
+            if (prop != "options" && prop != "code" && localStorage.options[prop + "Notif"] === undefined) {
+                localStorage.options[prop + "Notif"] = true;
+                localStorage.options[prop + "Tick"] = true;
+                console.log("STARPULSE: Options for " + prop + " added")
+            }
+        })
+        return new Promise((resolve, reject) => {
+            resolve(
                 chrome.storage.sync.set(localStorage, () => {
                     console.log("FROM STARPULSE: Data updated")
                     console.log(localStorage);
                     setBadge()
                 })
-            }
+            )
         })
-        .then(()=>{
-            Object.keys(localStorage).forEach(prop => {
-                if (prop != "options" && prop!= "code" && localStorage.options[prop + "Notif"] === undefined) {
-                    localStorage.options[prop + "Notif"] = true;
-                    localStorage.options[prop + "Tick"] = true;
-                    console.log("STARPULSE: Options for " + prop + " added")
-                    chrome.storage.sync.set(localStorage, () => {
-                        console.log("STARPULSE: New options saved")
-                    })
-                }
-            })
-        })
-        .catch((e) => {
-            console.log(e)
-        })
-    })
+    }
+    catch (e) {
+        console.log(e)
+    }
 }
 
 
@@ -362,16 +333,16 @@ function sendNotification(streamer) {
         type: "basic",
         message: localStorage[streamer].game,
         title: (streamer + " is Live!"),
-        buttons: [{title: "Open Twitch"}],
+        buttons: [{ title: "Open Twitch" }],
         iconUrl: ("./images/icon48.png"),
         eventTime: Date.now()
     };
 
-    chrome.notifications.getAll((notifications)=>{
-        if(Object.keys(notifications).length === 0){
+    chrome.notifications.getAll((notifications) => {
+        if (Object.keys(notifications).length === 0) {
             chrome.notifications.create(streamer, notif, function () {
-                chrome.notifications.onButtonClicked.addListener(()=>{
-                    chrome.tabs.create({url:("https://www.twitch.tv/" + streamer.toLowerCase())})
+                chrome.notifications.onButtonClicked.addListener(() => {
+                    chrome.tabs.create({ url: ("https://www.twitch.tv/" + streamer.toLowerCase()) })
                 })
                 setTimeout(() => {
                     chrome.notifications.clear(streamer, (cleared) => {
@@ -391,8 +362,8 @@ function sendTickerUpdate(streamer) {
         iconUrl: ("./images/icon48.png"),
         eventTime: Date.now()
     };
-    chrome.notifications.getAll((notifications)=>{
-        if(Object.keys(notifications).length === 0){
+    chrome.notifications.getAll((notifications) => {
+        if (Object.keys(notifications).length === 0) {
             chrome.notifications.create(streamer, notif, function () {
                 setTimeout(() => {
                     chrome.notifications.clear(streamer, (cleared) => {

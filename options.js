@@ -1,6 +1,7 @@
 const localStorage = {};
 const outAuth = "stealthystars";
 const url = "https://star-reactor.fly.dev/pulse";
+const starUrl = "https://star-reactor.fly.dev/starpulse";
 
 //border + shadow on boxes
 //gradient on boxes?
@@ -16,7 +17,7 @@ const notifOptions = {
     title: "Starlight",
     message: "This is a test!",
     iconUrl: "./images/icon48.png",
-    buttons: [{title: "Open Twitch"}],
+    buttons: [{ title: "Open Twitch" }],
     eventTime: Date.now()
 }
 
@@ -90,7 +91,7 @@ function handleTestNotif() {
     chrome.notifications.getAll((notifications) => {
         if (Object.keys(notifications).length === 0) {
             chrome.notifications.create("testNote", notifOptions, function (id) {
-                chrome.notifications.onButtonClicked.addListener(()=>{
+                chrome.notifications.onButtonClicked.addListener(() => {
                     window.open("https://twitch.tv")
                 })
                 setTimeout(() => {
@@ -118,16 +119,6 @@ function getAllStorageSyncData() {
     });
 }
 
-function sendNotification(streamer, notif) {
-    chrome.notifications.create(streamer, notif, function () {
-        setTimeout(() => {
-            chrome.notifications.clear(streamer, (cleared) => {
-                console.log("Notification Cleared = " + cleared)
-            })
-        }, 5000)
-    })
-}
-
 function populateOptions() {
     chrome.storage.sync.get(null, (items) => {
         var count = 1
@@ -153,49 +144,20 @@ function populateOptions() {
 }
 
 function storageReset() {
-
     chrome.storage.sync.clear(() => {
         installStorage();
     })
 }
 
-function storageAudit() {
-    fetch(
-        url,
-        {
-            method: "POST",
-            mode: "cors",
-            headers:
-            {
-                "Content-type": "application/json",
-                "chrome": outAuth
-            },
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log("AUDIT: Begin streamer audit")
-            Object.assign(localStorage, data[0])
-            Object.keys(localStorage).forEach(prop => {
-                if (!data[0].hasOwnProperty(prop) && prop != "options") {
-                    chrome.storage.sync.remove(prop)
-                    chrome.storage.sync.remove([(prop + "Notif"), (prop + "Tick")])
-                    delete localStorage[prop]
-                    delete localStorage.options[prop + "Notif"]
-                    delete localStorage.options[prop + "Tick"]
-                    console.log("AUDIT: " + prop + " has been removed")
-                }
-            })
-            console.log("AUDIT: Streamer audit complete")
-        })
-        .then(() => {
-            console.log("AUDIT: Begin options audit")
-            Object.keys(localStorage).forEach(prop => {
-                if (prop != "options" && localStorage.options[prop + "Notif"] === undefined) {
-                    localStorage.options[prop + "Notif"] = true;
-                    localStorage.options[prop + "Tick"] = true;
-                    console.log("AUDIT: Options for " + prop + " added")
-                }
-            })
+async function storageAudit() {
+    try {
+        const loadData = await getAllStorageSyncData()
+        const writeOp = await Object.assign(localStorage, loadData)
+        if (localStorage.code.enabled) {
+            const sendPulse = await starPulse()
+        }
+        else {
+            const sendPulse = await pulse()
             if (localStorage.code === undefined) {
                 const codeBlock = {
                     code: {
@@ -208,64 +170,63 @@ function storageAudit() {
                 Object.assign(localStorage, codeBlock);
                 console.log("AUDIT: No code block found, insertion complete")
             }
-            console.log("AUDIT: Options audit complete")
-        })
-        .then(() => {
-            chrome.storage.sync.set(localStorage, () => {
+        }
+        return new Promise((resolve, reject) => {
+            resolve(chrome.storage.sync.set(localStorage, () => {
                 console.log("AUDIT: Operation complete")
-            })
+                setBadge();
+            }))
         })
-        .catch(e => { console.log(e) })
-
+    }
+    catch (e) {
+        console.log(e)
+    }
 }
 
-function installStorage() {
-    const fresh = {}
-    fetch(
-        url,
-        {
-            method: "POST",
-            mode: "cors",
-            headers:
-            {
-                "Content-type": "application/json",
-                "chrome": outAuth
+async function installStorage() {
+    try {
+        const fresh = {}
+        const storage = {
+            options: {
+                theme: "star"
             },
-        })
-        .then(response => response.json())
-        .then(data => {
-            Object.assign(fresh, data[0])
-            chrome.storage.sync.set(fresh, () => {
-                console.log("INSTALL PULSE: Data updated")
-            })
-        })
-        .then(() => {
-            const storage = {
-                options: {
-                    theme: "star"
-                },
-                code: {
-                    generated: "",
-                    userID: "",
-                    req: {},
-                    enabled: false
-                }
+            code: {
+                generated: "",
+                userID: "",
+                req: {},
+                enabled: false
             }
-            Object.keys(fresh).forEach(prop => {
-                if (prop != "options") {
-                    storage.options[prop + "Notif"] = true;
-                    storage.options[prop + "Tick"] = true;
-                }
+        }
+        const incData = await fetch(
+            url,
+            {
+                method: "POST",
+                mode: "cors",
+                headers:
+                {
+                    "Content-type": "application/json",
+                    "chrome": outAuth
+                },
             })
-            Object.assign(fresh, storage)
+        const converted = await incData.json()
+        Object.assign(fresh, converted[0])
+        Object.keys(fresh).forEach(prop => {
+            if (prop != "options") {
+                storage.options[prop + "Notif"] = true;
+                storage.options[prop + "Tick"] = true;
+            }
         })
-        .then(() => {
-            chrome.storage.sync.set(fresh, () => {
+        Object.assign(fresh, storage)
+        return new Promise((resolve, reject) => {
+            resolve(chrome.storage.sync.set(fresh, () => {
                 console.log("INSTALL OPTIONS BLOCK INITIALIZED")
-            })
+                setBadge()
+            }))
         })
-        .catch(e => { console.log(e) })
-
+    }
+    catch (e) {
+        console.log(e)
+    }
 }
 
 function setBadge() {
@@ -289,10 +250,12 @@ function setBadge() {
     })
 }
 
-function parseCode(code) {
+async function parseCode(code) {
+    try{
     const unparsed = code;
     localStorage.code.generated = unparsed;
     const codePayload = {}
+    const reqObject = {}
     unparsed.split("%").forEach(id => {
         let insert = {
             [id]: "enabled"
@@ -301,7 +264,7 @@ function parseCode(code) {
     });
     console.log(codePayload);
 
-    fetch(
+    const incData = await fetch(
         "https://star-reactor.fly.dev/starpulse/init",
         {
             method: "POST",
@@ -313,104 +276,198 @@ function parseCode(code) {
                 "chrome": outAuth
             },
         })
-        .then(response =>{ 
-            if(response.status === 500){
-                $("#codeResults").text("Invalid Code or Server Error")
-                setTimeout(function () {
-                    $("#codeResults").text("");
-                }, 2000);
-                return
-            }
-            
-            return response.json()})
-        .then(data => {
-            const reqObject = {}
-            const incData = data.converted;
-            incData.forEach(name => {
-                let insert = {
-                    [name]: "enabled"
-                }
-                Object.assign(reqObject, insert)
-            })
-            Object.assign(localStorage.code.req, reqObject)
-            localStorage.code.enabled = true
-            console.log("OPTIONS: Request code saved. Enabling StarPulse")
-            $("#codeResults").text("Code accepted")
-                setTimeout(function () {
-                    $("#codeResults").text("");
-                }, 2000);
 
-        })
-        .then(() => {
-            chrome.storage.sync.set(localStorage, () => {
-                
-                console.log(localStorage.code)
-                loadOptions()
-            })
-        })
+    if (incData.status === 500 || incData.status === 400) {
+        $("#codeResults").text("Invalid Code or Server Error")
+        setTimeout(function () {
+            $("#codeResults").text("");
+        }, 2000);
+        return
+    }
 
+    const converted = await incData.json()
+    const serverCode = await converted.converted;
+
+    serverCode.forEach(name => {
+        let insert = {
+            [name]: "enabled"
+        }
+        Object.assign(reqObject, insert)
+    })
+    Object.assign(localStorage.code.req, reqObject)
+    localStorage.code.enabled = true
+    console.log("OPTIONS: Request code saved. Enabling StarPulse")
+    $("#codeResults").text("Code accepted")
+    setTimeout(function () {
+        $("#codeResults").text("");
+    }, 2000);
+    chrome.storage.sync.set(localStorage, () => {
+        console.log(localStorage.code)
+        starPulse()
+        loadOptions()
+    })
+    }catch(e){
+        console.log(e)
+    }
 }
 
-function additionCode(code) {
-    const update = localStorage.code.generated + "%" + code;
-    const codePayload = {}
-    update.split("%").forEach(id => {
-        let insert = {
-            [id]: "enabled"
-        }
-        Object.assign(codePayload, insert)
-    });
-    console.log(codePayload);
-
-    fetch(
-        "https://star-reactor.fly.dev/starpulse/init",
-        {
-            method: "POST",
-            body: JSON.stringify(codePayload),
-            mode: "cors",
-            headers:
-            {
-                "Content-type": "application/json",
-                "chrome": outAuth
-            },
-        })
-        .then(response =>{ 
-            if(response.status === 500){
-                $("#codeResults").text("Invalid Code or Server Error")
-                setTimeout(function () {
-                    $("#codeResults").text("");
-                }, 2000);
-                return
+async function additionCode(code) {
+    try{
+        const unparsed = localStorage.code.generated + "%" + code;
+        localStorage.code.generated = unparsed;
+        const codePayload = {}
+        const reqObject = {}
+        unparsed.split("%").forEach(id => {
+            let insert = {
+                [id]: "enabled"
             }
-            
-            return response.json()})
-        .then(data => {
-            const reqObject = {}
-            const incData = data.converted;
-            incData.forEach(name => {
-                let insert = {
-                    [name]: "enabled"
+            Object.assign(codePayload, insert)
+        });
+        console.log(codePayload);
+    
+        const incData = await fetch(
+            "https://star-reactor.fly.dev/starpulse/init",
+            {
+                method: "POST",
+                body: JSON.stringify(codePayload),
+                mode: "cors",
+                headers:
+                {
+                    "Content-type": "application/json",
+                    "chrome": outAuth
+                },
+            })
+    
+        if (incData.status === 500 || incData.status === 400) {
+            $("#codeResults").text("Invalid Code or Server Error")
+            setTimeout(function () {
+                $("#codeResults").text("");
+            }, 2000);
+            return
+        }
+    
+        const converted = await incData.json()
+        const serverCode = await converted.converted;
+    
+        serverCode.forEach(name => {
+            let insert = {
+                [name]: "enabled"
+            }
+            Object.assign(reqObject, insert)
+        })
+        Object.assign(localStorage.code.req, reqObject)
+        localStorage.code.enabled = true
+        console.log("OPTIONS: Request code saved. Enabling StarPulse")
+        $("#codeResults").text("Code accepted")
+        setTimeout(function () {
+            $("#codeResults").text("");
+        }, 2000);
+        chrome.storage.sync.set(localStorage, () => {
+            console.log(localStorage.code)
+            starPulse()
+            loadOptions()
+        })
+        }catch(e){
+            console.log(e)
+        }
+}
+
+async function pulse() {
+    try {
+        const incData = await fetch(
+            url,
+            {
+                method: "POST",
+                mode: "cors",
+                headers:
+                {
+                    "Content-type": "application/json",
+                    "chrome": outAuth
+                },
+            })
+        const converted = await incData.json()
+        console.log(converted[0])
+        Object.keys(localStorage).forEach(prop => {
+            if (!converted[0].hasOwnProperty(prop) && prop != "options" && prop != "code") {
+                chrome.storage.sync.remove(prop)
+                chrome.storage.sync.remove([(prop + "Notif"), (prop + "Tick")])
+                delete localStorage[prop]
+                delete localStorage.options[prop + "Notif"]
+                delete localStorage.options[prop + "Tick"]
+                console.log("PULSE: " + prop + " has been removed")
+            }
+        })
+        Object.assign(localStorage, converted[0])
+        Object.keys(localStorage).forEach(prop => {
+            if (prop != "options" && prop != "code" && localStorage.options[prop + "Notif"] === undefined) {
+                localStorage.options[prop + "Notif"] = true;
+                localStorage.options[prop + "Tick"] = true;
+                console.log("PULSE: Options for " + prop + " added")
+            }
+        })
+        return new Promise((resolve, reject) => {
+            resolve(chrome.storage.sync.set(localStorage, () => {
+                console.log("FROM PULSE: Data updated")
+                console.log(localStorage);
+                setBadge()
+            }))
+        })
+    }
+    catch (e) {
+        console.log(e)
+    }
+}
+
+async function starPulse() {
+    try {
+        const sync = await chrome.storage.sync.get(null, (items) => { Object.assign(localStorage, items) })
+        const incData = await fetch(
+            starUrl,
+            {
+                method: "POST",
+                mode: "cors",
+                body: JSON.stringify(localStorage.code.req),
+                headers:
+                {
+                    "Content-type": "application/json",
+                    "chrome": outAuth
+                },
+            })
+        const converted = await incData.json()
+        console.log(converted)
+        if (Object.keys(converted).length > 0) {
+            Object.keys(localStorage).forEach(prop => {
+                if (!converted.hasOwnProperty(prop) && prop != "options" && prop != "code") {
+                    chrome.storage.sync.remove(prop)
+                    chrome.storage.sync.remove([(prop + "Notif"), (prop + "Tick")])
+                    delete localStorage[prop]
+                    delete localStorage.options[prop + "Notif"]
+                    delete localStorage.options[prop + "Tick"]
+                    console.log("STARPULSE: " + prop + " has been removed")
                 }
-                Object.assign(reqObject, insert)
             })
-            Object.assign(localStorage.code.req, reqObject)
-            localStorage.code.enabled = true
-            console.log("OPTIONS: Request code saved. Enabling StarPulse")
-            $("#codeResults").text("Code accepted")
-                setTimeout(function () {
-                    $("#codeResults").text("");
-                }, 2000);
-
+        }
+        Object.assign(localStorage, converted)
+        Object.keys(localStorage).forEach(prop => {
+            if (prop != "options" && prop != "code" && localStorage.options[prop + "Notif"] === undefined) {
+                localStorage.options[prop + "Notif"] = true;
+                localStorage.options[prop + "Tick"] = true;
+                console.log("STARPULSE: Options for " + prop + " added")
+            }
         })
-        .then(() => {
-            localStorage.code.generated = update
-            chrome.storage.sync.set(localStorage, () => {
-                
-                console.log(localStorage.code)
-                loadOptions()
-            })
+        return new Promise((resolve, reject) => {
+            resolve(
+                chrome.storage.sync.set(localStorage, () => {
+                    console.log("FROM STARPULSE: Data updated")
+                    console.log(localStorage);
+                    setBadge()
+                })
+            )
         })
-
+    }
+    catch (e) {
+        console.log(e)
+    }
 }
 
 $("#codeSend").on("click", function (e) {
@@ -440,11 +497,11 @@ document.addEventListener('DOMContentLoaded', loadOptions);
 
 document.addEventListener('DOMContentLoaded', loadOnline, { once: true });
 
-document.addEventListener('keydown', (event)=>{
-    if(event.key === 'x'){
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'x') {
         $('#debug').removeAttr('style')
     }
-}, {once: true})
+})
 
 document.getElementById('save').addEventListener('click',
     saveOptions);
