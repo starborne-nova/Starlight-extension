@@ -28,7 +28,7 @@
             </span>
         </a>
         <a class="nav-link active d-flex my-0 me-3 p-0" aria-current="page"
-            href="https://github.com/starborne-nova/TwitchLight-Extension" target="_blank">
+            href="https://github.com/starborne-nova/Starlight-extension" target="_blank">
             <span class="material-icons">
                 code
             </span>
@@ -66,17 +66,13 @@
                             <p id="version" class="nav-link header-text text-center"></p>
                             <ul class="m-2" style="list-style-type: decimal;">
                                 <li class="my-2">
-                                    Rewrote most of the code to be "More Betterer&#x2122;"
+                                    Implemented the first version of the new list editor. It should make adding more streamers a lot easier! (It's also very new so there might still be some hiccups)
                                 </li>
                                 <li class="my-2">
-                                    Changed notifications to not show up after 60 minutes (so you no longer get ticker
-                                    updates from hours ago).
+                                    Next Update: Cleaned up list editor, Server status on options page
                                 </li>
                                 <li class="my-2">
-                                    An issue has been identified where Chrome will sometimes not sync custom lists
-                                    between browsers. In theory it should be fixed. Make sure that Chrome is properly
-                                    logged in to your account and is set to sync Extensions and Settings. If you still
-                                    run into this issue, please send an email so we can work out where the hiccup is!
+                                    Starlight has been (and will continue to be) open source. If you would like to take a look at the code, contribute, or suggest new features, the github link is on the page header.
                                 </li>
                             </ul>
                             <p class="text-center my-2">Thank you for using Starlight! The extension will always be free
@@ -93,11 +89,18 @@
                 <div class="card mb-3 mx-auto border-0 rounded-0 bg-transparent">
                     <div class="row g-0 card-bg p-2 mx-3">
                         <div class="col-12 mt-3 mb-4">
-                            <a href="https://star-reactor.fly.dev/starlight" target="_blank">
-                                <h5 class="text-center">Click here to start the custom list process</h5>
+                            <a href="/list.html" target="_blank">
+                                <h5 class="text-center">New List Editor</h5>
                             </a>
+                        </div>
+                        <div class="col-12 mt-3 mb-4">
+                            <a href="https://star-reactor.fly.dev/starlight" target="_blank">
+                                <h5 class="text-center">Old List Editor</h5>
+                            </a>
+                            
                             <h4 class="text-center text-warning" id="codeResults"></h4>
                         </div>
+                        
                         <div class="col-md-4 mb-3 d-flex align-items-center">
                             <h5 class="mx-auto me-auto ms-4">Insert Code from Server</h5>
                         </div>

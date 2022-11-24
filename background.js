@@ -1,7 +1,4 @@
 /* eslint-disable no-undef */
-//TODO LIST:
-//See if you can make modules on extensions or if it's just fucking stupid
-//Rewrite options functions to use await instead of 15000 thens
 
 const outAuth = "stealthystars";
 const url = "https://star-reactor.fly.dev/pulse";
