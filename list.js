@@ -1,5 +1,4 @@
 //Add Performance option that lets you adjust ping freq to 2-5 min
-//Make server add new streamers on submit and throw up a loading screen or something until the server responds.
 
 const localStorage = {};
 const outAuth = "stealthystars";
@@ -14,14 +13,10 @@ const initStorageCache = getAllStorageSyncData()
     .then(items => {
         Object.assign(localStorage, items);
         console.log(localStorage);
-        if (localStorage.code.enabled) {
-            $("#saveList").hide()
-            $("#addList").attr("hidden", false)
-            $("#showStored").attr("hidden", false)
-            for (let i = 0; i < Object.keys(localStorage.code.req).length; i++) {
-                $("#storedList").append("<li id='stored" + i + "'>" + Object.keys(localStorage.code.req)[i] + "</li>")
-            }
+        for (let i = 0; i < Object.keys(localStorage.code.req).length; i++) {
+            $("#storedList").append("<span class='badge bg-primary m-1'>" + Object.keys(localStorage.code.req)[i] + "</span>")
         }
+
     });
 
 $("#searchSubmit").on("click", (e) => {
@@ -40,11 +35,9 @@ $("#searchSend").on("click", (e) => {
     validate(compile)
 })
 
-$("#saveList").on("click", (e) => {
-    storeList()
-})
-$("#addList").on("click", (e) => {
-    appendList()
+$("#addList").on("click", async function(e){
+    const exec = await appendList()
+    return exec
 })
 
 async function validate(list) {
@@ -67,10 +60,7 @@ async function validate(list) {
     )
 
     if (response.status === 500 || response.status === 400) {
-        // $("#codeResults").text("Invalid Code or Server Error")
-        // setTimeout(function () {
-        //     $("#codeResults").text("");
-        // }, 2000);
+        $("#requestSuccess").text("Invalid Code or Server Error")
         return
     }
 
@@ -98,45 +88,53 @@ async function validate(list) {
 
 }
 
-async function storeList() {
+async function appendList() {
 
     try {
-        if (unsubscribed.length > 0) {
-            const payload = { data: unsubscribed }
-            const retrieve = await fetch(
-                starActivate,
+        const payload = { data: unsubscribed }
+        const retrieve = await fetch(
+            starActivate,
+            {
+                method: "POST",
+                body: JSON.stringify(payload),
+                mode: "cors",
+                headers:
                 {
-                    method: "POST",
-                    body: JSON.stringify(payload),
-                    mode: "cors",
-                    headers:
-                    {
-                        "Content-type": "application/json",
-                        "chrome": outAuth
-                    }
-                }
-            )
-            const response = await retrieve.json()
-            for (let i = 0; i < response.data.length; i++) {
-                if (response.data[i].toLowerCase() === 'accepted%accepted%accepted') {
-                    $("#requestSuccess").append("<li>Request " + i.toString() + ": Success</li>")
-                }
-                else {
-                    $("#requestSuccess").append("<li>Request " + i.toString() + ": Error</li>")
+                    "Content-type": "application/json",
+                    "chrome": outAuth
                 }
             }
+        )
+        const response = await retrieve.json()
+        console.log(response)
+        for (let i = 0; i < response.data.length; i++) {
+            if (response.data[i].toLowerCase() === 'accepted%accepted%accepted') {
+                $("#requestSuccess").append("<li>Request " + i.toString() + ": Success</li>")
+                $("#modalResults").append("<span class='badge rounded-pill text-bg-success'>" + i.toString() + "</span>")
+            }
+            else {
+                $("#requestSuccess").append("<li>Request " + i.toString() + ": Error</li>")
+                $("#modalResults").append("<span class='badge rounded-pill text-bg-danger'>" + i.toString() + "</span>")
+            }
         }
+        $("#modalProgress").hide()
+        $("#modalWaiting").hide()
+        $("#modalSuccess").attr("hidden", false)
+
         const store = {}
         for (let i = 0; i < lastResponse.length; i++) {
             const key = lastResponse[i].name
             store[key] = "enabled"
         }
         Object.assign(localStorage.code.req, store)
-        localStorage.code.enabled = true
         chrome.storage.sync.set(localStorage, () => {
             console.log(localStorage.code.req)
-            console.log(localStorage.code.enabled)
-            $("#requestSuccess").append("List Recorded. It may take up to 5 minutes for the extension data to update.")
+            $("#requestSuccess").append("List Recorded. Data will update shortly")
+        })
+
+        return await chrome.runtime.sendMessage({message: "starPulse"}, (response)=>{
+            console.log("message sent")
+            console.log(response.message)
         })
     }
     catch (e) {
@@ -144,52 +142,6 @@ async function storeList() {
         $("#requestSuccess").append("Something went wrong:" + e)
     }
 
-}
-
-async function appendList() {
-    
-        try {
-            const payload = { data: unsubscribed }
-            const retrieve = await fetch(
-                starActivate,
-                {
-                    method: "POST",
-                    body: JSON.stringify(payload),
-                    mode: "cors",
-                    headers:
-                    {
-                        "Content-type": "application/json",
-                        "chrome": outAuth
-                    }
-                }
-            )
-            const response = await retrieve.json()
-            console.log(response)
-            for (let i = 0; i < response.data.length; i++) {
-                if (response.data[i].toLowerCase() === 'accepted%accepted%accepted') {
-                    $("#requestSuccess").append("<li>Request " + i.toString() + ": Success</li>")
-                }
-                else {
-                    $("#requestSuccess").append("<li>Request " + i.toString() + ": Error</li>")
-                }
-            }
-
-            const store = {}
-            for (let i = 0; i < lastResponse.length; i++) {
-                const key = lastResponse[i].name
-                store[key] = "enabled"
-            }
-            Object.assign(localStorage.code.req, store)
-            chrome.storage.sync.set(localStorage, () => {
-                console.log(localStorage.code.req)
-                console.log(localStorage.code.enabled)
-            })
-        }
-        catch (e) {
-            console.log(e)
-            $("#requestSuccess").append("Something went wrong:" + e)
-        }
-    
 }
 
 function getAllStorageSyncData() {

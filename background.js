@@ -11,7 +11,7 @@ const initStorage = getAllStorageSyncData()
         console.log("Storage Loaded")
     })
     .then(() => {
-        localStorage.code.enabled ? starPulse() : pulse();
+        starPulse();
     });
 
 //--------------------------------------------------------END OF INIT VARIABLES-----------------------------------------------------------------//
@@ -24,16 +24,8 @@ chrome.alarms.create("twitchPulse", {
 console.log("FROM BACKGROUND: Alarm Created")
 chrome.alarms.onAlarm.addListener(function (alarm) {
     if (alarm.name === "twitchPulse") {
-        chrome.storage.sync.get(null, (items) => {
-            if (items.code.enabled === false) {
-                console.log("FROM BACKGROUND: Alarm twitchpulse has triggered")
-                pulse();
-            }
-            else if (items.code.enabled === true) {
-                console.log("FROM BACKGROUND: STARPULSE TRIGGERED")
-                starPulse();
-            }
-        })
+        console.log("FROM BACKGROUND: Alarm twitchpulse has triggered")
+        starPulse();
     }
 });
 console.log("FROM BACKGROUND: Listener Created");
@@ -44,7 +36,8 @@ chrome.action.setBadgeBackgroundColor({ color: "#7f7f7f" }, function () { consol
 //FIRST RUN INITIALIZE CLOUD STORAGE----//
 chrome.runtime.onInstalled.addListener(function (details) {
     if (details.reason === "install") {
-        installStorage();
+        firstRun();
+        chrome.tabs.create({ url: ("/list.html") })
     }
     else if (details.reason === "update") {
         auditStorage();
@@ -53,7 +46,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
         const updateNotif = {
             type: "basic",
             message: ("Updated to version " + manifest.version),
-            contextMessage: "Background optimizations and fixed an options bug",
+            contextMessage: "Various updates to Options and List Editor",
             title: "Starlight",
             iconUrl: "./images/icon48.png",
             eventTime: Date.now()
@@ -66,6 +59,32 @@ chrome.runtime.onInstalled.addListener(function (details) {
                 })
             }, 7500)
         })
+    }
+})
+
+chrome.runtime.onMessage.addListener(function (message, sender, respond) {
+    const toRun = message.message
+
+    switch (toRun) {
+        case "starPulse":
+            console.log(toRun)
+            starPulse()
+            respond({ message: ("Running " + toRun) })
+            break;
+        case "auditStorage":
+            console.log(toRun)
+            auditStorage()
+            respond({ message: ("Running " + toRun) })
+            break;
+        case "storageReset":
+            console.log(toRun)
+            storageReset()
+            respond({ message: ("Running " + toRun) })
+            break;
+        default:
+            console.log(toRun)
+            respond({ message: "invalid request" })
+            break;
     }
 })
 
@@ -102,133 +121,37 @@ chrome.storage.onChanged.addListener(function (changes) {
     });
 })
 
-async function auditStorage() {
-    try{
-        const loadData = await getAllStorageSyncData()
-        const writeOp = await Object.assign(localStorage, loadData)
-        if (localStorage.code.enabled){
-            const sendPulse = await starPulse()
-        }
-        else{
-            const sendPulse = await pulse()
-            if (localStorage.code === undefined) {
-                const codeBlock = {
-                    code: {
-                        generated: "",
-                        userID: "",
-                        req: {},
-                        enabled: false
-                    }
-                }
-                Object.assign(localStorage, codeBlock);
-                console.log("AUDIT: No code block found, insertion complete")
-            }
-        }
-        return new Promise((resolve, reject)=>{
-            resolve(chrome.storage.sync.set(localStorage, () => {
-                console.log("AUDIT: Operation complete")
-                setBadge();
-            }))
-        })
-    }
-    catch(e){
-        console.log(e)
-    }
-}
-
-async function installStorage() {
-    try{
-        const fresh = {}
+async function firstRun() {
+    try {
         const storage = {
             options: {
                 theme: "star"
             },
             code: {
-                generated: "",
-                userID: "",
                 req: {},
-                enabled: false
             }
         }
-        const incData = await fetch(
-            url,
-            {
-                method: "POST",
-                mode: "cors",
-                headers:
-                {
-                    "Content-type": "application/json",
-                    "chrome": outAuth
-                },
-            })
-        const converted = await incData.json()
-        Object.assign(fresh, converted[0])
-        Object.keys(fresh).forEach(prop => {
-            if (prop != "options") {
-                storage.options[prop + "Notif"] = true;
-                storage.options[prop + "Tick"] = true;
-            }
-        })
-        Object.assign(fresh, storage)
-        return new Promise((resolve, reject)=>{
-            resolve(chrome.storage.sync.set(fresh, () => {
-                console.log("INSTALL OPTIONS BLOCK INITIALIZED")
-                setBadge()
-            }))
-        })
-    }
-    catch(e){
-        console.log(e)
-    }
-}
-
-
-//PING THE SERVER FOR INFO AND UPDATE LOCAL AND CLOUD STORAGE(google give me webhooks pls)----//
-async function pulse() {
-    try {
-        const incData = await fetch(
-            url,
-            {
-                method: "POST",
-                mode: "cors",
-                headers:
-                {
-                    "Content-type": "application/json",
-                    "chrome": outAuth
-                },
-            })
-        const converted = await incData.json()
-        console.log(converted[0])
-        Object.keys(localStorage).forEach(prop => {
-            if (!converted[0].hasOwnProperty(prop) && prop != "options" && prop != "code") {
-                chrome.storage.sync.remove(prop)
-                chrome.storage.sync.remove([(prop + "Notif"), (prop + "Tick")])
-                delete localStorage[prop]
-                delete localStorage.options[prop + "Notif"]
-                delete localStorage.options[prop + "Tick"]
-                console.log("PULSE: " + prop + " has been removed")
-            }
-        })
-        Object.assign(localStorage, converted[0])
-        Object.keys(localStorage).forEach(prop => {
-            if (prop != "options" && prop != "code" && localStorage.options[prop + "Notif"] === undefined) {
-                localStorage.options[prop + "Notif"] = true;
-                localStorage.options[prop + "Tick"] = true;
-                console.log("PULSE: Options for " + prop + " added")
-            }
-        })
-        return new Promise((resolve, reject) => {
-            resolve(chrome.storage.sync.set(localStorage, () => {
-                console.log("FROM PULSE: Data updated")
-                console.log(localStorage);
-                setBadge()
-            }))
-        })
+        chrome.storage.sync.set(storage)
     }
     catch (e) {
         console.log(e)
     }
 }
+
+async function auditStorage() {
+    const storage = await getAllStorageSyncData()
+
+    try{
+        delete storage.code.enabled
+        delete storage.code.generated
+        delete storage.code.userID
+        chrome.storage.sync.set(storage)
+    }
+    catch(e){
+        console.log(e)
+    }
+}
+//PING THE SERVER FOR INFO AND UPDATE LOCAL AND CLOUD STORAGE(google give me webhooks pls)----//
 
 async function starPulse() {
     try {
@@ -298,7 +221,8 @@ function getAllStorageSyncData() {
 
 function storageReset() {
     chrome.storage.sync.clear(() => {
-        installStorage();
+        firstRun();
+        chrome.tabs.create({ url: ("/list.html") })
     })
 }
 //FUNCTION TO SET BADGE NUMBER; PARSES DATA AND COUNTS LIVE STREAMERS----//

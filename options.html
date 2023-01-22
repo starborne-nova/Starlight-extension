@@ -66,13 +66,10 @@
                             <p id="version" class="nav-link header-text text-center"></p>
                             <ul class="m-2" style="list-style-type: decimal;">
                                 <li class="my-2">
-                                    Implemented the first version of the new list editor. It should make adding more streamers a lot easier! (It's also very new so there might still be some hiccups)
+                                    Made some tweaks to the list editor. There is now a delete button on the options page to remove any streamers you no longer wish to track.
                                 </li>
                                 <li class="my-2">
-                                    Next Update: Cleaned up list editor, Server status on options page
-                                </li>
-                                <li class="my-2">
-                                    Starlight has been (and will continue to be) open source. If you would like to take a look at the code, contribute, or suggest new features, the github link is on the page header.
+                                    Upcoming Updates: Server Status on options page, Theme Editor
                                 </li>
                             </ul>
                             <p class="text-center my-2">Thank you for using Starlight! The extension will always be free
@@ -90,59 +87,9 @@
                     <div class="row g-0 card-bg p-2 mx-3">
                         <div class="col-12 mt-3 mb-4">
                             <a href="/list.html" target="_blank">
-                                <h5 class="text-center">New List Editor</h5>
+                                <h5 class="text-center">Open List Editor</h5>
                             </a>
-                        </div>
-                        <div class="col-12 mt-3 mb-4">
-                            <a href="https://star-reactor.fly.dev/starlight" target="_blank">
-                                <h5 class="text-center">Old List Editor</h5>
-                            </a>
-                            
-                            <h4 class="text-center text-warning" id="codeResults"></h4>
-                        </div>
-                        
-                        <div class="col-md-4 mb-3 d-flex align-items-center">
-                            <h5 class="mx-auto me-auto ms-4">Insert Code from Server</h5>
-                        </div>
-                        <div class="col-md-3" id="spacer1">
-
-                        </div>
-                        <div class="col-md-5 mb-3 d-flex align-items-center">
-
-                            <input type="text" id="codeInput" name="codeInput" class="ms-auto">
-                            <button id="codeSend" class="btn btn-outline-success ms-4 me-4">Save</button>
-
-                        </div>
-                        <div class="col-md-4 mb-3 d-flex align-items-center">
-                            <h5 class="mx-auto me-auto ms-4">Replace Existing Code</h5>
-                        </div>
-                        <div class="col-md-3" id="spacer2">
-
-                        </div>
-                        <div class="col-md-5 mb-3 d-flex align-items-center">
-
-                            <input type="text" id="codeUpdate" name="codeUpdate" class="ms-auto" disabled>
-                            <button id="codeSend2" class="btn btn-outline-success ms-4 me-4" disabled>Save</button>
-
-                        </div>
-                        <div class="col-md-4 mb-3 d-flex align-items-center">
-                            <h5 class="mx-auto me-auto ms-4">Add Streamers</h5>
-                        </div>
-                        <div class="col-md-3" id="spacer2">
-
-                        </div>
-                        <div class="col-md-5 mb-3 d-flex align-items-center">
-
-                            <input type="text" id="codeAddition" name="codeAddition" class="ms-auto" disabled>
-                            <button id="codeSend3" class="btn btn-outline-success ms-4 me-4" disabled>Save</button>
-
-                        </div>
-                        <label for="existingCode" class="form-label form-control-lg text-center mt-3">Existing
-                            Code</label>
-                        <div class="col-12 mb-3 d-flex align-items-center">
-                            <textarea id="existingCode" readonly rows="5" class="form-control mx-5"
-                                style="resize:none"></textarea>
-                        </div>
+                        </div>        
                     </div>
                     <div class="row g-0 card-bg p-2 rounded-0 optionsBoxEnd mx-3" style="height:100px;">
                         <div class="col-md-12 d-flex justify-content-center align-items-center">
@@ -187,7 +134,7 @@
                         </div>
                         <div class="col d-flex align-items-center justify-content-evenly mb-3"
                             style="display:none !important" id="debug">
-                            <button id="auditStorage" class="btn btn-outline-warning mx-3">Repair Storage</button>
+                            <button id="update" class="btn btn-outline-warning mx-3">Update Data</button>
                             <a href="/storage.html" class="btn btn-outline-primary mx-3" role="button">Storage
                                 Tool</a>
                         </div>

@@ -1,7 +1,5 @@
 const initPopup = populate();
-
-
-
+const emojiCatch = /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]|(http:\/\/\S+)|(https:\/\/\S+)|(twitch\S+))/g;
 function populate() {
   chrome.storage.sync.get(null, (items) => {
     var pageTotal = Math.ceil(((Object.keys(items).length - 2)/6))
@@ -30,9 +28,7 @@ function populate() {
           const elapsed = Math.abs(nowT - startT);
           const eMinutes = Math.ceil(elapsed / (1000 * 60));
           var eHours = 0;
-          const indexLink = items[prop].ticker.indexOf("http");
-          const indexBars = items[prop].ticker.indexOf("||");
-
+          const tickerFilter = items[prop].ticker.replaceAll(emojiCatch, '')
 
           if (Math.floor(eMinutes % 60) < 10) {
             eHours = Math.floor(eMinutes / 60).toString() + ":0" + Math.floor(eMinutes % 60).toString();
@@ -47,25 +43,9 @@ function populate() {
           $("#" + item).mouseenter(function () {
             $("#" + ticker).removeClass("hide");
           })
-          if (indexBars != -1) {
-            if (indexLink < 40) {
-              $("#" + ticker).text((items[prop].ticker.substring((indexBars + 2), indexLink)))
-            }
-
-            if (indexLink === -1 || indexLink >= 40) {
-              $("#" + ticker).text((items[prop].ticker.substring((indexBars + 2), (indexBars + 42))))
-            }
-          }
-          if (indexBars === -1) {
-            if (indexLink < 40) {
-              $("#" + ticker).text((items[prop].ticker.substring(0, indexLink)))
-            }
-
-            if (indexLink === -1 || indexLink >= 40) {
-              $("#" + ticker).text((items[prop].ticker.substring(0, 40)))
-            }
-          }
-
+          
+          $("#" + ticker).text((tickerFilter.substring(0, 40)))
+      
           counter++;
           pageCounter++;
         }
@@ -82,30 +62,12 @@ function populate() {
           pageCounter = 1;
         }
         if (items.options[prop + "Notif"] === true && !items[prop].status) {
-          const indexLink = items[prop].ticker.indexOf("http");
-          const indexBars = items[prop].ticker.indexOf("||");
+          const tickerFilter = items[prop].ticker.replaceAll(emojiCatch, '')
 
           $("#page" + page.toString()).append(("<div class='streamItem' id='" + prop + "'><a href='https://www.twitch.tv/" + prop.toLowerCase() + "' target='_blank'><ul class='popup-container'><li id='" + item + "'><h5 class='streamer'>" + prop + "</h5><h6 class='offline' id='" + prop + "Status'>OFFLINE</h6></li><li><small class='ms-2 hide' id='" + ticker + "'>Ticker: </small></li></ul></a></div>"))
-          
-          if (indexBars != -1) {
-            if (indexLink < 55) {
-              $("#" + ticker).text((items[prop].ticker.substring((indexBars + 2), indexLink))).attr("class", "ticker hide overflow-hidden")
-            }
-
-            if (indexLink === -1 || indexLink >= 55) {
-              $("#" + ticker).text((items[prop].ticker.substring((indexBars + 2), (indexBars + 57)))).attr("class", "ticker hide overflow-hidden")
-            }
-          }
-          if (indexBars === -1) {
-            if (indexLink < 55) {
-              $("#" + ticker).text((items[prop].ticker.substring(0, indexLink))).attr("class", "ticker hide overflow-hidden")
-            }
-
-            if (indexLink === -1 || indexLink >= 55) {
-              $("#" + ticker).text((items[prop].ticker.substring(0, 55))).attr("class", "ticker hide overflow-hidden")
-            }
-          }
-
+                    
+              $("#" + ticker).text(tickerFilter.substring(0,65)).attr("class", "ticker hide overflow-hidden")
+            
           $("#" + item).mouseenter(function () {
             $("#" + ticker).removeClass("hide");
           })
@@ -114,6 +76,9 @@ function populate() {
         }
       }
     })
+    if(counter === 1){
+      $("#page1").append(("<div class='streamItem' id='listEmpty'><a href='list.html' target='_blank'><ul class='popup-container'><li id='noList'><h5 class='streamer'>It looks like there are no streamers set yet. Click here to open the list editor</h5></li></ul></a></div>"))
+    }
     if (page > 1) {
       $("#popupControl").prepend(("<li class='page-item border-0'><a class='page-link bg-dark text-white border-0 rounded-4' href='#' aria-label='Previous' id='pLast'><span aria-hidden='true'>&laquo;</span></a><li>"))
 
@@ -157,6 +122,7 @@ function populate() {
         }
       })
     }
+    
   })
 
 }

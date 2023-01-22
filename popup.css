@@ -75,6 +75,7 @@ body[data-theme="light"]{
 ul {
     list-style-type: none;
     min-width: 100%;
+    min-height: 29px;
     margin: 0;
     padding: 0;
   }

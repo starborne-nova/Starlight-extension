@@ -45,15 +45,31 @@
 </nav>
 
 <body data-theme="dark">
+    <div class="modal" id="progressModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Progress</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex">
+                        <div class="spinner-border text-info" role="status" id="modalProgress">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <h5 class="text-success" id="modalSuccess" hidden>Success</h5>
+                        <p id="modalWaiting" class="mx-2">Waiting for Server Response</p>
+                    </div>
+                    <div class="d-flex" id="modalResults"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="container optionList" id="optionDiv">
-
         <div class="row row-cols-1 row-cols-md-1 g-4">
-
             <div class="col" id="insertOptions">
-
                 <div class="row g-0 card-bg p-3 optionsBoxStart mx-3">
-
                     <div class="col-12">
                         <p class="text-center">
                             <a class="btn btn-outline-success" data-bs-toggle="collapse" href="#collapseExample"
@@ -74,8 +90,12 @@
                                     add them to your list. When your list is complete, hit Validate
                                 </li>
                                 <li class="my-2">
-                                    After the streamers have been confirmed as valid usernames, hit Save List and wait for confirmation from the server. You'll know
-                                    when this happens when "List Saved" appears next to the save button.
+                                    After the streamers have been confirmed as valid usernames, hit Save List and wait
+                                    for confirmation from the server. You'll know
+                                    when this happens when the popup updates to Success
+                                </li>
+                                <li class="my-2">
+                                    Streamers can be removed with the red X on their slot on the options page
                                 </li>
                             </ul>
 
@@ -87,21 +107,29 @@
                 </div>
                 <div class="card mb-3 mx-auto border-0 rounded-0 bg-transparent">
                     <div class="row g-0 card-bg mx-3">
-                        <div class="col-12 mt-3 mb-4">
-                            <div class='text-center'>
-                                <input type="text" id="searchBar" name="searchBar" class="ms-4"
-                                    placeholder="Enter Streamer">
-                                <button id="searchSubmit" class="btn btn-outline-primary ms-4">Enter</button>
-                                <button id="searchSend" class="btn btn-outline-warning ms-4">Validate</button>
+                        <div class="col-12 d-flex justify-content-center">
+                            <div class="card text-center" style="width: 18rem;">
+                                <div class="card-body text-dark">
+                                    <h5 class="card-title">Streamer Search</h5>
+                                    <p class="card-text"><input type="text" id="searchBar" name="searchBar" class="ms-4"
+                                            placeholder="Enter Streamer"></p>
+                                    <div class='text-center'>
+                                        <button id="searchSubmit" class="btn btn-outline-primary ms-4">Enter</button>
+                                        <button id="searchSend" class="btn btn-outline-warning ms-4">Validate</button>
+                                    </div>
+                                </div>
                             </div>
+
                         </div>
-                        <div class="col-12 mt-3 mb-4">
+                        <div class="col-6 mt-3 mb-4">
                             <h5 class="text-center">Queue:</h5>
                             <ul style="list-style-type: none;" id="streamerList">
-                                
+
                             </ul>
-                            <h5 class="text-center" id="showStored" hidden>Stored List:</h5>
-                            <ul style="list-style-type: none;" id="storedList"></ul>
+                        </div>
+                        <div class="col-6 mt-3 mb-4">
+                            <h5 class="text-center" id="showStored">Stored List:</h5>
+                            <div class="px-5" id="storedList"></div>
                         </div>
                         <div class="col-12 mb-3">
                             <div class="text-center">
@@ -109,14 +137,15 @@
 
 
                                 </ul>
-                                <button id="saveList" class="btn btn-outline-success">Save List</button><button id="addList" hidden class="btn btn-outline-success">Add to List</button>
-                            </div>                 
+                                <button id="addList" class="btn btn-outline-success" data-bs-toggle="modal"
+                                    data-bs-target="#progressModal">Add to List</button>
+                            </div>
                         </div>
-                        
+
                     </div>
                     <div class="row g-0 card-bg p-2 rounded-0 optionsBoxEnd mx-3" style="height:100px;">
                         <div class="col-md-12 d-flex justify-content-center align-items-center">
-                            
+
                         </div>
                     </div>
 
