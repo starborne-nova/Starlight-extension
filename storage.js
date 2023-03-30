@@ -2,17 +2,9 @@ const localStorage = {};
 const outAuth = "stealthystars";
 
 const initStorageCache = getAllStorageSyncData()
-    .then(items => {
-        Object.assign(localStorage, items);
-        console.log(localStorage);
-    });
-
-function populateStorage() {
-    chrome.storage.sync.get(null, (items) => {
-        if (chrome.runtime.lastError) {
-            return reject(chrome.runtime.lastError);
-        }
-        else {
+  
+async function populateStorage() {
+    const items = await chrome.storage.sync.get()
             // Object.entries()
             Object.keys(items).forEach((item) => {
                 $("#storageList").append("<li class='list-group-item list-group-item-dark d-flex justify-content-between align-items-start'><div class='ms-2 me-auto'><div class='fw-bold' id='" + item + "Sub'>" + item + "</div></div></li>")
@@ -57,18 +49,11 @@ function populateStorage() {
             })
 
         }
-    })
-}
 
-function getAllStorageSyncData() {
-    return new Promise((resolve, reject) => {
-        chrome.storage.sync.get(null, (items) => {
-            if (chrome.runtime.lastError) {
-                return reject(chrome.runtime.lastError);
-            }
-            resolve(items);
-        });
-    });
+async function getAllStorageSyncData() {
+    const items = await chrome.storage.sync.get()
+    Object.assign(localStorage, items);
+    console.log(localStorage);
 }
 
 async function optionsSubmit() {    

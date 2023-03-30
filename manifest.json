@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
     "name": "Starlight",
-    "version": "1.2.2",
-    "description": "Receive twitch notifications from this extension more reliably than twitch push notifications, forked from Jabroni Notify",
+    "version": "1.2.3",
+    "description": "Receive twitch notifications from this extension more reliably than twitch.",
     "background": {
         "service_worker": "background.js"
     },

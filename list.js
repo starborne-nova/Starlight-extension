@@ -9,15 +9,8 @@ const list = []
 var lastResponse;
 const unsubscribed = []
 
-const initStorageCache = getAllStorageSyncData()
-    .then(items => {
-        Object.assign(localStorage, items);
-        console.log(localStorage);
-        for (let i = 0; i < Object.keys(localStorage.code.req).length; i++) {
-            $("#storedList").append("<span class='badge bg-primary m-1'>" + Object.keys(localStorage.code.req)[i] + "</span>")
-        }
-
-    });
+const initStorageCache = loadData()
+    
 
 $("#searchSubmit").on("click", (e) => {
     const search = $("#searchBar").val()
@@ -35,7 +28,7 @@ $("#searchSend").on("click", (e) => {
     validate(compile)
 })
 
-$("#addList").on("click", async function(e){
+$("#addList").on("click", async function (e) {
     const exec = await appendList()
     return exec
 })
@@ -85,7 +78,6 @@ async function validate(list) {
             $("#streamer" + (i + 1).toString()).text(list[i] + ": Invalid")
         }
     }
-
 }
 
 async function appendList() {
@@ -132,7 +124,7 @@ async function appendList() {
             $("#requestSuccess").append("List Recorded. Data will update shortly")
         })
 
-        return await chrome.runtime.sendMessage({message: "starPulse"}, (response)=>{
+        return await chrome.runtime.sendMessage({ message: "starPulse" }, (response) => {
             console.log("message sent")
             console.log(response.message)
         })
@@ -144,17 +136,12 @@ async function appendList() {
 
 }
 
-function getAllStorageSyncData() {
-    // Immediately return a promise and start asynchronous work
-    return new Promise((resolve, reject) => {
-        // Asynchronously fetch all data from storage.sync.
-        chrome.storage.sync.get(null, (items) => {
-            // Pass any observed errors down the promise chain.
-            if (chrome.runtime.lastError) {
-                return reject(chrome.runtime.lastError);
-            }
-            // Pass the data retrieved from storage down the promise chain.
-            resolve(items);
-        });
-    });
+async function loadData() {
+    const items = await chrome.storage.sync.get()
+    Object.assign(localStorage, items);
+    console.log(localStorage);
+    for (let i = 0; i < Object.keys(localStorage.code.req).length; i++) {
+        $("#storedList").append("<span class='badge bg-primary m-1'>" + Object.keys(localStorage.code.req)[i] + "</span>")
+    }
+    return items;
 }
