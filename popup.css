@@ -4,7 +4,6 @@
     --border-color-2: white;
     --stream-item: slateblue;
     --options: rebeccapurple;
-    --text-shadow: 2px 2px 1px #000;
     --no-shadow: none;
 }
 
@@ -14,7 +13,23 @@ a{
 }
 
 body{
-    width: 400px;
+    width: 450px;
+    font-size: 1rem;
+    border-top: 1px solid;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: var(--border-color-2);
+}
+
+body[data-theme="green"] {
+    --background-color: rgb(29, 32, 36);
+    --border-color: rgb(15, 46, 16);
+    --border-color-2: rgb(129, 129, 129);
+    --stream-item: #00360c;
+    --options:rgb(33,37,41);
+    --no-shadow: none;
+    --text-color: white;
 }
 
 body[data-theme="star"]{
@@ -23,8 +38,8 @@ body[data-theme="star"]{
     --border-color-2: #999da2;
     --stream-item: #202124;
     --options: #171717;
-    --text-shadow: 2px 2px 1px #000;
     --no-shadow: none;
+    --text-color: #999da2;
 }
 
 body[data-theme="purple"]{
@@ -33,8 +48,8 @@ body[data-theme="purple"]{
     --border-color-2: white;
     --stream-item: slateblue;
     --options: rebeccapurple;
-    --text-shadow: 2px 2px 1px #000;
     --no-shadow: none;
+    --text-color: white;
 }
 
 body[data-theme="dark"]{
@@ -43,8 +58,8 @@ body[data-theme="dark"]{
     --border-color-2: #999da2;
     --stream-item: #202124;
     --options: #171717;
-    --text-shadow: 2px 2px 1px #000;
     --no-shadow: none;
+    --text-color: #999da2;
 }
 
 body[data-theme="light"]{
@@ -53,13 +68,14 @@ body[data-theme="light"]{
     --border-color-2: #171717;
     --stream-item: rgb(228, 228, 228);
     --options: #999da2;
-    --text-shadow: none;
     --no-shadow: none;
+    --text-color: #171717;
 }
 
 ul {
     list-style-type: none;
     min-width: 100%;
+    min-height: 29px;
     margin: 0;
     padding: 0;
   }
@@ -71,19 +87,19 @@ li{
 .header {
     text-align: center;
     background:  linear-gradient(to right,var(--background-color), transparent 40%,var(--background-color)),
-    url("images/cometTest2.png");
+    url("images/starlightEclipse.png");
     background-color: var(--background-color);
-    background-position: left;
     background-repeat: no-repeat;
-    background-size: 400px;
-    background-position: 0% 50%;
-    color: white;
-    border-top: 1px solid;
-    border-left: 1px solid;
-    border-right: 1px solid;
-    border-color: var(--border-color-2);
+    background-size: 450px;
+    background-position: 50% 50%;
+    color: white; 
     display: table-header-group;
-    text-shadow: 2px 2px 1px #000;
+}
+
+.header-text {
+    font-size: 1.25rem;
+    background-color: rgba(32, 33, 36, 0.7);
+    width: fit-content;
 }
 
 .container{
@@ -100,8 +116,7 @@ li{
     margin: 0;
     display: flex;
     background-color:var(--stream-item);
-    color:var(--border-color-2);
-    text-shadow: var(--text-shadow);
+    color:var(--text-color);
 }
 
 .streamItem-online{
@@ -110,12 +125,15 @@ li{
     border-left: 1px solid;
     border-right: 1px solid;
     border-color: var(--border-color-2);
-    background: rgb(72, 221, 72) !important;
     padding: 0;
     margin: 0;
     display: flex;
-    color:var(--border-color);
-    text-shadow: var(--no-shadow);
+    color:var(--text-color);
+    animation-name: backgroundColorPalette;
+	animation-duration: 2s;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+	animation-timing-function: linear; 
 }
 
 .streamItem-online:hover{
@@ -128,8 +146,7 @@ li{
     padding: 0;
     margin: 0;
     display: flex;
-    color:var(--border-color);
-    text-shadow: var(--no-shadow);
+    color:var(--border-color-2);
 }
 
 a, a:link, a:visited, a:hover, a:active {
@@ -137,17 +154,6 @@ a, a:link, a:visited, a:hover, a:active {
     text-decoration: inherit;
     font-weight: inherit;
   }
-
-body {
-    height: auto;
-    background-color:none;
-    display: grid;
-    margin: 0px 0px 1px 0px;
-    border: 0;
-    
-
-
-}
 
 .offline{
     text-align: end;
@@ -162,44 +168,39 @@ body {
     color:#1F1F1F;
     padding-right: 10px;
     margin: 5px;
-    text-shadow: var(--no-shadow);
-}
-
-.status-icon-off{
-    min-width: 17px;
-    min-height: 17px;
-    text-align: end;
-    color:darkgray;
-    margin: 5px;
-    text-shadow: var(--text-shadow);
-}
-
-.status-icon-on{
-    min-width: 17px;
-    min-height: 17px;
-    text-align: end;
-    color:var(--border-color);
-    margin: 5px;
-    text-shadow: var(--no-shadow);
 }
 
 .options{
+    transition: background 0.5s;
     border-top: 1px solid;
     border-left: 1px solid;
     border-right: 1px solid;
-    border-bottom: 1px solid;
     border-color: var(--border-color-2);
     padding: 0;
     margin: 0;
     display: flex;
     background-color:var(--options);
-    color:var(--border-color-2);
-    text-shadow: var(--text-shadow);
+    color:var(--text-color);
+    align-items: center;
+}
+
+.options:hover{
+    transition: background 0.5s;
+    border-top: 1px solid;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-color: var(--border-color-2);
+    padding: 0;
+    margin: 0;
+    display: flex;
+    background-color:var(--background-color);
+    color:var(--text-color);
     align-items: center;
 }
 
 .optionLabel{
-    align-self: center;  
+    align-self: center;
+    font-size:1.25rem;  
     margin-top: 5px;
     margin-bottom: 5px;
     margin-left: auto;
@@ -219,12 +220,51 @@ body {
     transition: all 0.05s linear;
 }
 
+.active{   
+        z-index: 3 !important;
+        color: #fff !important;
+        background-color: #0d6efd !important;
+        border-color: #0d6efd !important;
+}
+
+.page-item.active .page-link {
+    z-index: 3 !important;
+    color: #fff !important;
+    background-color: #0d6efd !important;
+    border-color: #0d6efd !important;
+}
+
+.page-link:hover {
+    z-index: 2 !important;
+    color: #0a58ca !important;
+    background-color: #e9ecef !important;
+    border-color: #dee2e6 !important;
+}
+
 .hide {
-    height: 0;
-    margin: 0;
+    height: 0 !important;
+    margin: 0 !important;
   }
 
 .status{
     padding-right: 10px;
     
+}
+
+.timestamp{
+    background-color: black;
+    color:white;
+    font-weight: 600;
+    border-radius: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+@keyframes backgroundColorPalette {
+	0% {
+		background: var(--stream-item);
+	}
+	100% {
+		background: rgb(55, 170, 55);
+	}
 }
